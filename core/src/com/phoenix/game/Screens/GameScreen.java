@@ -7,18 +7,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.phoenix.game.Game;
 
 /**
- * Created by alesd on 2/21/2017.
+ * Created by Alesander on 2/21/2017.
  */
 
 public class GameScreen implements Screen {
 
     private Game game;
-    Texture texture;
+    private Texture texture;
 
     public GameScreen(Game game){
         this.game = game;
-        texture = new Texture("badlogic.jpg");
+        this.texture = new Texture("badlogic.jpg");
     }
+
     @Override
     public void show() {
 
@@ -26,7 +27,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 0, 1, 0);
+        Gdx.gl20.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.begin();
