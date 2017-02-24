@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.phoenix.game.Game;
@@ -16,7 +17,7 @@ import com.phoenix.game.Game;
  * Created by alesd on 2/21/2017.
  */
 
-public class Main_UI {
+public class Main_UI implements Disposable {
     public Stage stage;
     private Viewport hudPort;
     private OrthographicCamera cam;
@@ -54,5 +55,10 @@ public class Main_UI {
 
         stage.addActor(hudTable);
 
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
     }
 }

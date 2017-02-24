@@ -5,8 +5,7 @@ import com.phoenix.game.Screens.GameScreen;
 
 public class Game extends com.badlogic.gdx.Game {
 	public SpriteBatch batch;
-	public static int WIDTH = 800, HEIGHT = 480;
-
+	public static final int WIDTH = 800, HEIGHT = 480; //Resolución del juego
 	
 	@Override
 	public void create () {
