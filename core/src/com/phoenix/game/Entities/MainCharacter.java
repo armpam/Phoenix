@@ -1,16 +1,22 @@
 package com.phoenix.game.Entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by alesd on 2/23/2017.
  */
 
-public class MainCharacter {
+public class MainCharacter extends Sprite {
 
     private World world;
     public Body b2body;
@@ -18,9 +24,110 @@ public class MainCharacter {
     private int x =50;
     private int y = 50;
 
+    private Texture mainTexture;
+    private final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
+    private TextureRegion idle; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
+    public enum MovState {UP, DOWN, LEFT, RIGHT, IDLE}; //Hacia dónde se mueve
+    public MovState currentState;
+
+    private Animation runLeft;
+    private Animation runRight;
+    private Animation runUp;
+    private Animation runDown;
+
+    private float stateTimer;
+
     public MainCharacter(World world){
         this.world = world;
         defineMainCharacter();
+        currentState = MovState.IDLE;
+        stateTimer = 0;
+
+        mainTexture = new Texture(Gdx.files.internal("main.png")); //La imagen con todos los sprites
+        initAnimations();
+
+        idle = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
+        setBounds(0, 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT);
+        setRegion(idle); //Le dices que región dibujar (Hace falta para que el método draw sepa qué dibujar)
+    }
+
+    //Actualiza la posición de dónde dibujamos al jugador (sigue a la cámara)
+    public void update(float delta){
+        //TODO MEJORAR LA ANIMACIÓN DEL MOVIMIENTO DE FORMA QUE SE QUEDE MIRANDO EN LA POSICIÓN DE LA ÚLTIMA ANIMACIÓN
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
+    }
+
+    // Inicializa las animaciones del personaje principal
+    private void initAnimations(){
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+
+        for(int i = 0; i < 9; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 512, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        runUp = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 9; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 576, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        runLeft = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 9; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 640, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        runDown = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 9; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 704, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        runRight = new Animation(0.1f, frames);
+        frames.clear();
+    }
+
+    //Da el frame a dibujar según el estado del jugador
+    public TextureRegion getFrame(float delta){
+        currentState = getState();
+
+        TextureRegion region;
+        switch(currentState){
+            case UP:
+                region = (TextureRegion)runUp.getKeyFrame(stateTimer, true);
+                break;
+            case DOWN:
+                region = (TextureRegion)runDown.getKeyFrame(stateTimer, true);
+                break;
+            case LEFT:
+                region = (TextureRegion)runLeft.getKeyFrame(stateTimer, true);
+                break;
+            case RIGHT:
+                region = (TextureRegion)runRight.getKeyFrame(stateTimer, true);
+                break;
+            default:
+                region = idle;
+                break;
+        }
+        stateTimer = stateTimer + delta; //El StateTimer es magia, pero hay que sumarle delta para que se anime bien
+        return region;
+    }
+
+    //Devuelve el estado de movimiento del jugador (corriendo hacia la dcha/izquierda, quieto...)
+    public MovState getState(){
+        if(b2body.getLinearVelocity().x < 0){ //Si la X disminuye es que está yendo hacia la izquierda
+            return MovState.LEFT;
+        }
+        else if(b2body.getLinearVelocity().x > 0){
+            return MovState.RIGHT;
+        }
+        else if(b2body.getLinearVelocity().y < 0){
+            return MovState.DOWN;
+        }
+        else if(b2body.getLinearVelocity().y > 0){
+            return MovState.UP;
+        }
+        else return MovState.IDLE;
     }
 
     public void defineMainCharacter(){

@@ -126,6 +126,9 @@ public class GameScreen implements Screen {
         //Actualizamos cada vez que dibujamos
         update(delta);
 
+        //Dibuja al personaje siguiendo nuestra cámara
+        mcharacter.update(delta);
+
         //Limpia la pantalla con negro
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -135,6 +138,12 @@ public class GameScreen implements Screen {
 
         //Dibuja las líneas box2D
         b2dr.render(world, cam.combined);
+
+        //Dibujar al jugador - Él sólo dibuja sus animaciones por extender Sprite mediante(setRegion())
+        game.batch.setProjectionMatrix(cam.combined);
+        game.batch.begin();
+        mcharacter.draw(game.batch);
+        game.batch.end();
 
         //El batch dibuja la UI con la cámara de la UI, que es estática
         game.batch.setProjectionMatrix(UI.stage.getCamera().combined);
