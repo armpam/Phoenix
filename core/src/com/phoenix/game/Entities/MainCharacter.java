@@ -27,13 +27,14 @@ public class MainCharacter extends Sprite {
     private Texture mainTexture;
     private final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
     private TextureRegion idle; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
-    private TextureRegion idleLeft;
+    private TextureRegion idleLeft; // Posturas sin hacer nada mirando hacia distintos lados
     private TextureRegion idleDown;
     private TextureRegion idleRight;
     public enum MovState {UP, DOWN, LEFT, RIGHT, IDLE}; //Hacia dónde se mueve
-    public MovState currentState;
-    public MovState previousState;
+    public MovState currentState; //Estado actual del personaje
+    public MovState previousState;// Estado en el que se ha quedado al pararse
 
+    //Animaciones del movimiento en 4 direcciones
     private Animation runLeft;
     private Animation runRight;
     private Animation runUp;
@@ -111,9 +112,9 @@ public class MainCharacter extends Sprite {
             case RIGHT:
                 region = (TextureRegion)runRight.getKeyFrame(stateTimer, true);
                 break;
-            default:
+            default: //Caso IDLE
                 if(previousState == MovState.DOWN){
-                    region = idleDown;
+                    region = idleDown; //Se queda quieto mirando abajo
                 }
                 else if(previousState == MovState.LEFT){
                     region = idleLeft;
