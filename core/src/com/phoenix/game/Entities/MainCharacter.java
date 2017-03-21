@@ -27,8 +27,12 @@ public class MainCharacter extends Sprite {
     private Texture mainTexture;
     private final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
     private TextureRegion idle; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
+    private TextureRegion idleLeft;
+    private TextureRegion idleDown;
+    private TextureRegion idleRight;
     public enum MovState {UP, DOWN, LEFT, RIGHT, IDLE}; //Hacia dónde se mueve
     public MovState currentState;
+    public MovState previousState;
 
     private Animation runLeft;
     private Animation runRight;
@@ -47,13 +51,15 @@ public class MainCharacter extends Sprite {
         initAnimations();
 
         idle = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
+        idleLeft = new TextureRegion(mainTexture, 0 , 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
+        idleRight = new TextureRegion(mainTexture, 0 , 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
+        idleDown = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
         setBounds(0, 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT);
         setRegion(idle); //Le dices que región dibujar (Hace falta para que el método draw sepa qué dibujar)
     }
 
     //Actualiza la posición de dónde dibujamos al jugador (sigue a la cámara)
     public void update(float delta){
-        //TODO MEJORAR LA ANIMACIÓN DEL MOVIMIENTO DE FORMA QUE SE QUEDE MIRANDO EN LA POSICIÓN DE LA ÚLTIMA ANIMACIÓN
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
     }
@@ -106,7 +112,18 @@ public class MainCharacter extends Sprite {
                 region = (TextureRegion)runRight.getKeyFrame(stateTimer, true);
                 break;
             default:
-                region = idle;
+                if(previousState == MovState.DOWN){
+                    region = idleDown;
+                }
+                else if(previousState == MovState.LEFT){
+                    region = idleLeft;
+                }
+                else if(previousState == MovState.RIGHT){
+                    region = idleRight;
+                }
+                else{
+                    region = idle;
+                }
                 break;
         }
         stateTimer = stateTimer + delta; //El StateTimer es magia, pero hay que sumarle delta para que se anime bien
@@ -116,16 +133,20 @@ public class MainCharacter extends Sprite {
     //Devuelve el estado de movimiento del jugador (corriendo hacia la dcha/izquierda, quieto...)
     public MovState getState(){
         if(b2body.getLinearVelocity().x < 0){ //Si la X disminuye es que está yendo hacia la izquierda
-            return MovState.LEFT;
+            previousState = MovState.LEFT;
+            return previousState;
         }
         else if(b2body.getLinearVelocity().x > 0){
-            return MovState.RIGHT;
+            previousState = MovState.RIGHT;
+            return previousState;
         }
         else if(b2body.getLinearVelocity().y < 0){
-            return MovState.DOWN;
+            previousState = MovState.DOWN;
+            return previousState;
         }
         else if(b2body.getLinearVelocity().y > 0){
-            return MovState.UP;
+            previousState = MovState.UP;
+            return previousState;
         }
         else return MovState.IDLE;
     }
