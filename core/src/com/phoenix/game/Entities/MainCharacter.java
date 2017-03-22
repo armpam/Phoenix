@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -20,6 +21,7 @@ public class MainCharacter extends Sprite {
 
     private World world;
     public Body b2body;
+    protected Fixture fixture;
     //Posición inicial del jugador
     private int x =50;
     private int y = 50;
@@ -30,9 +32,9 @@ public class MainCharacter extends Sprite {
     private TextureRegion idleLeft; // Posturas sin hacer nada mirando hacia distintos lados
     private TextureRegion idleDown;
     private TextureRegion idleRight;
-    public enum MovState {UP, DOWN, LEFT, RIGHT, IDLE}; //Hacia dónde se mueve
-    public MovState currentState; //Estado actual del personaje
-    public MovState previousState;// Estado en el que se ha quedado al pararse
+    private enum MovState {UP, DOWN, LEFT, RIGHT, IDLE}; //Hacia dónde se mueve
+    private MovState currentState; //Estado actual del personaje
+    private MovState previousState;// Estado en el que se ha quedado al pararse
 
     //Animaciones del movimiento en 4 direcciones
     private Animation runLeft;
@@ -95,7 +97,7 @@ public class MainCharacter extends Sprite {
     }
 
     //Da el frame a dibujar según el estado del jugador
-    public TextureRegion getFrame(float delta){
+    private TextureRegion getFrame(float delta){
         currentState = getState();
 
         TextureRegion region;
@@ -132,7 +134,7 @@ public class MainCharacter extends Sprite {
     }
 
     //Devuelve el estado de movimiento del jugador (corriendo hacia la dcha/izquierda, quieto...)
-    public MovState getState(){
+    private MovState getState(){
         if(b2body.getLinearVelocity().x < 0){ //Si la X disminuye es que está yendo hacia la izquierda
             previousState = MovState.LEFT;
             return previousState;
@@ -152,7 +154,7 @@ public class MainCharacter extends Sprite {
         else return MovState.IDLE;
     }
 
-    public void defineMainCharacter(){
+    private void defineMainCharacter(){
         BodyDef bdef = new BodyDef();
         bdef.position.set(x, y);
         bdef.type = BodyDef.BodyType.DynamicBody; //El jugador es dinámico, se mueve
@@ -165,7 +167,8 @@ public class MainCharacter extends Sprite {
         shape.setRadius(5);
 
         fdef.shape = shape;
-        b2body.createFixture(fdef);
+        fixture = b2body.createFixture(fdef);
+        fixture.setUserData("mcharacter"); //Se crea la fixture y la asignamos el nombre mcharacter para la COLISIÓN
     }
 
 }

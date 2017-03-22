@@ -26,6 +26,7 @@ import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Game;
 import com.phoenix.game.Scenes.Main_UI;
 import com.phoenix.game.Tools.B2WorldCreator;
+import com.phoenix.game.Tools.WorldContactListener;
 
 import java.awt.event.KeyEvent;
 
@@ -77,6 +78,9 @@ public class GameScreen implements Screen {
 
         //Crea el Body Box2D de nuestro personaje principal
         mcharacter = new MainCharacter(world);
+
+        //Listener para todas nuestras colisiones
+        world.setContactListener(new WorldContactListener());
     }
 
     @Override

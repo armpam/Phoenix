@@ -13,4 +13,9 @@ public class Rock extends RectTileObject {
     public Rock(World world, TiledMap map, Rectangle bounds){
         super(world, map, bounds);
     }
+
+    @Override
+    public void onPlayerHit() {
+        // La roca no hace nada cuando el jugador se choca contra ella
+    }
 }

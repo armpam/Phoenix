@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -25,6 +26,9 @@ public abstract class RectTileObject {
     protected PolygonShape shape;
     protected FixtureDef fdef;
     protected Body body;
+
+    //Guardamos la fixture al final de la creación del b2body para poder setUserData() en la clase hija deseada (Colisión)
+    protected Fixture fixture;
 
     public RectTileObject(World world, TiledMap map, Rectangle bounds){
         this.world = world;
@@ -48,7 +52,9 @@ public abstract class RectTileObject {
 
         shape.setAsBox(bounds.getWidth() / 2, bounds.getHeight() / 2); //Define la forma como una caja
         fdef.shape = shape;
-        body.createFixture(fdef);
+        fixture = body.createFixture(fdef);
 
     }
+
+    public abstract void onPlayerHit(); //Define qué pasa cuando el jugador choca contra este objeto
 }
