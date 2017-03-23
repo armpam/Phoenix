@@ -1,5 +1,6 @@
 package com.phoenix.game.Entities;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Rectangle;
@@ -25,6 +26,8 @@ public class Chest extends RectTileObject {
 
     @Override
     public void onPlayerHit() {
-        getCell(9).setTile(tileset.getTile(OPEN_CHEST));
+        getCell(9).setTile(tileset.getTile(OPEN_CHEST)); //Sustituye la imagen del cofre por el cofre abierto
+
+        Game.assetManager.get("audio/sounds/openChest.ogg", Music.class).play(); //Sonido del cofre al abrirse
     }
 }

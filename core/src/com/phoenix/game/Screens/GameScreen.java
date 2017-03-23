@@ -3,6 +3,7 @@ package com.phoenix.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -53,6 +54,8 @@ public class GameScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr; //Dibuja las líneas de los polígonos para la colisión
 
+    private Music OWtheme;
+
     public GameScreen(Game game){
         this.game = game;
         //La cámara que seguirá a nuestro jugador
@@ -81,6 +84,11 @@ public class GameScreen implements Screen {
 
         //Listener para todas nuestras colisiones
         world.setContactListener(new WorldContactListener());
+
+        OWtheme = Game.assetManager.get("audio/themes/overworld.ogg", Music.class);
+        OWtheme.setLooping(true);
+        OWtheme.play();
+
     }
 
     @Override
