@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+import com.phoenix.game.Entities.Chest;
 import com.phoenix.game.Entities.Rock;
 import com.phoenix.game.Entities.Tree;
 
@@ -23,11 +24,12 @@ public class B2WorldCreator {
 
         createTrees();
         createRocks();
+        createChests();
     }
 
     private void createTrees(){
-        //Por cada objeto de tipo Object en Tiled cogemos aquellos objetos con ID = 10, hacemos un rectángulo y creamos el objeto
-        for (MapObject object : map.getLayers().get(10).getObjects().getByType(RectangleMapObject.class)) {
+        //Por cada objeto de tipo Object en Tiled cogemos aquellos objetos con ID = 11, hacemos un rectángulo y creamos el objeto
+        for (MapObject object : map.getLayers().get(11).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             Tree tree = new Tree(world, map, rect);
@@ -35,10 +37,18 @@ public class B2WorldCreator {
     }
 
     private void createRocks(){
-        for (MapObject object : map.getLayers().get(9).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(10).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             Rock rock = new Rock(world, map, rect);
+        }
+    }
+
+    private void createChests(){
+        for (MapObject object : map.getLayers().get(12).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            Chest chest = new Chest(world, map, rect);
         }
     }
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.phoenix.game.Entities.Chest;
 
 /**
  * Created by alesd on 3/22/2017.
@@ -32,8 +33,8 @@ public class WorldContactListener implements ContactListener {
                 object = fixA;
             }
 
-            if(object.getUserData()instanceof com.phoenix.game.Entities.Tree){ //Hay conflictos con la clase Tree de Java, así que detallamos bien de dónde viene
-                ((com.phoenix.game.Entities.Tree)object.getUserData()).onPlayerHit(); //Sabemos que es un árbol asi que lo casteamos a árbol
+            if(object.getUserData()instanceof Chest){ //Si el objeto es de tipo Chest
+                ((Chest)object.getUserData()).onPlayerHit(); //Sabemos que es un árbol asi que lo casteamos a árbol
             }
         }
 

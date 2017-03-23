@@ -2,9 +2,11 @@ package com.phoenix.game.Entities;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -53,8 +55,19 @@ public abstract class RectTileObject {
         shape.setAsBox(bounds.getWidth() / 2, bounds.getHeight() / 2); //Define la forma como una caja
         fdef.shape = shape;
         fixture = body.createFixture(fdef);
-
     }
 
     public abstract void onPlayerHit(); //Define qué pasa cuando el jugador choca contra este objeto
+
+    public void setCategoryFilter(short bit){ //Ponemos al objeto el bit que queramos
+        Filter filter = new Filter();
+        filter.categoryBits = bit;
+        fixture.setFilterData(filter);
+    }
+
+    public TiledMapTileLayer.Cell getCell(int layerNumber){ //Devuelve las coordenadas de un b2body de tipo RectTileObject
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(layerNumber);
+        TiledMapTileLayer.Cell cell = layer.getCell((int)(body.getPosition().x / 32),(int)(body.getPosition().y / 32));
+        return cell;
+    }
 }

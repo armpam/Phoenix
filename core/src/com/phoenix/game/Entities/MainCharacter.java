@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.phoenix.game.Game;
 
 /**
  * Created by alesd on 2/23/2017.
@@ -165,6 +166,8 @@ public class MainCharacter extends Sprite {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(5);
+        fdef.filter.categoryBits = Game.MC_BIT; //Bit del jugador
+        fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT; //Con qué puede el personaje chocar
 
         fdef.shape = shape;
         fixture = b2body.createFixture(fdef);
