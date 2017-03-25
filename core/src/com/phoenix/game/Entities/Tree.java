@@ -21,4 +21,9 @@ public class Tree extends RectTileObject {
     public void onPlayerHit() {
 
     }
+
+    @Override
+    public void onFireBallHit() {
+
+    }
 }

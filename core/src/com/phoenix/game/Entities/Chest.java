@@ -16,18 +16,31 @@ public class Chest extends RectTileObject {
     private static TiledMapTileSet tileset;
     private final int OPEN_CHEST = 2;
 
+    private boolean open;
+
     public Chest(World world, TiledMap map, Rectangle bounds){
         super(world, map, bounds);
         tileset = map.getTileSets().getTileSet("package");
-        System.out.println(tileset.getTile(OPEN_CHEST));
+
         fixture.setUserData(this);
         setCategoryFilter(Game.CHEST_BIT);
+
+        open = false;
     }
 
     @Override
     public void onPlayerHit() {
         getCell(9).setTile(tileset.getTile(OPEN_CHEST)); //Sustituye la imagen del cofre por el cofre abierto
 
-        Game.assetManager.get("audio/sounds/openChest.ogg", Music.class).play(); //Sonido del cofre al abrirse
+        if(!open) {
+            Game.assetManager.get("audio/sounds/openChest.ogg", Music.class).play(); //Sonido del cofre al abrirse
+            open = true;
+        }
     }
+
+    @Override
+    public void onFireBallHit() {
+
+    }
+
 }

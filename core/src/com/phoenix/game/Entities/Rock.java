@@ -21,4 +21,9 @@ public class Rock extends RectTileObject {
     public void onPlayerHit() {
         // La roca no hace nada cuando el jugador se choca contra ella
     }
+
+    @Override
+    public void onFireBallHit() {
+
+    }
 }

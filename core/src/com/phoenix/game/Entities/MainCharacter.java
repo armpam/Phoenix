@@ -1,6 +1,7 @@
 package com.phoenix.game.Entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.phoenix.game.Game;
+import com.phoenix.game.Screens.GameScreen;
 
 /**
  * Created by alesd on 2/23/2017.
@@ -43,13 +45,19 @@ public class MainCharacter extends Sprite {
     private Animation runUp;
     private Animation runDown;
 
+    private Array<MainFireball> fireballs;
+
     private float stateTimer;
 
-    public MainCharacter(World world){
+    private GameScreen screen;
+
+    public MainCharacter(World world, GameScreen screen){
         this.world = world;
         defineMainCharacter();
         currentState = MovState.IDLE;
         stateTimer = 0;
+        this.screen = screen;
+        this.fireballs = new Array<MainFireball>();
 
         mainTexture = new Texture(Gdx.files.internal("main.png")); //La imagen con todos los sprites
         initAnimations();
@@ -58,7 +66,7 @@ public class MainCharacter extends Sprite {
         idleLeft = new TextureRegion(mainTexture, 0 , 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
         idleRight = new TextureRegion(mainTexture, 0 , 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
         idleDown = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        setBounds(0, 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT);
+        setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
         setRegion(idle); //Le dices que región dibujar (Hace falta para que el método draw sepa qué dibujar)
     }
 
@@ -66,6 +74,13 @@ public class MainCharacter extends Sprite {
     public void update(float delta){
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
+
+        for(MainFireball fireball : fireballs){ //Actualiza las bolas de fuego
+            fireball.update(delta);
+            if(fireball.isDestroyed()){
+                fireballs.removeValue(fireball, true); //Elimina la bola de fuego del array si se ha destruido
+            }
+        }
     }
 
     // Inicializa las animaciones del personaje principal
@@ -157,7 +172,7 @@ public class MainCharacter extends Sprite {
 
     private void defineMainCharacter(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(x, y);
+        bdef.position.set(x / Game.PPM, y / Game.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody; //El jugador es dinámico, se mueve
 
         b2body = world.createBody(bdef);
@@ -165,13 +180,30 @@ public class MainCharacter extends Sprite {
         //El Body del jugador es un círculo de radio 5
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5);
+        shape.setRadius(5 / Game.PPM);
         fdef.filter.categoryBits = Game.MC_BIT; //Bit del jugador
         fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT; //Con qué puede el personaje chocar
 
         fdef.shape = shape;
         fixture = b2body.createFixture(fdef);
-        fixture.setUserData("mcharacter"); //Se crea la fixture y la asignamos el nombre mcharacter para la COLISIÓN
+        fixture.setUserData(this); //Se crea la fixture y la asignamos la propia clase para la COLISIÓN
+    }
+
+    public String getPreviousState(){
+
+        if (previousState == MovState.UP)
+                return "UP";
+        else if (previousState == MovState.DOWN)
+            return "DOWN";
+        else if (previousState == MovState.LEFT)
+            return "LEFT";
+        else
+            return "RIGHT";
+    }
+
+    public void fire(){
+        MainFireball fireball = new MainFireball(this.screen, b2body.getPosition().x, b2body.getPosition().y, getPreviousState());
+        fireballs.add(fireball);
     }
 
 }

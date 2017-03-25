@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.phoenix.game.Game;
 
 /**
  * Created by alesd on 2/24/2017.
@@ -48,16 +49,17 @@ public abstract class RectTileObject {
     public void create(){
 
         bdef.type = BodyDef.BodyType.StaticBody; //Cuerpo estático, no se mueve
-        bdef.position.set(bounds.getX() + bounds.getWidth() / 2, bounds.getY() + bounds.getHeight() / 2 );
+        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / Game.PPM, (bounds.getY() + bounds.getHeight() / 2) / Game.PPM );
 
         body = world.createBody(bdef); //Crea el Body en el mundo
 
-        shape.setAsBox(bounds.getWidth() / 2, bounds.getHeight() / 2); //Define la forma como una caja
+        shape.setAsBox(bounds.getWidth() / 2 / Game.PPM, bounds.getHeight() / 2 / Game.PPM); //Define la forma como una caja
         fdef.shape = shape;
         fixture = body.createFixture(fdef);
     }
 
     public abstract void onPlayerHit(); //Define qué pasa cuando el jugador choca contra este objeto
+    public abstract void onFireBallHit();
 
     public void setCategoryFilter(short bit){ //Ponemos al objeto el bit que queramos
         Filter filter = new Filter();
@@ -67,7 +69,7 @@ public abstract class RectTileObject {
 
     public TiledMapTileLayer.Cell getCell(int layerNumber){ //Devuelve las coordenadas de un b2body de tipo RectTileObject
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(layerNumber);
-        TiledMapTileLayer.Cell cell = layer.getCell((int)(body.getPosition().x / 32),(int)(body.getPosition().y / 32));
+        TiledMapTileLayer.Cell cell = layer.getCell((int)(body.getPosition().x * Game.PPM / 32),(int)(body.getPosition().y * Game.PPM / 32));
         return cell;
     }
 }

@@ -21,9 +21,11 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.phoenix.game.Entities.MainCharacter;
+import com.phoenix.game.Entities.MainFireball;
 import com.phoenix.game.Game;
 import com.phoenix.game.Scenes.Main_UI;
 import com.phoenix.game.Tools.B2WorldCreator;
@@ -43,7 +45,12 @@ public class GameScreen implements Screen {
     private Main_UI UI;
 
     private MainCharacter mcharacter;
-    private float MCSpeed = 4f; //Velocidad standard de movimiento del jugador
+    private final float MCSpeed = 0.1f; //Velocidad standard de movimiento del jugador
+    private final float TOP_SPEED = 1;
+    private boolean fbLock; //Está la fireball en cooldown?
+    private final long FBCD = 500000000; //CD en nanosegundos de la bola de fuego
+    private long startTime = 0;
+
 
     //Variables relacionadas con el/los mapas
     private TmxMapLoader mapLoader;
@@ -61,14 +68,14 @@ public class GameScreen implements Screen {
         //La cámara que seguirá a nuestro jugador
         this.cam = new OrthographicCamera();
         //FitViewPort se encarga de que el juego funciona en todas las resoluciones
-        this.gamePort = new FitViewport(Game.WIDTH, Game.HEIGHT, cam);
+        this.gamePort = new FitViewport(Game.WIDTH / Game.PPM, Game.HEIGHT / Game.PPM, cam);
         //Nueva Interfaz Gráfica general
         this.UI = new Main_UI(game.batch);
 
         //Carga el mapa hecho en Tiled
         mapLoader = new TmxMapLoader();
         green_map = mapLoader.load("maptest_1.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(green_map);
+        mapRenderer = new OrthogonalTiledMapRenderer(green_map, 1 / Game.PPM);
         //Centra la cámara cuando se ejecuta el juego al principio
         cam.position.set(gamePort.getWorldWidth()/2, gamePort.getWorldHeight()/2, 0);
 
@@ -80,14 +87,16 @@ public class GameScreen implements Screen {
         new B2WorldCreator(world, green_map);
 
         //Crea el Body Box2D de nuestro personaje principal
-        mcharacter = new MainCharacter(world);
+        mcharacter = new MainCharacter(world, this);
 
         //Listener para todas nuestras colisiones
         world.setContactListener(new WorldContactListener());
 
         OWtheme = Game.assetManager.get("audio/themes/overworld.ogg", Music.class);
         OWtheme.setLooping(true);
-        OWtheme.play();
+        //OWtheme.play();
+
+        this.fbLock = false;
 
     }
 
@@ -113,23 +122,38 @@ public class GameScreen implements Screen {
         mapRenderer.setView(cam);
     }
 
+    public World getWorld(){
+        return this.world;
+    }
+
     public void handleInput(float delta){
-        //TODO MEJORAR EL MOVIMIENTO EN DIAGONAL; TIENDE AL EJE X
-        //Maneja el movimiento de las 4 flechas de dirección
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            mcharacter.b2body.applyLinearImpulse(new Vector2(MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            mcharacter.b2body.applyLinearImpulse(new Vector2(-MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-            mcharacter.b2body.applyLinearImpulse(new Vector2(0, MCSpeed), mcharacter.b2body.getWorldCenter(), true);
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-            mcharacter.b2body.applyLinearImpulse(new Vector2(0, -MCSpeed), mcharacter.b2body.getWorldCenter(), true);
+
+        if(Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {//Maneja el movimiento de las 4 flechas de dirección
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mcharacter.b2body.getLinearVelocity().x < TOP_SPEED) {
+                mcharacter.b2body.applyLinearImpulse(new Vector2(MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && mcharacter.b2body.getLinearVelocity().x > -TOP_SPEED) {
+                mcharacter.b2body.applyLinearImpulse(new Vector2(-MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) && mcharacter.b2body.getLinearVelocity().y < TOP_SPEED) {
+                mcharacter.b2body.applyLinearImpulse(new Vector2(0, MCSpeed), mcharacter.b2body.getWorldCenter(), true);
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && mcharacter.b2body.getLinearVelocity().y > -TOP_SPEED) {
+                mcharacter.b2body.applyLinearImpulse(new Vector2(0, -MCSpeed), mcharacter.b2body.getWorldCenter(), true);
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && fbLock == false) {
+                mcharacter.fire(); //Dispara una bola de fuego
+                startTime = TimeUtils.nanoTime();
+                fbLock = true;
+            }
         }
         else{
-            mcharacter.b2body.setLinearVelocity(0,0); //Para al jugador
+            mcharacter.b2body.setLinearVelocity(0,0);
+        }
+
+        //No disparar si la bola de fuego está en CD
+        if(fbLock){
+            lockFireBall(startTime);
         }
 
     }
@@ -162,6 +186,16 @@ public class GameScreen implements Screen {
         UI.stage.draw();
     }
 
+    private void lockFireBall(long startTime){ //Pone la bola de fuego en CD
+        if(TimeUtils.timeSinceNanos(startTime) > FBCD){
+            fbLock = false;
+        }
+
+    }
+
+    public Screen getScreen(){
+        return this;
+    }
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
