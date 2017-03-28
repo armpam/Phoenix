@@ -37,7 +37,6 @@ public class MainFireball extends Sprite {
     private Animation fanim_down;
     private Animation fanim_left;
     private Animation fanim_right;
-    private TextureRegion test;
     private final int TEXT_WIDTH = 64;
     private final int TEXT_HEIGHT = 64;
 
@@ -150,7 +149,7 @@ public class MainFireball extends Sprite {
         frames.clear();
 
         for(int i = 0; i < 8; i++){
-            frames.add(new TextureRegion(texture, i* 64, 512, TEXT_WIDTH, TEXT_HEIGHT));
+            frames.add(new TextureRegion(texture, i* 64, 384, TEXT_WIDTH, TEXT_HEIGHT));
         }
         fanim_down = new Animation(0.1f, frames);
         frames.clear();
@@ -162,6 +161,7 @@ public class MainFireball extends Sprite {
         TextureRegion region = new TextureRegion();
 
         switch(state){
+
             case UP:
                 region = (TextureRegion)fanim_up.getKeyFrame(stateTime, true);
                 break;
