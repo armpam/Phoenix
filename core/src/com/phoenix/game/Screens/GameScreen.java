@@ -179,6 +179,10 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
         mcharacter.draw(game.batch);
+        //Dibuja las bolas de fuego
+        for(MainFireball fireball : mcharacter.getFireballs()){
+            fireball.draw(game.batch);
+        }
         game.batch.end();
 
         //El batch dibuja la UI con la cámara de la UI, que es estática

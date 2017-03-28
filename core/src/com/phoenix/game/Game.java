@@ -3,6 +3,7 @@ package com.phoenix.game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.phoenix.game.Screens.GameScreen;
 
 public class Game extends com.badlogic.gdx.Game {
@@ -18,6 +19,7 @@ public class Game extends com.badlogic.gdx.Game {
 	public static final short CHEST_BIT = 32;
 	public static final short DESTROYED_BIT = 64;
 	public static final short MAIN_FBALL_BIT = 128;
+
 
 	public static AssetManager assetManager; //El manager para la música - Static puede causar problemas (esperemos que no)
 	

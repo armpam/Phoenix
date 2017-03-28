@@ -206,4 +206,8 @@ public class MainCharacter extends Sprite {
         fireballs.add(fireball);
     }
 
+    public Array<MainFireball> getFireballs(){
+        return this.fireballs;
+    }
+
 }
