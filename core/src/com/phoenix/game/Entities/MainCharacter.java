@@ -180,11 +180,12 @@ public class MainCharacter extends Sprite {
         //El Body del jugador es un círculo de radio 5
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5 / Game.PPM);
+        shape.setRadius(12 / Game.PPM);
         fdef.filter.categoryBits = Game.MC_BIT; //Bit del jugador
-        fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT; //Con qué puede el personaje chocar
+        fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT | Game.COIN_BIT; //Con qué puede el personaje chocar
 
         fdef.shape = shape;
+        fdef.restitution = 0;
         fixture = b2body.createFixture(fdef);
         fixture.setUserData(this); //Se crea la fixture y la asignamos la propia clase para la COLISIÓN
     }

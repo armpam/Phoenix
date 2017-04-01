@@ -5,9 +5,13 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.phoenix.game.Entities.Chest;
+import com.phoenix.game.Entities.Coin;
 import com.phoenix.game.Entities.Rock;
 import com.phoenix.game.Entities.Tree;
+import com.phoenix.game.Game;
+import com.phoenix.game.Screens.GameScreen;
 
 /**
  * Created by alesd on 2/24/2017.
@@ -17,14 +21,20 @@ import com.phoenix.game.Entities.Tree;
 public class B2WorldCreator {
     private World world;
     private TiledMap map;
+    private GameScreen screen;
 
-    public B2WorldCreator(World world, TiledMap map){
+    private Array<Coin> coinArray;
+
+    public B2WorldCreator(World world, TiledMap map, GameScreen screen){
         this.world = world;
         this.map = map;
+        this.screen = screen;
+        coinArray = new Array<Coin>();
 
         createTrees();
         createRocks();
         createChests();
+        createCoins();
     }
 
     private void createTrees(){
@@ -50,5 +60,18 @@ public class B2WorldCreator {
 
             Chest chest = new Chest(world, map, rect);
         }
+    }
+
+    private void createCoins(){
+        for (MapObject object : map.getLayers().get(13).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            Coin coin = new Coin(this.screen, map, rect.x / Game.PPM, rect.y / Game.PPM);
+            coinArray.add(coin);
+        }
+    }
+
+    public Array<Coin> getCoinArray(){
+        return coinArray;
     }
 }

@@ -6,32 +6,25 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.PolylineMapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.phoenix.game.Entities.Coin;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Entities.MainFireball;
 import com.phoenix.game.Game;
 import com.phoenix.game.Scenes.Main_UI;
 import com.phoenix.game.Tools.B2WorldCreator;
 import com.phoenix.game.Tools.WorldContactListener;
+import java.util.Random;
 
-import java.awt.event.KeyEvent;
 
 /**
  * Created by Alesander on 2/21/2017.
@@ -63,6 +56,10 @@ public class GameScreen implements Screen {
 
     private Music OWtheme;
 
+    //Objetos con los que se puede interaccinar
+
+    private B2WorldCreator b2wc;
+
     public GameScreen(Game game){
         this.game = game;
         //La cámara que seguirá a nuestro jugador
@@ -84,7 +81,7 @@ public class GameScreen implements Screen {
         b2dr = new Box2DDebugRenderer(); //Esto nos dibujará los cuadrados verdes de colisión
 
         //Crea el mundo Box2D con el mapa en cuestión
-        new B2WorldCreator(world, green_map);
+         b2wc = new B2WorldCreator(world, green_map, this);
 
         //Crea el Body Box2D de nuestro personaje principal
         mcharacter = new MainCharacter(world, this);
@@ -120,6 +117,14 @@ public class GameScreen implements Screen {
         cam.update();
         //Solo dibujamos en la pantalla la parte del mundo que podemos ver
         mapRenderer.setView(cam);
+
+        //Actualizamos objetos del juego
+        for(Coin coin : b2wc.getCoinArray() ){
+            coin.update(delta);
+            if (coin.isDestroyed()){
+                b2wc.getCoinArray().removeValue(coin, true);
+            }
+        }
     }
 
     public World getWorld(){
@@ -183,6 +188,10 @@ public class GameScreen implements Screen {
         for(MainFireball fireball : mcharacter.getFireballs()){
             fireball.draw(game.batch);
         }
+        for(Coin coin : b2wc.getCoinArray()){
+            coin.draw(game.batch);
+        }
+
         game.batch.end();
 
         //El batch dibuja la UI con la cámara de la UI, que es estática
@@ -197,7 +206,7 @@ public class GameScreen implements Screen {
 
     }
 
-    public Screen getScreen(){
+    public GameScreen getScreen(){
         return this;
     }
     @Override

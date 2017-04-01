@@ -19,6 +19,7 @@ public class Game extends com.badlogic.gdx.Game {
 	public static final short CHEST_BIT = 32;
 	public static final short DESTROYED_BIT = 64;
 	public static final short MAIN_FBALL_BIT = 128;
+	public static final short COIN_BIT = 256;
 
 
 	public static AssetManager assetManager; //El manager para la música - Static puede causar problemas (esperemos que no)
@@ -30,6 +31,7 @@ public class Game extends com.badlogic.gdx.Game {
         assetManager = new AssetManager();
         assetManager.load("audio/themes/overworld.ogg", Music.class);
         assetManager.load("audio/sounds/openChest.ogg", Music.class);
+		assetManager.load("audio/sounds/coin.ogg", Music.class);
         assetManager.finishLoading();
 
         setScreen(new GameScreen(this));

@@ -1,5 +1,6 @@
 package com.phoenix.game.Tools;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -7,8 +8,11 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Entities.Chest;
+import com.phoenix.game.Entities.Coin;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Entities.MainFireball;
+import com.phoenix.game.Game;
+import com.phoenix.game.Scenes.Main_UI;
 
 import org.lwjgl.Sys;
 
@@ -65,6 +69,12 @@ public class WorldContactListener implements ContactListener {
 
             if (object.getUserData() instanceof Chest) { //Si el objeto es de tipo Chest
                 ((Chest) object.getUserData()).onPlayerHit(); //Sabemos que es un árbol asi que lo casteamos a árbol
+            }
+
+            if (object.getUserData() instanceof Coin){
+                ((Coin) object.getUserData()).setToDestroy();
+                Game.assetManager.get("audio/sounds/coin.ogg", Music.class).play();
+                Main_UI.addScore(((Coin) object.getUserData()).getValue());
             }
         }
     }
