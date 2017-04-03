@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -30,7 +29,6 @@ public class Coin extends Sprite {
 
     private final int TEXT_WIDTH = 32;
     private final int TEXT_HEIGHT = 32;
-    private Array<TextureRegion> frames;
     private Animation coinAnimation;
     private Texture texture;
 
@@ -39,6 +37,7 @@ public class Coin extends Sprite {
     private boolean destroyed;
     private boolean setToDestroy;
 
+    //Puntuación mínima y máxima que da cada moneda
     private final int MIN_VALUE = 50;
     private final int MAX_VALUE = 200;
     private int value;
@@ -122,12 +121,6 @@ public class Coin extends Sprite {
         stateTime = stateTime + dt;
 
         return region;
-    }
-
-    public TiledMapTileLayer.Cell getCell(int layerNumber){ //Devuelve las coordenadas de un b2body de tipo RectTileObject
-        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(layerNumber);
-        TiledMapTileLayer.Cell cell = layer.getCell((int)(this.b2body.getPosition().x * Game.PPM / 32),(int)(this.b2body.getPosition().y * Game.PPM / 32));
-        return cell;
     }
 
     public int getValue(){
