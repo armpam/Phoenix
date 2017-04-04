@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.phoenix.game.Screens.GameScreen;
+import com.phoenix.game.Screens.StartScreen;
 
 public class Game extends com.badlogic.gdx.Game {
 	public SpriteBatch batch;
@@ -30,11 +31,12 @@ public class Game extends com.badlogic.gdx.Game {
 
         assetManager = new AssetManager();
         assetManager.load("audio/themes/overworld.ogg", Music.class);
+		assetManager.load("audio/themes/intro_song.ogg", Music.class);
         assetManager.load("audio/sounds/openChest.ogg", Music.class);
 		assetManager.load("audio/sounds/coin.ogg", Music.class);
         assetManager.finishLoading();
 
-        setScreen(new GameScreen(this));
+        setScreen(new StartScreen(this));
 	}
 
 	@Override

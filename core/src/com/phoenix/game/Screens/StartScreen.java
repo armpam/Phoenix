@@ -1,7 +1,10 @@
 package com.phoenix.game.Screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -25,6 +28,8 @@ public class StartScreen implements Screen {
     private Label.LabelStyle font;
     private Table table;
 
+    private Music introTheme;
+
     public StartScreen(Game game){
 
         this.game = game;
@@ -33,7 +38,18 @@ public class StartScreen implements Screen {
 
         font = new Label.LabelStyle(new BitmapFont(), Color.WHITE );
         table = new Table();
+        table.center();
         table.setFillParent(true);
+
+        Label startLabel = new Label("Haz click para empezar", font);
+
+        table.add(startLabel).expandX();
+
+        stage.addActor(table);
+
+        introTheme = Game.assetManager.get("audio/themes/intro_song.ogg", Music.class);
+        introTheme.setLooping(true);
+        introTheme.play();
     }
 
 
@@ -44,6 +60,15 @@ public class StartScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        if(Gdx.input.justTouched()){
+            introTheme.stop();
+            game.setScreen(new GameScreen((Game) game ));
+            dispose();
+        }
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        stage.draw();
 
     }
 
@@ -69,6 +94,6 @@ public class StartScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }
