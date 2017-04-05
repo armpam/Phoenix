@@ -1,0 +1,16 @@
+Index: core/src/com/phoenix/game/Entities/RectTileObject.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- core/src/com/phoenix/game/Entities/RectTileObject.java	(date 1491415582000)
++++ core/src/com/phoenix/game/Entities/RectTileObject.java	(revision )
+@@ -67,7 +67,7 @@
+         fixture.setFilterData(filter);
+     }
+ 
+-    public TiledMapTileLayer.Cell getCell(int layerNumber){ //Devuelve las coordenadas de un b2body de tipo RectTileObject
++    public TiledMapTileLayer.Cell getCell(int layerNumber){ //Devuelve las coordenadas de un B2body de tipo RectTileObject
+         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(layerNumber);
+         TiledMapTileLayer.Cell cell = layer.getCell((int)(body.getPosition().x * Game.PPM / 32),(int)(body.getPosition().y * Game.PPM / 32));
+         return cell;
