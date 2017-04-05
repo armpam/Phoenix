@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Game;
 
 
@@ -34,7 +35,7 @@ public class Main_UI implements Disposable {
     static Label scoreLabel;
 
 
-    public Main_UI(SpriteBatch batch){
+    public Main_UI(SpriteBatch batch, MainCharacter mCharacter){
         cam = new OrthographicCamera();
         hudPort = new FitViewport(Game.WIDTH, Game.HEIGHT, cam);
         stage = new Stage(hudPort, batch);
@@ -49,7 +50,7 @@ public class Main_UI implements Disposable {
         hudTable.top();
         hudTable.left();
         hudTable.setFillParent(true);
-        lifeLabel = new Label("Vida: " + Integer.toString(life), hudLabelStyle);
+        lifeLabel = new Label("Vida: " + Integer.toString(mCharacter.getLife()), hudLabelStyle);
         manaLabel = new Label("Maná: " + Integer.toString(mana), hudLabelStyle);
         scoreLabel = new Label("Puntuación: " + Integer.toString(score), hudLabelStyle);
 
@@ -58,6 +59,23 @@ public class Main_UI implements Disposable {
         hudTable.add(manaLabel).padLeft(20);
         hudTable.row();
         hudTable.add(scoreLabel).padLeft(20);
+
+        stage.addActor(hudTable);
+
+    }
+
+    public void updateLifeLabel(MainCharacter mCharacter) {
+        hudTable.clear();
+        hudTable = new Table();
+        hudTable.top();
+        hudTable.left();
+        hudTable.setFillParent(true);
+        lifeLabel = new Label("Vida: " + Integer.toString(mCharacter.getLife()), hudLabelStyle);
+        manaLabel = new Label("Maná: " + Integer.toString(mana), hudLabelStyle);
+
+        hudTable.add(lifeLabel).padLeft(20);
+        hudTable.row();
+        hudTable.add(manaLabel).padLeft(20);
 
         stage.addActor(hudTable);
 

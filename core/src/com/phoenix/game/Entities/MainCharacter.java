@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
 
@@ -28,6 +29,13 @@ public class MainCharacter extends Sprite {
     //Posición inicial del jugador
     private int x =50;
     private int y = 50;
+
+    //Vida del jugador
+    private Integer life = 1000;
+    //Invisible al daño cuando es True
+    private boolean iframe = false;
+    //Devuelve la hora del reloj en nanosegundos.
+    private long startTime = TimeUtils.nanoTime();
 
     private Texture mainTexture;
     private final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
@@ -200,6 +208,23 @@ public class MainCharacter extends Sprite {
             return "LEFT";
         else
             return "RIGHT";
+    }
+
+    public Integer getLife(){
+        return this.life;
+    }
+
+    public void decreaseLife(int quantity){  //Método para quitarle vida cuando le atacan.
+        long iFrameDuration = 3000000000L;
+
+        if ( TimeUtils.timeSinceNanos(startTime) > iFrameDuration) {
+            iframe = false;
+        }
+        if (!iframe) {
+            iframe = true;
+            this.life = this.life - quantity;
+            startTime = TimeUtils.nanoTime();
+        }
     }
 
     public void fire(){

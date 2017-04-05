@@ -47,9 +47,9 @@ public class StartScreen implements Screen {
 
         stage.addActor(table);
 
-        introTheme = Game.assetManager.get("audio/themes/intro_song.ogg", Music.class);
-        introTheme.setLooping(true);
-        introTheme.play();
+        //introTheme = Game.assetManager.get("audio/themes/intro_song.ogg", Music.class);
+        //introTheme.setLooping(true);
+        //introTheme.play();
     }
 
 
@@ -61,7 +61,7 @@ public class StartScreen implements Screen {
     @Override
     public void render(float delta) {
         if(Gdx.input.justTouched()){
-            introTheme.stop();
+            //introTheme.stop();
             game.setScreen(new GameScreen((Game) game ));
             dispose();
         }

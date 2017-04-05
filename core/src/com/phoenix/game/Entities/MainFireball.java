@@ -75,7 +75,7 @@ public class MainFireball extends Sprite {
         shape.setRadius(12 / Game.PPM);
         fdef.filter.categoryBits = Game.MAIN_FBALL_BIT;
         fdef.filter.maskBits = Game.CHEST_BIT | Game.TREE_BIT |Game.ROCK_BIT |
-                Game.MC_BIT;
+                Game.MC_BIT | Game.ENEMY_BIT;
 
         fdef.shape = shape;
         fdef.restitution = 0;
