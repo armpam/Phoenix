@@ -67,7 +67,7 @@ public abstract class RectTileObject {
         fixture.setFilterData(filter);
     }
 
-    public TiledMapTileLayer.Cell getCell(int layerNumber){ //Devuelve las coordenadas de un B2body de tipo RectTileObject
+    public TiledMapTileLayer.Cell getCell(int layerNumber){ //Devuelve las coordenadas de un b2body de tipo RectTileObject
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(layerNumber);
         TiledMapTileLayer.Cell cell = layer.getCell((int)(body.getPosition().x * Game.PPM / 32),(int)(body.getPosition().y * Game.PPM / 32));
         return cell;
