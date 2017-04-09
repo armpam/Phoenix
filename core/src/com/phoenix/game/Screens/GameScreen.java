@@ -100,9 +100,9 @@ public class GameScreen implements Screen {
         //Listener para todas nuestras colisiones
         world.setContactListener(new WorldContactListener());
 
-        //OWtheme = Game.assetManager.get("audio/themes/overworld.ogg", Music.class);
-        //OWtheme.setLooping(true);
-        //OWtheme.play();
+        OWtheme = Game.assetManager.get("audio/themes/overworld.ogg", Music.class);
+        OWtheme.setLooping(true);
+        OWtheme.play();
 
         this.fbLock = false;
 
@@ -245,7 +245,7 @@ public class GameScreen implements Screen {
             coin.draw(game.batch);
         }
         //Actualiza la vida
-        UI.updateLifeLabel(mcharacter); //Actualiza el nivel de vida del personaje
+        //UI.updateLifeLabel(mcharacter); //Actualiza el nivel de vida del personaje
 
         game.batch.end();
 

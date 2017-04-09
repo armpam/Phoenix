@@ -26,6 +26,7 @@ public class Orc extends Enemy {
         this.x = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de x
         this.y = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de y
         defineEnemy(this.x,this.y);
+        this.bdef.type = BodyDef.BodyType.StaticBody;
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
         this.b2body.setActive(false); //Desactivamos al enemigo al crearlo para ahorrar recursos.

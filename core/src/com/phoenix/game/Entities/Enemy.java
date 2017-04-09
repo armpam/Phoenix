@@ -26,13 +26,14 @@ public abstract class Enemy {
     protected int y;
 
     protected Fixture fixture;
+    BodyDef bdef = new BodyDef();
 
     public Enemy(World world){
         this.world = world;
     }
 
     protected void defineEnemy(int x, int y){ //Este metodo lo definiremos en cada Enemigo, ya que cada Enemigo es diferente
-        BodyDef bdef = new BodyDef();
+
         bdef.position.set(x/ Game.PPM, y/ Game.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody; //El enemigo es dinámico, se mueve
 
@@ -42,6 +43,7 @@ public abstract class Enemy {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(10/ Game.PPM);
+        fdef.filter.categoryBits = Game.ENEMY_BIT;
         fdef.filter.maskBits = Game.MC_BIT;
 
         fdef.shape = shape;

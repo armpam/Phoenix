@@ -28,11 +28,13 @@ public class Main_UI implements Disposable {
 
     private Integer life;
     private Integer mana;
+    private Integer level;
     private static Integer score;
 
     Label lifeLabel;
     Label manaLabel;
     static Label scoreLabel;
+    Label levelLabel;
 
 
     public Main_UI(SpriteBatch batch, MainCharacter mCharacter){
@@ -45,6 +47,8 @@ public class Main_UI implements Disposable {
         life = 1000;
         mana = 200;
         score = 0;
+        level = 2;
+
 
         hudTable = new Table();
         hudTable.top();
@@ -53,12 +57,16 @@ public class Main_UI implements Disposable {
         lifeLabel = new Label("Vida: " + Integer.toString(mCharacter.getLife()), hudLabelStyle);
         manaLabel = new Label("Maná: " + Integer.toString(mana), hudLabelStyle);
         scoreLabel = new Label("Puntuación: " + Integer.toString(score), hudLabelStyle);
+        levelLabel = new Label("Nivel: " + Integer.toString(level), hudLabelStyle);
+
 
         hudTable.add(lifeLabel).padLeft(20);
         hudTable.row();
         hudTable.add(manaLabel).padLeft(20);
         hudTable.row();
         hudTable.add(scoreLabel).padLeft(20);
+        hudTable.row();
+        hudTable.add(levelLabel).padLeft(20);
 
         stage.addActor(hudTable);
 

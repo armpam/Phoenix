@@ -29,12 +29,12 @@ public class Game extends com.badlogic.gdx.Game {
 	public void create () {
 		batch = new SpriteBatch();
 
-        //assetManager = new AssetManager();
-        //assetManager.load("audio/themes/overworld.ogg", Music.class);
-		//assetManager.load("audio/themes/intro_song.ogg", Music.class);
-        //assetManager.load("audio/sounds/openChest.ogg", Music.class);
-		//assetManager.load("audio/sounds/coin.ogg", Music.class);
-        //assetManager.finishLoading();
+        assetManager = new AssetManager();
+        assetManager.load("audio/themes/overworld.ogg", Music.class);
+		assetManager.load("audio/themes/intro_song.ogg", Music.class);
+        assetManager.load("audio/sounds/openChest.ogg", Music.class);
+		assetManager.load("audio/sounds/coin.ogg", Music.class);
+        assetManager.finishLoading();
 
         setScreen(new StartScreen(this));
 	}

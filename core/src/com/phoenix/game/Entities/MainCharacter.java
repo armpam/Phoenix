@@ -190,7 +190,7 @@ public class MainCharacter extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Game.PPM);
         fdef.filter.categoryBits = Game.MC_BIT; //Bit del jugador
-        fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT | Game.COIN_BIT; //Con qué puede el personaje chocar
+        fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT | Game.COIN_BIT | Game.ENEMY_BIT; //Con qué puede el personaje chocar
 
         fdef.shape = shape;
         fdef.restitution = 0;
