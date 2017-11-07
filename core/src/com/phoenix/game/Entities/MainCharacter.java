@@ -91,7 +91,6 @@ public class MainCharacter extends Sprite {
         }
     }
 
-    // Inicializa las animaciones del personaje principal
     private void initAnimations(){
         Array<TextureRegion> frames = new Array<TextureRegion>();
 

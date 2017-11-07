@@ -1,5 +1,7 @@
 package com.phoenix.game.Entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -22,7 +24,7 @@ public class Orc extends Enemy {
     private final float AGGRO = 150; //Distancia para que empieze el modo lucha
 
     public Orc(World world){
-        super(world);
+        super(world, new Texture(Gdx.files.internal("simple_skeleton.png"))); //TODO: CAMBIAR A ORCO
         this.x = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de x
         this.y = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de y
         defineEnemy(this.x,this.y);

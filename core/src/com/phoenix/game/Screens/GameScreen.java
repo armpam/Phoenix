@@ -49,8 +49,8 @@ public class GameScreen implements Screen {
     private final int numberOfOrcs = 20; //Número total de Orcos
     private final int dActiveEnemies = 5; //Distancia al personaje a la que se activan/desactivan los enemigos
 
-    private Skeleton[] skeleton; //Declaramos los enemigos de tipo Skeleton
-    private Orc[] orc; // Declaramos los enemigos tipo Orc
+    private Skeleton[] skeletons; //Declaramos los enemigos de tipo Skeleton
+    private Orc[] orcs; // Declaramos los enemigos tipo Orc
 
     //Variables relacionadas con el/los mapas
     private TmxMapLoader mapLoader;
@@ -144,13 +144,13 @@ public class GameScreen implements Screen {
 
     public void initializeEnemies(World world){
         //Inicializamos el número de enemigos declarados en las variables finales de cada enemigo.
-        skeleton = new Skeleton[numberOfSkeletons];
-        orc = new Orc[numberOfOrcs];
+        skeletons = new Skeleton[numberOfSkeletons];
+        orcs = new Orc[numberOfOrcs];
         for (int i = 0; (i < numberOfSkeletons); i++) {
-            skeleton[i] = new Skeleton(world);
+            skeletons[i] = new Skeleton(world);
         }
         for (int i = 0; (i < numberOfOrcs); i++) {
-            orc[i] = new Orc(world);
+            orcs[i] = new Orc(world);
         }
     }
 
@@ -161,22 +161,22 @@ public class GameScreen implements Screen {
         float distance;
         //Movemos cada enemigo uno a uno
         for (int i = 0; i < numberOfSkeletons; i++) { //Movimiento de los Skeletons
-            enemy = skeleton[i].b2body.getPosition();
+            enemy = skeletons[i].b2body.getPosition();
             distance = enemy.dst(player); //Obtenemos la distancia del personaje al enemigo
             if ((distance) < dActiveEnemies) { //Si la distancia es menor que "dActiveEnemies" activamos al enemigo y su moviento
-                skeleton[i].b2body.setActive(true);
-                skeleton[i].enemyMovement(mcharacter);
+                skeletons[i].b2body.setActive(true);
+                skeletons[i].enemyMovement(mcharacter);
             } else { //Si la distancia es mayor entonces desactivamos al enemigo
-                skeleton[i].b2body.setActive(false);
+                skeletons[i].b2body.setActive(false);
             }
         }
         for (int i = 0; i < numberOfOrcs; i++) { //Movimiento de los Orcs
-            enemy = orc[i].b2body.getPosition();
+            enemy = orcs[i].b2body.getPosition();
             distance = enemy.dst(player); //Obtenemos la distancia del personaje al enemigo
             if (distance < dActiveEnemies) { //Si la distancia es menor que "dActiveEnemies" activamos al enemigo y su moviento
-                orc[i].b2body.setActive(true);
+                orcs[i].b2body.setActive(true);
             } else { //Si la distancia es mayor entonces desactivamos al enemigo
-                orc[i].b2body.setActive(false);
+                orcs[i].b2body.setActive(false);
             }
         }
     }
@@ -219,6 +219,9 @@ public class GameScreen implements Screen {
 
         //Dibuja al personaje siguiendo nuestra cámara
         mcharacter.update(delta);
+        for(Skeleton skeleton : skeletons){
+            skeleton.update(delta);
+        }
 
         //Consigue que los enemigos persigan al jugador
         enemiesMovement(mcharacter);
@@ -243,6 +246,9 @@ public class GameScreen implements Screen {
         }
         for(Coin coin : b2wc.getCoinArray()){
             coin.draw(game.batch);
+        }
+        for(Skeleton skeleton : skeletons){
+            skeleton.draw(game.batch);
         }
         //Actualiza la vida
         //UI.updateLifeLabel(mcharacter); //Actualiza el nivel de vida del personaje

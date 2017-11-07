@@ -1,5 +1,9 @@
 package com.phoenix.game.Entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -24,13 +28,16 @@ public class Skeleton extends Enemy{
     private final float AGGRO = 150; //Distancia para que empieze el modo lucha
 
     public Skeleton(World world) {
-        super(world);
+        super(world, new Texture(Gdx.files.internal("simple_skeleton.png")));
         this.x = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de x
         this.y = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de y
         defineEnemy(this.x,this.y);
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
         this.b2body.setActive(false); //Desactivamos al enemigo al crearlo para ahorrar recursos.
+
+        //this.mainTexture = new Texture(Gdx.files.internal("simple_skeleton.png"));
+        initAnimations();
     }
 
     public void enemyMovement(MainCharacter mcharacter) {  //Movimiento del enemigo
