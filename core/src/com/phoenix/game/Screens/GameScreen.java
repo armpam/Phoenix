@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -67,6 +68,10 @@ public class GameScreen implements Screen {
 
     private B2WorldCreator b2wc;
 
+    public static Texture simpleSkeleton = new Texture(Gdx.files.internal("simple_skeleton.png"));
+    public static Texture simpleOrc = new Texture(Gdx.files.internal("simple_orc.png"));
+    public static Texture coin = new Texture(Gdx.files.internal("coin.png"));
+
     public GameScreen(Game game){
         this.game = game;
         //La cámara que seguirá a nuestro jugador
@@ -102,7 +107,7 @@ public class GameScreen implements Screen {
 
         OWtheme = Game.assetManager.get("audio/themes/overworld.ogg", Music.class);
         OWtheme.setLooping(true);
-        OWtheme.play();
+        //OWtheme.play();
 
         this.fbLock = false;
 
@@ -170,15 +175,6 @@ public class GameScreen implements Screen {
                 skeletons[i].b2body.setActive(false);
             }
         }
-        for (int i = 0; i < numberOfOrcs; i++) { //Movimiento de los Orcs
-            enemy = orcs[i].b2body.getPosition();
-            distance = enemy.dst(player); //Obtenemos la distancia del personaje al enemigo
-            if (distance < dActiveEnemies) { //Si la distancia es menor que "dActiveEnemies" activamos al enemigo y su moviento
-                orcs[i].b2body.setActive(true);
-            } else { //Si la distancia es mayor entonces desactivamos al enemigo
-                orcs[i].b2body.setActive(false);
-            }
-        }
     }
 
     public void handleInput(float delta){
@@ -222,6 +218,9 @@ public class GameScreen implements Screen {
         for(Skeleton skeleton : skeletons){
             skeleton.update(delta);
         }
+        for(Orc orc : orcs){
+            orc.update(delta);
+        }
 
         //Consigue que los enemigos persigan al jugador
         enemiesMovement(mcharacter);
@@ -249,6 +248,9 @@ public class GameScreen implements Screen {
         }
         for(Skeleton skeleton : skeletons){
             skeleton.draw(game.batch);
+        }
+        for(Orc orc : orcs){
+            orc.draw(game.batch);
         }
         //Actualiza la vida
         //UI.updateLifeLabel(mcharacter); //Actualiza el nivel de vida del personaje

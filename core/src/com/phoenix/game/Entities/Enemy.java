@@ -116,7 +116,7 @@ public abstract class Enemy extends Sprite {
         frames.clear();
     }
 
-    //Da el frame a dibujar según el estado del jugador
+    //Da el frame a dibujar según el estado del enemigo
     protected TextureRegion getFrame(float delta){
         currentState = getState();
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Game;
+import com.phoenix.game.Screens.GameScreen;
 
 import java.util.Random;
 
@@ -28,7 +29,7 @@ public class Skeleton extends Enemy{
     private final float AGGRO = 150; //Distancia para que empieze el modo lucha
 
     public Skeleton(World world) {
-        super(world, new Texture(Gdx.files.internal("simple_skeleton.png")));
+        super(world, GameScreen.simpleSkeleton);
         this.x = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de x
         this.y = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de y
         defineEnemy(this.x,this.y);
@@ -36,7 +37,6 @@ public class Skeleton extends Enemy{
         setCategoryFilter(Game.ENEMY_BIT);
         this.b2body.setActive(false); //Desactivamos al enemigo al crearlo para ahorrar recursos.
 
-        //this.mainTexture = new Texture(Gdx.files.internal("simple_skeleton.png"));
         initAnimations();
     }
 

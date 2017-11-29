@@ -53,7 +53,7 @@ public class Coin extends Sprite {
         this.world = screen.getWorld();
         this.map = map;
 
-        texture = new Texture(Gdx.files.internal("coin.png"));
+        texture = GameScreen.coin;
 
         initAnimation();
 
