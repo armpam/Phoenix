@@ -99,6 +99,7 @@ public class Coin extends Sprite {
         fdef.density = 0;
         fixture = b2body.createFixture(fdef);
         fixture.setUserData(this);
+        fixture.setSensor(true);
 
     }
 
@@ -133,5 +134,9 @@ public class Coin extends Sprite {
 
     public boolean isDestroyed(){
         return destroyed;
+    }
+
+    public void onPlayerHit(){
+
     }
 }

@@ -15,7 +15,7 @@ import com.phoenix.game.Screens.GameScreen;
 import java.util.Random;
 
 /**
- * Created by david on 23/03/2017.
+ * Created by alesd on 23/03/2017.
  */
 
 public class Skeleton extends Enemy{

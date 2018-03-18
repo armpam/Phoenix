@@ -1,5 +1,7 @@
 package com.phoenix.game.Entities;
 
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -33,10 +35,13 @@ public abstract class RectTileObject {
     //Guardamos la fixture al final de la creación del b2body para poder setUserData() en la clase hija deseada (Colisión)
     protected Fixture fixture;
 
-    public RectTileObject(World world, TiledMap map, Rectangle bounds){
+    protected MapObject object;
+
+    public RectTileObject(World world, TiledMap map, MapObject object){
+        this.object = object;
         this.world = world;
         this.map = map;
-        this.bounds = bounds;
+        this.bounds = ((RectangleMapObject) object).getRectangle();
 
         bdef = new BodyDef(); //Definición del cuerpo
         shape = new PolygonShape(); //Qué tipo de polígono rodea al Body

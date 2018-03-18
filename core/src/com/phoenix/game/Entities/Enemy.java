@@ -72,6 +72,7 @@ public abstract class Enemy extends Sprite {
         fdef.shape = shape;
         fdef.restitution = 0; //Hace que no rebote
         fdef.friction = 0;
+        fdef.density = 0;
         fixture = b2body.createFixture(fdef);
 
         idle = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64

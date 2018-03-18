@@ -30,8 +30,11 @@ public class MainCharacter extends Sprite {
     private int x =50;
     private int y = 50;
 
-    //Vida del jugador
-    private Integer life = 1000;
+    //Atributos del jugador
+    private Integer life;
+    private Integer mana;
+    private Integer money;
+    private Integer level;
     //Invisible al daño cuando es True
     private boolean iframe = false;
     //Devuelve la hora del reloj en nanosegundos.
@@ -76,6 +79,36 @@ public class MainCharacter extends Sprite {
         idleDown = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
         setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
         setRegion(idle); //Le dices que región dibujar (Hace falta para que el método draw sepa qué dibujar)
+
+        this.life = 1000;
+        this.mana = 200;
+        this.money = 0;
+        this.level = 1;
+    }
+
+    public MainCharacter(World world, GameScreen screen, MainCharacter cmc){
+        this.world = world;
+        defineMainCharacter();
+        currentState = MovState.IDLE;
+        stateTimer = 0;
+        this.screen = screen;
+        this.fireballs = new Array<MainFireball>();
+
+        mainTexture = new Texture(Gdx.files.internal("main.png")); //La imagen con todos los sprites
+        initAnimations();
+
+        idle = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
+        idleLeft = new TextureRegion(mainTexture, 0 , 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
+        idleRight = new TextureRegion(mainTexture, 0 , 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
+        idleDown = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
+        setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
+        setRegion(idle); //Le dices que región dibujar (Hace falta para que el método draw sepa qué dibujar)
+
+        //Aquí se da el proceso de copiar los atributos del jugador que viene de otro mapa
+        this.life = cmc.getLife();
+        this.mana = cmc.getMana();
+        this.money = cmc.getMoney();
+        this.level = cmc.getLevel();
     }
 
     //Actualiza la posición de dónde dibujamos al jugador (sigue a la cámara)
@@ -189,10 +222,11 @@ public class MainCharacter extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Game.PPM);
         fdef.filter.categoryBits = Game.MC_BIT; //Bit del jugador
-        fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT | Game.COIN_BIT | Game.ENEMY_BIT; //Con qué puede el personaje chocar
+        fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT | Game.COIN_BIT | Game.ENEMY_BIT | Game.LADDER_BIT; //Con qué puede el personaje chocar
 
         fdef.shape = shape;
         fdef.restitution = 0;
+        fdef.density = 0;
         fixture = b2body.createFixture(fdef);
         fixture.setUserData(this); //Se crea la fixture y la asignamos la propia clase para la COLISIÓN
     }
@@ -213,6 +247,12 @@ public class MainCharacter extends Sprite {
         return this.life;
     }
 
+    public Integer getMana(){ return this.mana; }
+
+    public Integer getMoney(){ return this.money; }
+
+    public Integer getLevel(){ return this.level; }
+
     public void decreaseLife(int quantity){  //Método para quitarle vida cuando le atacan.
         long iFrameDuration = 3000000000L;
 
@@ -226,9 +266,21 @@ public class MainCharacter extends Sprite {
         }
     }
 
+    public void addMoney(int sum){
+        money = money + sum;
+    }
+
     public void fire(){
         MainFireball fireball = new MainFireball(this.screen, b2body.getPosition().x, b2body.getPosition().y, getPreviousState());
         fireballs.add(fireball);
+    }
+
+    public void setX(int x){
+        this.x = x;
+    }
+
+    public void setY(int y){
+        this.y = x;
     }
 
     public Array<MainFireball> getFireballs(){

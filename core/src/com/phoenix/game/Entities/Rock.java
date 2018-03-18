@@ -1,9 +1,12 @@
 package com.phoenix.game.Entities;
 
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Game;
+import com.phoenix.game.Screens.GameScreen;
+import com.phoenix.game.Tools.ScreenHandler;
 
 /**
  * Created by alesd on 2/24/2017.
@@ -11,15 +14,26 @@ import com.phoenix.game.Game;
 
 public class Rock extends RectTileObject {
 
-    public Rock(World world, TiledMap map, Rectangle bounds){
-        super(world, map, bounds);
+    private GameScreen screen;
+
+    public Rock(World world, TiledMap map, MapObject object, GameScreen screen){
+        super(world, map, object);
+        this.screen = screen;
         fixture.setUserData(this);
         setCategoryFilter(Game.ROCK_BIT);
     }
 
     @Override
     public void onPlayerHit() {
-        // La roca no hace nada cuando el jugador se choca contra ella
+        if(this.object.getProperties().containsKey("map_1")){
+            screen.setGreenMapFlag();
+        }
+        else if(this.object.getProperties().containsKey("dungeon_1")){
+            screen.setDungeonFlag();
+        }
+        else if(this.object.getProperties().containsKey("sidescroll_1")){
+            screen.setSideScrollFlag();
+        }
     }
 
     @Override

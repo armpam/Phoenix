@@ -24,6 +24,7 @@ import com.phoenix.game.Entities.Skeleton;
 import com.phoenix.game.Game;
 import com.phoenix.game.Scenes.Main_UI;
 import com.phoenix.game.Tools.B2WorldCreator;
+import com.phoenix.game.Tools.ScreenHandler;
 import com.phoenix.game.Tools.WorldContactListener;
 
 
@@ -41,13 +42,16 @@ public class GameScreen implements Screen {
     private MainCharacter mcharacter;
     private final float MCSpeed = 0.1f; //Velocidad standard de movimiento del jugador
     private final float TOP_SPEED = 1;
+    private final float JUMP_STR = 4.8f;
     private boolean fbLock; //Está la fireball en cooldown?
+    private boolean jumpLock;
+    private final long JMPCD = 900000000;
     private final long FBCD = 500000000; //CD en nanosegundos de la bola de fuego
     private long startTime = 0;
 
     //Variables relacionadas con los enemigos
-    private final int numberOfSkeletons = 20; //Número total de Skeletons
-    private final int numberOfOrcs = 20; //Número total de Orcos
+    private final int numberOfSkeletons = 1; //Número total de Skeletons
+    private final int numberOfOrcs = 1; //Número total de Orcos
     private final int dActiveEnemies = 5; //Distancia al personaje a la que se activan/desactivan los enemigos
 
     private Skeleton[] skeletons; //Declaramos los enemigos de tipo Skeleton
@@ -64,7 +68,7 @@ public class GameScreen implements Screen {
 
     private Music OWtheme;
 
-    //Objetos con los que se puede interaccinar
+    //Objetos con los que se puede interaccionar
 
     private B2WorldCreator b2wc;
 
@@ -72,7 +76,14 @@ public class GameScreen implements Screen {
     public static Texture simpleOrc = new Texture(Gdx.files.internal("simple_orc.png"));
     public static Texture coin = new Texture(Gdx.files.internal("coin.png"));
 
-    public GameScreen(Game game){
+    private boolean dungeonFlag = false;
+    private boolean greenMapFlag = false;
+    private boolean sideScrollFlag = false;
+
+    private boolean sideScroll = false;
+    public boolean ladder = false;
+
+    public GameScreen(Game game, String map, boolean gravity){
         this.game = game;
         //La cámara que seguirá a nuestro jugador
         this.cam = new OrthographicCamera();
@@ -81,7 +92,7 @@ public class GameScreen implements Screen {
 
         //Carga el mapa hecho en Tiled
         mapLoader = new TmxMapLoader();
-        green_map = mapLoader.load("maptest_1.tmx");
+        green_map = mapLoader.load(map);
         mapRenderer = new OrthogonalTiledMapRenderer(green_map, 1 / Game.PPM);
         //Centra la cámara cuando se ejecuta el juego al principio
         cam.position.set(gamePort.getWorldWidth()/2, gamePort.getWorldHeight()/2, 0);
@@ -110,9 +121,57 @@ public class GameScreen implements Screen {
         //OWtheme.play();
 
         this.fbLock = false;
+        this.jumpLock = false;
 
     }
 
+    public GameScreen(Game game, String map, MainCharacter mc, boolean gravity){
+        this.game = game;
+        //La cámara que seguirá a nuestro jugador
+        this.cam = new OrthographicCamera();
+        //FitViewPort se encarga de que el juego funciona en todas las resoluciones
+        this.gamePort = new FitViewport(Game.WIDTH / Game.PPM, Game.HEIGHT / Game.PPM, cam);
+
+        //Carga el mapa hecho en Tiled
+        mapLoader = new TmxMapLoader();
+        green_map = mapLoader.load(map);
+        mapRenderer = new OrthogonalTiledMapRenderer(green_map, 1 / Game.PPM);
+        //Centra la cámara cuando se ejecuta el juego al principio
+        cam.position.set(gamePort.getWorldWidth()/2, gamePort.getWorldHeight()/2, 0);
+
+        //Inicializa variables box2D
+        if (!gravity){
+            world = new World(new Vector2(0,0), true); //No hay gravedad, los cuerpos están "dormidos"
+        }
+        else{
+            world = new World(new Vector2(0, -10), true);
+            sideScroll = true;
+        }
+        b2dr = new Box2DDebugRenderer(); //Esto nos dibujará los cuadrados verdes de colisión
+
+        //Crea el mundo Box2D con el mapa en cuestión
+        b2wc = new B2WorldCreator(world, green_map, this);
+
+        //Crea el Body Box2D de nuestro personaje principal
+        mcharacter = new MainCharacter(world, this, mc);
+
+        //Crea el Body Box2D de los enemigos
+        initializeEnemies(world);
+
+        //Nueva Interfaz Gráfica general
+        this.UI = new Main_UI(game.batch, this.mcharacter);
+
+        //Listener para todas nuestras colisiones
+        world.setContactListener(new WorldContactListener());
+
+        OWtheme = Game.assetManager.get("audio/themes/overworld.ogg", Music.class);
+        OWtheme.setLooping(true);
+        //OWtheme.play();
+
+        this.fbLock = false;
+        this.jumpLock = false;
+
+    }
     @Override
     public void show() {
 
@@ -121,7 +180,10 @@ public class GameScreen implements Screen {
     public void update(float delta){
 
         //Maneja lo que pulsa el usuario
-        handleInput(delta);
+        if(sideScroll)
+            handleSCInput(delta);
+        else
+            handleInput(delta);
 
         world.step(1/60f, 6, 2);
 
@@ -208,6 +270,26 @@ public class GameScreen implements Screen {
         }
 
     }
+
+    public void handleSCInput(float delta){
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mcharacter.b2body.getLinearVelocity().x < TOP_SPEED) {
+                mcharacter.b2body.applyLinearImpulse(new Vector2(MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && mcharacter.b2body.getLinearVelocity().x > -TOP_SPEED) {
+                mcharacter.b2body.applyLinearImpulse(new Vector2(-MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && jumpLock == false) {
+                mcharacter.b2body.applyLinearImpulse(new Vector2(0, JUMP_STR), mcharacter.b2body.getWorldCenter(), true);
+                startTime = TimeUtils.nanoTime();
+                jumpLock = true;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && mcharacter.b2body.getLinearVelocity().y < 1 && ladder) {
+            mcharacter.b2body.applyLinearImpulse(new Vector2(0, 1.0f), mcharacter.b2body.getWorldCenter(), true);
+        }
+        if(jumpLock){
+            lockJump(startTime);
+        }
+    }
     @Override
     public void render(float delta) {
         //Actualizamos cada vez que dibujamos
@@ -255,11 +337,22 @@ public class GameScreen implements Screen {
         //Actualiza la vida
         //UI.updateLifeLabel(mcharacter); //Actualiza el nivel de vida del personaje
 
-        game.batch.end();
-
         //El batch dibuja la UI con la cámara de la UI, que es estática
         game.batch.setProjectionMatrix(UI.stage.getCamera().combined);
+
+        game.batch.end();
+
         UI.stage.draw();
+
+        if(dungeonFlag){
+            ScreenHandler.setDungeonScreen(mcharacter);
+        }
+        if(greenMapFlag){
+            ScreenHandler.setGameScreenBack(mcharacter);
+        }
+        if(sideScrollFlag){
+            ScreenHandler.setSideScrollScreen(mcharacter);
+        }
     }
 
     private void lockFireBall(long startTime){ //Pone la bola de fuego en CD
@@ -267,6 +360,30 @@ public class GameScreen implements Screen {
             fbLock = false;
         }
 
+    }
+    private void lockJump(long startTime){
+        if(TimeUtils.timeSinceNanos(startTime) > JMPCD){
+            jumpLock = false;
+        }
+    }
+
+    public void setDungeonFlag(){
+        dungeonFlag = true;
+    }
+
+    public void setGreenMapFlag(){
+        greenMapFlag = true;
+    }
+
+    public void setSideScrollFlag(){
+        sideScrollFlag = true;
+    }
+
+    public void setLadder(boolean value){
+        ladder = value; }
+
+    public com.badlogic.gdx.Game getGame(){
+        return game;
     }
 
     public GameScreen getScreen(){

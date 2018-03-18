@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.phoenix.game.Game;
+import com.phoenix.game.Tools.ScreenHandler;
 
 /**
  * Created by alesd on 4/1/2017.
@@ -34,7 +35,7 @@ public class StartScreen implements Screen {
 
         this.game = game;
         viewport = new FitViewport(Game.WIDTH, Game.HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, ((Game)game).batch );
+        stage = new Stage(viewport, (game).batch );
 
         font = new Label.LabelStyle(new BitmapFont(), Color.WHITE );
         table = new Table();
@@ -62,7 +63,7 @@ public class StartScreen implements Screen {
     public void render(float delta) {
         if(Gdx.input.justTouched()){
             introTheme.stop();
-            game.setScreen(new GameScreen((Game) game ));
+            ScreenHandler.setGameScreen();
             dispose();
         }
         Gdx.gl.glClearColor(0,0,0,1);

@@ -26,11 +26,6 @@ public class Main_UI implements Disposable {
     private BitmapFont hudFont;
     private Label.LabelStyle hudLabelStyle;
 
-    private Integer life;
-    private Integer mana;
-    private Integer level;
-    private static Integer score;
-
     Label lifeLabel;
     Label manaLabel;
     static Label scoreLabel;
@@ -44,20 +39,14 @@ public class Main_UI implements Disposable {
         hudFont = new BitmapFont();
         hudLabelStyle = new Label.LabelStyle(hudFont, Color.WHITE);
 
-        life = 1000;
-        mana = 200;
-        score = 0;
-        level = 2;
-
-
         hudTable = new Table();
         hudTable.top();
         hudTable.left();
         hudTable.setFillParent(true);
         lifeLabel = new Label("Vida: " + Integer.toString(mCharacter.getLife()), hudLabelStyle);
-        manaLabel = new Label("Maná: " + Integer.toString(mana), hudLabelStyle);
-        scoreLabel = new Label("Puntuación: " + Integer.toString(score), hudLabelStyle);
-        levelLabel = new Label("Nivel: " + Integer.toString(level), hudLabelStyle);
+        manaLabel = new Label("Maná: " + Integer.toString(mCharacter.getMana()), hudLabelStyle);
+        scoreLabel = new Label("Dinero: " + Integer.toString(mCharacter.getMoney()), hudLabelStyle);
+        levelLabel = new Label("Nivel: " + Integer.toString(mCharacter.getLevel()), hudLabelStyle);
 
 
         hudTable.add(lifeLabel).padLeft(20);
@@ -72,30 +61,20 @@ public class Main_UI implements Disposable {
 
     }
 
-    public void updateLifeLabel(MainCharacter mCharacter) {
-        hudTable.clear();
-        hudTable = new Table();
-        hudTable.top();
-        hudTable.left();
-        hudTable.setFillParent(true);
-        lifeLabel = new Label("Vida: " + Integer.toString(mCharacter.getLife()), hudLabelStyle);
-        manaLabel = new Label("Maná: " + Integer.toString(mana), hudLabelStyle);
-
-        hudTable.add(lifeLabel).padLeft(20);
-        hudTable.row();
-        hudTable.add(manaLabel).padLeft(20);
-
-        stage.addActor(hudTable);
-
+    public static void updateScore(MainCharacter mc){
+        scoreLabel.setText("Puntuación: " + mc.getMoney());
     }
 
-    public static void addScore(int sum){
-        score = score + sum;
-        scoreLabel.setText("Puntuación: " + Integer.toString(score));
+    public void updateLife(MainCharacter mc){
+        lifeLabel.setText("Vida" + mc.getLife());
     }
 
-    public int getScore(){
-        return score;
+    public void updateMana(MainCharacter mc){
+        manaLabel.setText("Maná: " + mc.getMana());
+    }
+
+    public void updateLevel(MainCharacter mc){
+        levelLabel.setText("Nivel: " + mc.getLevel());
     }
 
     @Override

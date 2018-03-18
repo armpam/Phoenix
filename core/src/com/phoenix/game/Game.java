@@ -1,11 +1,13 @@
 package com.phoenix.game;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Screens.StartScreen;
+import com.phoenix.game.Tools.ScreenHandler;
 
 public class Game extends com.badlogic.gdx.Game {
 	public SpriteBatch batch;
@@ -22,6 +24,7 @@ public class Game extends com.badlogic.gdx.Game {
 	public static final short MAIN_FBALL_BIT = 128;
 	public static final short COIN_BIT = 256;
 	public static final short ENEMY_BIT = 512;
+	public static final short LADDER_BIT = 1024;
 
 	public static AssetManager assetManager; //El manager para la música - Static puede causar problemas (esperemos que no)
 	
@@ -36,14 +39,16 @@ public class Game extends com.badlogic.gdx.Game {
 		assetManager.load("audio/sounds/coin.ogg", Music.class);
         assetManager.finishLoading();
 
-        setScreen(new StartScreen(this));
+		ScreenHandler.initialize(this);
+		ScreenHandler.setLoginScreen();
+
 	}
 
 	@Override
 	public void render () {
         super.render();
 	}
-	
+
 	@Override
 	public void dispose () {
 		batch.dispose();
