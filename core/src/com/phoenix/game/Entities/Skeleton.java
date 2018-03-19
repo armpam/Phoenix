@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
+import com.phoenix.game.Tools.AnimationHandler;
 
 import java.util.Random;
 
@@ -29,15 +30,55 @@ public class Skeleton extends Enemy{
     private final float AGGRO = 150; //Distancia para que empieze el modo lucha
 
     public Skeleton(World world) {
-        super(world, GameScreen.simpleSkeleton);
+        super(world, AnimationHandler.getAnimationHandler().getSimpleSkeleton());
         this.x = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de x
         this.y = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de y
         defineEnemy(this.x,this.y);
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
         this.b2body.setActive(false); //Desactivamos al enemigo al crearlo para ahorrar recursos.
+    }
 
-        initAnimations();
+    //Da el frame a dibujar según el estado del enemigo
+    private TextureRegion getFrame(float delta){
+        currentState = getState();
+
+        TextureRegion region;
+        switch(currentState){
+            case UP:
+                region = (TextureRegion)AnimationHandler.getAnimationHandler().getRunUp_sk().getKeyFrame(stateTimer, true);
+                break;
+            case DOWN:
+                region = (TextureRegion)AnimationHandler.getAnimationHandler().getRunDown_sk().getKeyFrame(stateTimer, true);
+                break;
+            case LEFT:
+                region = (TextureRegion)AnimationHandler.getAnimationHandler().getRunLeft_sk().getKeyFrame(stateTimer, true);
+                break;
+            case RIGHT:
+                region = (TextureRegion)AnimationHandler.getAnimationHandler().getRunRight_sk().getKeyFrame(stateTimer, true);
+                break;
+            default: //Caso IDLE
+                if(previousState == MovState.DOWN){
+                    region = AnimationHandler.getAnimationHandler().getIdleDown_sk(); //Se queda quieto mirando abajo
+                }
+                else if(previousState == MovState.LEFT){
+                    region = AnimationHandler.getAnimationHandler().getIdleLeft_sk();
+                }
+                else if(previousState == MovState.RIGHT){
+                    region =AnimationHandler.getAnimationHandler().getIdleRight_sk();
+                }
+                else{
+                    region = AnimationHandler.getAnimationHandler().getIdle_sk();
+                }
+                break;
+        }
+        stateTimer = stateTimer + delta; //El StateTimer es magia, pero hay que sumarle delta para que se anime bien
+        return region;
+    }
+
+    public void update(float delta){
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
     }
 
     public void enemyMovement(MainCharacter mcharacter) {  //Movimiento del enemigo

@@ -30,6 +30,9 @@ public class Chest extends RectTileObject {
         else if(map.getProperties().containsKey("dungeon_1")){
             tileset = map.getTileSets().getTileSet("dungeon_pack");
         }
+        else if(map.getProperties().containsKey("sidescroll_1")){
+            tileset = map.getTileSets().getTileSet("package");
+        }
         else{
 
         }
@@ -51,6 +54,10 @@ public class Chest extends RectTileObject {
         else if(map.getProperties().containsKey("sidescroll_1")){
             getCell(1).setTile(tileset.getTile(SC_CHEST));
         }
+        else{
+
+        }
+
         if(!open) {
             Game.assetManager.get("audio/sounds/openChest.ogg", Music.class).play(); //Sonido del cofre al abrirse
             open = true;

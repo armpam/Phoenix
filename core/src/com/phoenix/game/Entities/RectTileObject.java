@@ -23,7 +23,6 @@ import com.phoenix.game.Game;
 public abstract class RectTileObject {
     protected World world;
     protected TiledMap map;
-    protected TiledMapTile tile;
     protected Rectangle bounds; // El rectángulo que marca los límites de los Bodies
 
     //Hay que definir esto siempre que creemos un cuerpo (Body) de Box2D
@@ -60,6 +59,7 @@ public abstract class RectTileObject {
 
         shape.setAsBox(bounds.getWidth() / 2 / Game.PPM, bounds.getHeight() / 2 / Game.PPM); //Define la forma como una caja
         fdef.shape = shape;
+        fdef.filter.maskBits = Game.SENSOR_BIT;
         fixture = body.createFixture(fdef);
     }
 

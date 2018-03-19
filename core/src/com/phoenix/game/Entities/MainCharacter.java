@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
+import com.phoenix.game.Tools.AnimationHandler;
 
 /**
  * Created by alesd on 2/23/2017.
@@ -70,7 +71,7 @@ public class MainCharacter extends Sprite {
         this.screen = screen;
         this.fireballs = new Array<MainFireball>();
 
-        mainTexture = new Texture(Gdx.files.internal("main.png")); //La imagen con todos los sprites
+        mainTexture = AnimationHandler.getAnimationHandler().getMainCharacter(); //La imagen con todos los sprites
         initAnimations();
 
         idle = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
@@ -222,7 +223,7 @@ public class MainCharacter extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Game.PPM);
         fdef.filter.categoryBits = Game.MC_BIT; //Bit del jugador
-        fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT | Game.COIN_BIT | Game.ENEMY_BIT | Game.LADDER_BIT; //Con qué puede el personaje chocar
+        fdef.filter.maskBits = Game.DEFAULT_BIT | Game.CHEST_BIT | Game.ROCK_BIT | Game.TREE_BIT | Game.COIN_BIT | Game.ENEMY_BIT | Game.LADDER_BIT | Game.MB_BIT | Game.SENSOR_BIT; //Con qué puede el personaje chocar
 
         fdef.shape = shape;
         fdef.restitution = 0;
@@ -273,6 +274,10 @@ public class MainCharacter extends Sprite {
     public void fire(){
         MainFireball fireball = new MainFireball(this.screen, b2body.getPosition().x, b2body.getPosition().y, getPreviousState());
         fireballs.add(fireball);
+    }
+
+    public void teleport(float x, float y){
+        b2body.setTransform(x, y, 0);
     }
 
     public void setX(int x){

@@ -12,7 +12,9 @@ import com.phoenix.game.Entities.Coin;
 import com.phoenix.game.Entities.Ladder;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Entities.MainFireball;
+import com.phoenix.game.Entities.MovingBlock;
 import com.phoenix.game.Entities.Rock;
+import com.phoenix.game.Entities.Sensor;
 import com.phoenix.game.Game;
 import com.phoenix.game.Scenes.Main_UI;
 
@@ -38,6 +40,7 @@ public class WorldContactListener implements ContactListener {
 
         handlePlayerCollision(fixA, fixB); //El jugador colisiona con algo
         handleFireBallCollision(fixA, fixB); // Una bola de fuego colisiona con algo
+        handleMovingBlockCollision(fixA, fixB);
 
     }
 
@@ -79,9 +82,7 @@ public class WorldContactListener implements ContactListener {
 
             if (object.getUserData() instanceof Coin){
                 ((Coin) object.getUserData()).setToDestroy();
-                Random random = new Random();
-                int rn = random.nextInt(200 - 100) + 100;
-                ((MainCharacter) player.getUserData()).addMoney(rn);
+                ((MainCharacter) player.getUserData()).addMoney(((Coin) object.getUserData()).getValue());
                 Main_UI.updateScore((MainCharacter) player.getUserData());
                 Game.assetManager.get("audio/sounds/coin.ogg", Music.class).play();
             }
@@ -115,6 +116,28 @@ public class WorldContactListener implements ContactListener {
             }
 
             ((MainFireball) fireBall.getUserData()).setToDestroy(); //Si choca con algo la marcamos para que se destruya
+        }
+    }
+
+    private void handleMovingBlockCollision(Fixture fixA, Fixture fixB) {
+
+        if (fixA.getUserData() instanceof MovingBlock || fixB.getUserData() instanceof MovingBlock) {
+            Fixture movingBlock;
+            Fixture object;
+
+            if (fixA.getUserData() instanceof MovingBlock) {
+                movingBlock = fixA;
+                object = fixB;
+            } else {
+                movingBlock = fixB;
+                object = fixA;
+            }
+            if(movingBlock.getUserData() instanceof MovingBlock && object.getUserData() instanceof  MovingBlock){
+                ((MovingBlock) movingBlock.getUserData()).reverseVelocity();
+                ((MovingBlock) object.getUserData()).reverseVelocity();
+            }else if (object.getUserData() instanceof Sensor){
+                ((MovingBlock) movingBlock.getUserData()).reverseVelocity();
+            }
         }
     }
 

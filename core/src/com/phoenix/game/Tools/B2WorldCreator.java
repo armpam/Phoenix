@@ -9,7 +9,9 @@ import com.badlogic.gdx.utils.Array;
 import com.phoenix.game.Entities.Chest;
 import com.phoenix.game.Entities.Coin;
 import com.phoenix.game.Entities.Ladder;
+import com.phoenix.game.Entities.MovingBlock;
 import com.phoenix.game.Entities.Rock;
+import com.phoenix.game.Entities.Sensor;
 import com.phoenix.game.Entities.Tree;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
@@ -25,12 +27,14 @@ public class B2WorldCreator {
     private GameScreen screen;
 
     private Array<Coin> coinArray;
+    private Array<MovingBlock> mbArray;
 
     public B2WorldCreator(World world, TiledMap map, GameScreen screen){
         this.world = world;
         this.map = map;
         this.screen = screen;
         coinArray = new Array<Coin>();
+        mbArray = new Array<MovingBlock>();
 
         if(map.getProperties().containsKey("map_1")) {
             createRocks(16);
@@ -46,29 +50,27 @@ public class B2WorldCreator {
             createChests(3);
             createCoins(4);
             createLadders(6);
+            createMovingBlocks(5);
+            createSensors(7);
         }
     }
 
     private void createTrees(int layer){
         //Por cada objeto de tipo Object en Tiled cogemos aquellos objetos con ID = 11, hacemos un rectángulo y creamos el objeto
         for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
-
-            Tree tree = new Tree(world, map, object);
+            new Tree(world, map, object);
         }
     }
 
     private void createRocks(int layer){
         for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            Rock rock = new Rock(world, map, object, screen);
+            new Rock(world, map, object, screen);
         }
     }
 
     private void createChests(int layer){
         for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
-
-            Chest chest = new Chest(world, map, object);
+            new Chest(world, map, object);
         }
     }
 
@@ -83,19 +85,33 @@ public class B2WorldCreator {
 
     private void createWalls(int layer){
         for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
-
-            Rock rock = new Rock(world, map, object, screen);
+            new Rock(world, map, object, screen);
         }
     }
 
     private void createLadders(int layer){
         for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
+            new Ladder(world, map, object, screen);
+        }
+    }
 
-            Ladder ladder = new Ladder(world, map, object, screen);
+    private void createMovingBlocks(int layer){
+        for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            MovingBlock mb = new MovingBlock(this.screen, rect.x / Game.PPM, rect.y / Game.PPM, object, map);
+            mbArray.add(mb);
+        }
+    }
+
+    private void createSensors(int layer){
+        for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
+            new Sensor(world, map, object);
         }
     }
 
     public Array<Coin> getCoinArray(){
         return coinArray;
     }
+    public Array<MovingBlock> getMbArray(){ return mbArray; }
 }

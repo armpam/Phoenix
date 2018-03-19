@@ -20,11 +20,12 @@ public class Game extends com.badlogic.gdx.Game {
 	public static final short ROCK_BIT = 8;
 	public static final short TREE_BIT = 16;
 	public static final short CHEST_BIT = 32;
-	public static final short DESTROYED_BIT = 64;
+	public static final short SENSOR_BIT = 64;
 	public static final short MAIN_FBALL_BIT = 128;
 	public static final short COIN_BIT = 256;
 	public static final short ENEMY_BIT = 512;
 	public static final short LADDER_BIT = 1024;
+	public static final short MB_BIT = 2048;
 
 	public static AssetManager assetManager; //El manager para la música - Static puede causar problemas (esperemos que no)
 	

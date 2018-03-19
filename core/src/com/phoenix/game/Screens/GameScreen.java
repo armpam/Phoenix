@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.phoenix.game.Entities.Coin;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Entities.MainFireball;
+import com.phoenix.game.Entities.MovingBlock;
 import com.phoenix.game.Entities.Orc;
 import com.phoenix.game.Entities.Skeleton;
 import com.phoenix.game.Game;
@@ -50,8 +51,8 @@ public class GameScreen implements Screen {
     private long startTime = 0;
 
     //Variables relacionadas con los enemigos
-    private final int numberOfSkeletons = 1; //Número total de Skeletons
-    private final int numberOfOrcs = 1; //Número total de Orcos
+    private final int numberOfSkeletons = 10; //Número total de Skeletons
+    private final int numberOfOrcs = 10; //Número total de Orcos
     private final int dActiveEnemies = 5; //Distancia al personaje a la que se activan/desactivan los enemigos
 
     private Skeleton[] skeletons; //Declaramos los enemigos de tipo Skeleton
@@ -72,13 +73,10 @@ public class GameScreen implements Screen {
 
     private B2WorldCreator b2wc;
 
-    public static Texture simpleSkeleton = new Texture(Gdx.files.internal("simple_skeleton.png"));
-    public static Texture simpleOrc = new Texture(Gdx.files.internal("simple_orc.png"));
-    public static Texture coin = new Texture(Gdx.files.internal("coin.png"));
-
     private boolean dungeonFlag = false;
     private boolean greenMapFlag = false;
     private boolean sideScrollFlag = false;
+    private boolean tpFlag = false;
 
     private boolean sideScroll = false;
     public boolean ladder = false;
@@ -202,6 +200,9 @@ public class GameScreen implements Screen {
             if (coin.isDestroyed()){
                 b2wc.getCoinArray().removeValue(coin, true);
             }
+        }
+        for(MovingBlock mb : b2wc.getMbArray()){
+            mb.update(delta);
         }
     }
 
@@ -328,14 +329,17 @@ public class GameScreen implements Screen {
         for(Coin coin : b2wc.getCoinArray()){
             coin.draw(game.batch);
         }
+        if(this.sideScroll) {
+            for (MovingBlock mb : b2wc.getMbArray()) {
+                mb.draw(game.batch);
+            }
+        }
         for(Skeleton skeleton : skeletons){
             skeleton.draw(game.batch);
         }
         for(Orc orc : orcs){
             orc.draw(game.batch);
         }
-        //Actualiza la vida
-        //UI.updateLifeLabel(mcharacter); //Actualiza el nivel de vida del personaje
 
         //El batch dibuja la UI con la cámara de la UI, que es estática
         game.batch.setProjectionMatrix(UI.stage.getCamera().combined);
@@ -352,6 +356,12 @@ public class GameScreen implements Screen {
         }
         if(sideScrollFlag){
             ScreenHandler.setSideScrollScreen(mcharacter);
+        }
+        if(tpFlag){
+            mcharacter.teleport(1, 1);
+            tpFlag = false;
+            mcharacter.decreaseLife(200);
+            UI.updateLife(mcharacter);
         }
     }
 
@@ -379,6 +389,8 @@ public class GameScreen implements Screen {
         sideScrollFlag = true;
     }
 
+    public void setTpFlag(){ tpFlag = true; }
+
     public void setLadder(boolean value){
         ladder = value; }
 
@@ -389,6 +401,8 @@ public class GameScreen implements Screen {
     public GameScreen getScreen(){
         return this;
     }
+
+    public MainCharacter getMcharacter(){ return mcharacter; }
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);

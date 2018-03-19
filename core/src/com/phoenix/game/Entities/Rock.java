@@ -34,6 +34,9 @@ public class Rock extends RectTileObject {
         else if(this.object.getProperties().containsKey("sidescroll_1")){
             screen.setSideScrollFlag();
         }
+        else if(this.object.getProperties().containsKey("water")) {
+            screen.setTpFlag();
+        }
     }
 
     @Override

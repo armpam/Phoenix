@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
+import com.phoenix.game.Tools.AnimationHandler;
 
 import java.util.Random;
 
@@ -29,8 +30,6 @@ public class Coin extends Sprite {
 
     private final int TEXT_WIDTH = 32;
     private final int TEXT_HEIGHT = 32;
-    private Animation coinAnimation;
-    private Texture texture;
 
     private float stateTime;
 
@@ -53,28 +52,12 @@ public class Coin extends Sprite {
         this.world = screen.getWorld();
         this.map = map;
 
-        texture = GameScreen.coin;
-
-        initAnimation();
-
         setBounds(x, y, TEXT_WIDTH / Game.PPM, TEXT_HEIGHT / Game.PPM); //Posición en la que dibujar y tamaño del sprite
 
         Random rand = new Random();
         value = rand.nextInt((MAX_VALUE - MIN_VALUE) + 1) + MIN_VALUE ;
 
         defineCoin();
-    }
-
-    private void initAnimation(){
-
-        Array<TextureRegion> frames = new Array<TextureRegion>();
-
-        for(int i = 0; i < 7; i++){
-            frames.add(new TextureRegion(texture, i* 64, 0, TEXT_WIDTH, TEXT_HEIGHT));
-        }
-        coinAnimation = new Animation(0.2f, frames);
-        frames.clear();
-
     }
 
     private void defineCoin(){
@@ -116,8 +99,8 @@ public class Coin extends Sprite {
 
     private TextureRegion getFrame(float dt){
 
-        TextureRegion region = new TextureRegion();
-        region = (TextureRegion)coinAnimation.getKeyFrame(stateTime, true);
+        TextureRegion region;
+        region = (TextureRegion) AnimationHandler.getAnimationHandler().getCoinAnimation().getKeyFrame(stateTime, true);
 
         stateTime = stateTime + dt;
 

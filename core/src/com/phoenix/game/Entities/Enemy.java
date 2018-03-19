@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.phoenix.game.Game;
+import com.phoenix.game.Tools.AnimationHandler;
 
 import java.util.Random;   //***************************
 
@@ -35,18 +36,10 @@ public abstract class Enemy extends Sprite {
 
     protected Texture mainTexture;
     protected final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
-    protected TextureRegion idle; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
-    protected TextureRegion idleLeft; // Posturas sin hacer nada mirando hacia distintos lados
-    protected TextureRegion idleDown;
-    protected TextureRegion idleRight;
+
     protected enum MovState {UP, DOWN, LEFT, RIGHT, IDLE}; //Hacia dónde se mueve
     protected MovState currentState; //Estado actual del personaje
     protected MovState previousState;
-
-    protected Animation runLeft;
-    protected Animation runRight;
-    protected Animation runUp;
-    protected Animation runDown;
 
     protected float stateTimer;
 
@@ -75,83 +68,7 @@ public abstract class Enemy extends Sprite {
         fdef.density = 0;
         fixture = b2body.createFixture(fdef);
 
-        idle = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
-        idleLeft = new TextureRegion(mainTexture, 0 , 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleRight = new TextureRegion(mainTexture, 0 , 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleDown = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
         setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
-        setRegion(idle);
-    }
-
-    public void update(float delta){
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-        setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
-    }
-
-    // Inicializa las animaciones del personaje principal
-    protected void initAnimations(){
-        Array<TextureRegion> frames = new Array<TextureRegion>();
-
-        for(int i = 0; i < 9; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 512, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
-        }
-        runUp = new Animation(0.1f, frames);
-        frames.clear();
-
-        for(int i = 0; i < 9; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 576, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
-        }
-        runLeft = new Animation(0.1f, frames);
-        frames.clear();
-
-        for(int i = 0; i < 9; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 640, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
-        }
-        runDown = new Animation(0.1f, frames);
-        frames.clear();
-
-        for(int i = 0; i < 9; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 704, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
-        }
-        runRight = new Animation(0.1f, frames);
-        frames.clear();
-    }
-
-    //Da el frame a dibujar según el estado del enemigo
-    protected TextureRegion getFrame(float delta){
-        currentState = getState();
-
-        TextureRegion region;
-        switch(currentState){
-            case UP:
-                region = (TextureRegion)runUp.getKeyFrame(stateTimer, true);
-                break;
-            case DOWN:
-                region = (TextureRegion)runDown.getKeyFrame(stateTimer, true);
-                break;
-            case LEFT:
-                region = (TextureRegion)runLeft.getKeyFrame(stateTimer, true);
-                break;
-            case RIGHT:
-                region = (TextureRegion)runRight.getKeyFrame(stateTimer, true);
-                break;
-            default: //Caso IDLE
-                if(previousState == MovState.DOWN){
-                    region = idleDown; //Se queda quieto mirando abajo
-                }
-                else if(previousState == MovState.LEFT){
-                    region = idleLeft;
-                }
-                else if(previousState == MovState.RIGHT){
-                    region = idleRight;
-                }
-                else{
-                    region = idle;
-                }
-                break;
-        }
-        stateTimer = stateTimer + delta; //El StateTimer es magia, pero hay que sumarle delta para que se anime bien
-        return region;
     }
 
     //Devuelve el estado de movimiento del jugador (corriendo hacia la dcha/izquierda, quieto...)

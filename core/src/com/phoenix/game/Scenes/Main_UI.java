@@ -66,7 +66,7 @@ public class Main_UI implements Disposable {
     }
 
     public void updateLife(MainCharacter mc){
-        lifeLabel.setText("Vida" + mc.getLife());
+        lifeLabel.setText("Vida: " + mc.getLife());
     }
 
     public void updateMana(MainCharacter mc){
