@@ -26,8 +26,8 @@ public class MainCharacter extends Sprite {
     protected Fixture fixture;
 
     //Posición inicial del jugador
-    private int x =50;
-    private int y = 50;
+    private int x = 3000;
+    private int y = 100;
 
     //Atributos del jugador
     private Integer life;
@@ -46,6 +46,9 @@ public class MainCharacter extends Sprite {
     private enum MovState {UP, DOWN, LEFT, RIGHT, IDLE}; //Hacia dónde se mueve
     private MovState currentState; //Estado actual del personaje
     private MovState previousState;// Estado en el que se ha quedado al pararse
+
+    private BodyDef bdef = new BodyDef();
+    private FixtureDef fdef = new FixtureDef();
 
     private Array<MainFireball> fireballs;
 
@@ -158,14 +161,12 @@ public class MainCharacter extends Sprite {
     }
 
     private void defineMainCharacter(){
-        BodyDef bdef = new BodyDef();
         bdef.position.set(x / Game.PPM, y / Game.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody; //El jugador es dinámico, se mueve
 
         b2body = world.createBody(bdef);
 
         //El Body del jugador es un círculo de radio 5
-        FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Game.PPM);
         fdef.filter.categoryBits = Game.MC_BIT; //Bit del jugador
@@ -224,14 +225,6 @@ public class MainCharacter extends Sprite {
     public Integer getMoney(){return this.money;}
 
     public Integer getLevel(){return this.level;}
-
-    public void setX(int x){
-        this.x = x;
-    }
-
-    public void setY(int y){
-        this.y = x;
-    }
 
     public Array<MainFireball> getFireballs(){
         return this.fireballs;

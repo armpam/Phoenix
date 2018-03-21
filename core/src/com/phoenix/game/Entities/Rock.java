@@ -23,20 +23,18 @@ public class Rock extends RectTileObject {
 
     @Override
     public void onPlayerHit() {
-        if(this.object.getProperties().containsKey("map_1")){
-            screen.setGreenMapFlag();
-        }
-        else if(this.object.getProperties().containsKey("dungeon_1")){
-            screen.setDungeonFlag();
-        }
-        else if(this.object.getProperties().containsKey("sidescroll_1")){
-            screen.setSideScrollFlag();
-        }
-        else if(this.object.getProperties().containsKey("water")) {
-            screen.setTpFlag();
-        }
-        else if(this.object.getProperties().containsKey("city_1")){
-            screen.setCityFlag();
+        if(this.object.getProperties().containsKey("destination")) {
+            if (this.object.getProperties().get("destination").equals("map_1")) {
+                screen.setGreenMapFlag();
+            } else if (this.object.getProperties().get("destination").equals("dungeon_1")) {
+                screen.setDungeonFlag();
+            } else if (this.object.getProperties().get("destination").equals("sidescroll_1")) {
+                screen.setSideScrollFlag();
+            } else if (this.object.getProperties().get("destination").equals("water")) {
+                screen.setTpFlag();
+            } else if (this.object.getProperties().get("destination").equals("city_1")) {
+                screen.setCityFlag();
+            }
         }
     }
 

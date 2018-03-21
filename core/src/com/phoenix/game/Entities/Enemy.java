@@ -32,6 +32,8 @@ public abstract class Enemy extends Sprite {
     protected final int TEXT_HEIGHT = 64;
 
     protected float movSpeed;
+    protected float initialX;
+    protected float initialY;
 
     protected Rectangle bounds;
     protected BodyDef bdef;
@@ -51,6 +53,8 @@ public abstract class Enemy extends Sprite {
         this.screen = gscreen;
         this.world = screen.getWorld();
         this.bounds = ((RectangleMapObject) object).getRectangle();
+        this.initialX = x;
+        this.initialY = y;
 
         shape = new PolygonShape();
 
@@ -60,6 +64,7 @@ public abstract class Enemy extends Sprite {
         setBounds(x, y, TEXT_WIDTH / Game.PPM, TEXT_HEIGHT / Game.PPM);
 
         define();
+
         setCategoryFilter(Game.ENEMY_BIT);
     }
 
@@ -69,16 +74,11 @@ public abstract class Enemy extends Sprite {
         bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / Game.PPM, (bounds.getY() + bounds.getHeight() / 2) / Game.PPM );
 
         body = world.createBody(bdef); //Crea el Body en el mundo
-        body.setGravityScale(0);
 
         shape.setAsBox(bounds.getWidth() / 2 / Game.PPM, bounds.getHeight() / 2 / Game.PPM); //Define la forma como una caja
         fdef.shape = shape;
-        fdef.filter.maskBits = Game.ROCK_BIT | Game.MB_BIT | Game.MC_BIT;
+        fdef.filter.maskBits = Game.ROCK_BIT | Game.MC_BIT;
         fixture = body.createFixture(fdef);
-        fdef.restitution = 0; //Hace que no rebote
-        fdef.friction = 0;
-        fdef.density = 0;
-        fixture.setUserData(this);
     }
 
     //Devuelve el estado de movimiento del jugador (corriendo hacia la dcha/izquierda, quieto...)
@@ -106,6 +106,10 @@ public abstract class Enemy extends Sprite {
         Filter filter = new Filter();
         filter.categoryBits = bit;
         fixture.setFilterData(filter);
+    }
+
+    public float getX(){
+        return initialX;
     }
 
 

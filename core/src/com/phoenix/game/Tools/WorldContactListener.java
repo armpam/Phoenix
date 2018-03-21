@@ -1,5 +1,6 @@
 package com.phoenix.game.Tools;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -95,9 +96,9 @@ public class WorldContactListener implements ContactListener {
             if(object.getUserData() instanceof Ladder){
                 ((Ladder) object.getUserData()).onPlayerHit();
             }
-
-            if(object.getUserData() instanceof Enemy){
+            if(object.getUserData() instanceof Skeleton){
                 ((MainCharacter) player.getUserData()).decreaseLife(100);
+                Gdx.app.log("X Inicial: ", Float.toString(((Skeleton) object.getUserData()).getX()));
             }
         }
     }

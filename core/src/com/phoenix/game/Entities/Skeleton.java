@@ -22,7 +22,6 @@ public class Skeleton extends Enemy{
 
     public Skeleton(GameScreen gscreen, float x, float y, MapObject object, TiledMap map) {
         super(gscreen, x, y, object, map);
-        define();
         movSpeed = 0.005f;
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
@@ -66,12 +65,13 @@ public class Skeleton extends Enemy{
     }
 
     public void update(float delta){
+        move();
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
     }
 
-    public void move(MainCharacter mcharacter) {  //Movimiento del enemigo
-
+    public void move() {  //Movimiento del enemigo
+        this.body.setLinearVelocity(new Vector2(0.005f, 0 ));
     }
 
     private void chase(MainCharacter mcharacter, float distance) {

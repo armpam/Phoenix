@@ -33,7 +33,7 @@ public class B2WorldCreator {
     private Array<Skeleton> skeletonArray;
     private Array<Orc> orcArray;
 
-    public B2WorldCreator(World world, TiledMap map, GameScreen screen){
+    public B2WorldCreator(World world, TiledMap map, GameScreen screen) {
         this.world = world;
         this.map = map;
         this.screen = screen;
@@ -42,27 +42,26 @@ public class B2WorldCreator {
         skeletonArray = new Array<Skeleton>();
         orcArray = new Array<Orc>();
 
-        if(map.getProperties().containsKey("map_1")) {
-            createRocks(16);
-            createChests(15);
-            createCoins(14);
-            createSkeletons(17);
-            createOrcs(18);
-        }
-        else if(map.getProperties().containsKey("dungeon_1")){
-            createWalls(5);
-            createChests(6);
-        }
-        else if(map.getProperties().containsKey("sidescroll_1")){
-            createWalls(2);
-            createChests(3);
-            createCoins(4);
-            createLadders(6);
-            createMovingBlocks(5);
-            createSensors(7);
-        }
-        else if(map.getProperties().containsKey("city_1")){
-            createWalls(1);
+        if (map.getProperties().containsKey("name")) {
+            if (map.getProperties().get("name").equals("map_1")) {
+                createRocks(16);
+                createChests(15);
+                createCoins(14);
+                createSkeletons(17);
+                createOrcs(18);
+            } else if (map.getProperties().get("name").equals("dungeon_1")) {
+                createWalls(5);
+                createChests(6);
+            } else if (map.getProperties().get("name").equals("sidescroll_1")) {
+                createWalls(2);
+                createChests(3);
+                createCoins(4);
+                createLadders(6);
+                createMovingBlocks(5);
+                createSensors(7);
+            } else if (map.getProperties().get("name").equals("city_1")) {
+                createWalls(1);
+            }
         }
     }
 

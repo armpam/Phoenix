@@ -40,6 +40,8 @@ public class GameScreen implements Screen {
     private Main_UI UI;
 
     private MainCharacter mcharacter;
+    private float spawnX;
+    private float spawnY;
     private final float MCSpeed = 0.1f; //Velocidad standard de movimiento del jugador
     private final float TOP_SPEED = 1;
     private final float JUMP_STR = 4.8f;
@@ -67,6 +69,7 @@ public class GameScreen implements Screen {
     private boolean sideScrollFlag = false;
     private boolean cityFlag = false;
     private boolean tpFlag = false;
+    private boolean repositionFlag = false;
 
     private boolean sideScroll = false;
     public boolean ladder = false;
@@ -320,6 +323,11 @@ public class GameScreen implements Screen {
             mcharacter.decreaseLife(200);
             UI.updateLife(mcharacter);
         }
+        if(repositionFlag){
+            setSpawn();
+            mcharacter.teleport(spawnX, spawnY);
+            repositionFlag = false;
+        }
     }
 
     private void lockFireBall(long startTime){ //Pone la bola de fuego en CD
@@ -331,6 +339,46 @@ public class GameScreen implements Screen {
     private void lockJump(long startTime){
         if(TimeUtils.timeSinceNanos(startTime) > JMPCD){
             jumpLock = false;
+        }
+    }
+    private void setSpawn(){
+        if(this.green_map.getProperties().get("name").equals("map_1")){
+            if(ScreenHandler.getScreenHandler().getPreviousMap().equals("none")){
+
+            }
+            else if(ScreenHandler.getScreenHandler().getPreviousMap().equals("dungeon_1")){
+                spawnX = 30;
+                spawnY = 51.5f;
+            }
+        }
+        else if(this.green_map.getProperties().get("name").equals("dungeon_1")){
+            if(ScreenHandler.getScreenHandler().getPreviousMap().equals("map_1")){
+                spawnX = 15f;
+                spawnY = 1.5f;
+            }
+            else if(ScreenHandler.getScreenHandler().getPreviousMap().equals("city_1")){
+                spawnX = 1;
+                spawnY = 14;
+            }
+        }
+        else if(this.green_map.getProperties().get("name").equals("sidescroll_1")){
+            if(ScreenHandler.getScreenHandler().getPreviousMap().equals("city_1")){
+                spawnX = 1;
+                spawnY = 0.7f;
+            }
+            else if(ScreenHandler.getScreenHandler().getPreviousMap().equals("")){
+
+            }
+        }
+        else if(this.green_map.getProperties().get("name").equals("city_1")){
+            if(ScreenHandler.getScreenHandler().getPreviousMap().equals("dungeon_1")){ //Cambiar
+                spawnX = 2.5f;
+                spawnY = 1;
+            }
+            else if(ScreenHandler.getScreenHandler().getPreviousMap().equals("sidescroll_1")){
+                spawnX = 6.1f;
+                spawnY = 9.4f;
+            }
         }
     }
 
@@ -352,7 +400,11 @@ public class GameScreen implements Screen {
 
     public void setTpFlag(){ tpFlag = true; }
 
+    public void setRepositionFlag(){ repositionFlag = true; }
+
     public void setLadder(boolean value){ ladder = value; }
+
+    public TiledMap getMap(){return green_map;}
 
     public com.badlogic.gdx.Game getGame(){
         return game;
