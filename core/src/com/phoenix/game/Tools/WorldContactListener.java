@@ -6,15 +6,16 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Entities.Chest;
 import com.phoenix.game.Entities.Coin;
+import com.phoenix.game.Entities.Enemy;
 import com.phoenix.game.Entities.Ladder;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Entities.MainFireball;
 import com.phoenix.game.Entities.MovingBlock;
 import com.phoenix.game.Entities.Rock;
 import com.phoenix.game.Entities.Sensor;
+import com.phoenix.game.Entities.Skeleton;
 import com.phoenix.game.Game;
 import com.phoenix.game.Scenes.Main_UI;
 
@@ -84,7 +85,7 @@ public class WorldContactListener implements ContactListener {
                 ((Coin) object.getUserData()).setToDestroy();
                 ((MainCharacter) player.getUserData()).addMoney(((Coin) object.getUserData()).getValue());
                 Main_UI.updateScore((MainCharacter) player.getUserData());
-                Game.assetManager.get("audio/sounds/coin.ogg", Music.class).play();
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/coin.ogg", Music.class).play();
             }
 
             if (object.getUserData() instanceof Rock) {
@@ -93,6 +94,10 @@ public class WorldContactListener implements ContactListener {
 
             if(object.getUserData() instanceof Ladder){
                 ((Ladder) object.getUserData()).onPlayerHit();
+            }
+
+            if(object.getUserData() instanceof Enemy){
+                ((MainCharacter) player.getUserData()).decreaseLife(100);
             }
         }
     }

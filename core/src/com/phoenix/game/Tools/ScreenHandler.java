@@ -5,49 +5,71 @@ import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Screens.StartScreen;
 
+import sun.applet.Main;
+
 /**
  * Created by alesd on 3/13/2018.
  */
 
 public class ScreenHandler {
 
-    public static com.phoenix.game.Game game;
-    public static Screen currentScreen;
+    private static ScreenHandler mScreenHandler;
+    public com.phoenix.game.Game game;
+    public Screen currentScreen;
 
-    public ScreenHandler(){
+    private ScreenHandler(){
 
     }
 
-    public static void initialize(com.phoenix.game.Game game){
-        ScreenHandler.game = game;
+    public void initialize(com.phoenix.game.Game game){
+        this.game = game;
     }
 
-    public static void setGameScreen(){
+    public static ScreenHandler getScreenHandler(){
+        if(mScreenHandler == null){
+            mScreenHandler = new ScreenHandler();
+        }
+        return mScreenHandler;
+    }
+
+    public void setGameScreen(){
         currentScreen.dispose();
         currentScreen = new GameScreen(game, "map_1.tmx", false);
         game.setScreen(currentScreen);
+        System.gc();
     }
 
-    public static void setGameScreenBack(MainCharacter mc){
+    public void setGameScreenBack(MainCharacter mc){
         currentScreen.dispose();
         currentScreen = new GameScreen(game, "map_1.tmx", mc, false);
         game.setScreen(currentScreen);
+        System.gc();
     }
 
-    public static void setDungeonScreen(MainCharacter mc){
+    public void setDungeonScreen(MainCharacter mc){
         currentScreen.dispose();
         currentScreen = new GameScreen(game, "cave_1.tmx", mc, false);
         game.setScreen(currentScreen);
+        System.gc();
     }
 
-    public static void setLoginScreen(){
+    public void setLoginScreen(){
         currentScreen = new StartScreen(game);
         game.setScreen(currentScreen);
+        System.gc();
     }
 
-    public static void setSideScrollScreen(MainCharacter mc){
+    public void setSideScrollScreen(MainCharacter mc){
         currentScreen.dispose();
         currentScreen = new GameScreen(game, "sidescroll_1.tmx", mc, true);
         game.setScreen(currentScreen);
+        System.gc();
+    }
+
+    public void setCityScreen(MainCharacter mc){
+        currentScreen.dispose();
+        currentScreen = new GameScreen(game, "city_1.tmx", mc, false);
+        game.setScreen(currentScreen);
+        System.gc();
     }
 }

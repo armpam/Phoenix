@@ -1,23 +1,23 @@
 package com.phoenix.game.Entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.phoenix.game.Game;
+import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
-
-import java.util.Random;   //***************************
 
 /**
  * Created by alesd on 05/03/2017.
@@ -25,17 +25,21 @@ import java.util.Random;   //***************************
 
 public abstract class Enemy extends Sprite {
 
+    protected GameScreen screen;
     protected World world;
-    public Body b2body;
 
-    protected int x;
-    protected int y;
+    protected final int TEXT_WIDTH = 64;
+    protected final int TEXT_HEIGHT = 64;
+
+    protected float movSpeed;
+
+    protected Rectangle bounds;
+    protected BodyDef bdef;
+    protected PolygonShape shape;
+    protected FixtureDef fdef;
+    protected Body body;
 
     protected Fixture fixture;
-    BodyDef bdef = new BodyDef();
-
-    protected Texture mainTexture;
-    protected final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
 
     protected enum MovState {UP, DOWN, LEFT, RIGHT, IDLE}; //Hacia dónde se mueve
     protected MovState currentState; //Estado actual del personaje
@@ -43,49 +47,55 @@ public abstract class Enemy extends Sprite {
 
     protected float stateTimer;
 
-    public Enemy(World world,  Texture mainTexture){
-        this.world = world;
-        this.mainTexture = mainTexture;
+    public Enemy(GameScreen gscreen, float x, float y, MapObject object, TiledMap map){
+        this.screen = gscreen;
+        this.world = screen.getWorld();
+        this.bounds = ((RectangleMapObject) object).getRectangle();
+
+        shape = new PolygonShape();
+
+        bdef = new BodyDef();
+        fdef = new FixtureDef();
+
+        setBounds(x, y, TEXT_WIDTH / Game.PPM, TEXT_HEIGHT / Game.PPM);
+
+        define();
+        setCategoryFilter(Game.ENEMY_BIT);
     }
 
-    protected void defineEnemy(int x, int y){ //Este metodo lo definiremos en cada Enemigo, ya que cada Enemigo es diferente
+    protected void define(){ //Este metodo lo definiremos en cada Enemigo, ya que cada Enemigo es diferente
 
-        bdef.position.set(x/ Game.PPM, y/ Game.PPM);
-        bdef.type = BodyDef.BodyType.DynamicBody; //El enemigo es dinámico, se mueve
+        bdef.type = BodyDef.BodyType.DynamicBody;
+        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / Game.PPM, (bounds.getY() + bounds.getHeight() / 2) / Game.PPM );
 
-        b2body = world.createBody(bdef);
+        body = world.createBody(bdef); //Crea el Body en el mundo
+        body.setGravityScale(0);
 
-        //El Body del Skeleton es un círculo de radio 10
-        FixtureDef fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(10/ Game.PPM);
-        fdef.filter.categoryBits = Game.ENEMY_BIT;
-        fdef.filter.maskBits = Game.MC_BIT;
-
+        shape.setAsBox(bounds.getWidth() / 2 / Game.PPM, bounds.getHeight() / 2 / Game.PPM); //Define la forma como una caja
         fdef.shape = shape;
+        fdef.filter.maskBits = Game.ROCK_BIT | Game.MB_BIT | Game.MC_BIT;
+        fixture = body.createFixture(fdef);
         fdef.restitution = 0; //Hace que no rebote
         fdef.friction = 0;
         fdef.density = 0;
-        fixture = b2body.createFixture(fdef);
-
-        setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
+        fixture.setUserData(this);
     }
 
     //Devuelve el estado de movimiento del jugador (corriendo hacia la dcha/izquierda, quieto...)
     protected MovState getState(){
-        if(b2body.getLinearVelocity().x < 0){ //Si la X disminuye es que está yendo hacia la izquierda
+        if(body.getLinearVelocity().x < 0){ //Si la X disminuye es que está yendo hacia la izquierda
             previousState = MovState.LEFT;
             return previousState;
         }
-        else if(b2body.getLinearVelocity().x > 0){
+        else if(body.getLinearVelocity().x > 0){
             previousState = MovState.RIGHT;
             return previousState;
         }
-        else if(b2body.getLinearVelocity().y < 0){
+        else if(body.getLinearVelocity().y < 0){
             previousState = MovState.DOWN;
             return previousState;
         }
-        else if(b2body.getLinearVelocity().y > 0){
+        else if(body.getLinearVelocity().y > 0){
             previousState = MovState.UP;
             return previousState;
         }
@@ -97,4 +107,6 @@ public abstract class Enemy extends Sprite {
         filter.categoryBits = bit;
         fixture.setFilterData(filter);
     }
+
+
 }

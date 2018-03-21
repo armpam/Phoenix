@@ -1,8 +1,5 @@
 package com.phoenix.game.Entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -12,7 +9,6 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
@@ -41,8 +37,6 @@ public class Coin extends Sprite {
     private final int MAX_VALUE = 200;
     private int value;
 
-    private TiledMap map;
-
     Body b2body;
     Fixture fixture;
 
@@ -50,7 +44,6 @@ public class Coin extends Sprite {
 
         this.screen = gscreen;
         this.world = screen.getWorld();
-        this.map = map;
 
         setBounds(x, y, TEXT_WIDTH / Game.PPM, TEXT_HEIGHT / Game.PPM); //Posición en la que dibujar y tamaño del sprite
 
@@ -77,9 +70,6 @@ public class Coin extends Sprite {
                 Game.MC_BIT;
 
         fdef.shape = shape;
-        fdef.restitution = 0;
-        fdef.friction = 0;
-        fdef.density = 0;
         fixture = b2body.createFixture(fdef);
         fixture.setUserData(this);
         fixture.setSensor(true);

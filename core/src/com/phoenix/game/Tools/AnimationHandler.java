@@ -5,12 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Created by alesd on 3/19/2018.
  */
 
-public class AnimationHandler {
+public class AnimationHandler implements Disposable {
 
     private static AnimationHandler mAnimationHandler = null;
 
@@ -19,8 +20,8 @@ public class AnimationHandler {
     //Esqueleto simple
     private Texture simpleSkeleton;
     private final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
-    private TextureRegion idle_sk; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
 
+    private TextureRegion idle_sk; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
     private TextureRegion idleLeft_sk; // Posturas sin hacer nada mirando hacia distintos lados
     private TextureRegion idleDown_sk;
     private TextureRegion idleRight_sk;
@@ -32,8 +33,8 @@ public class AnimationHandler {
 
     //Orco simple
     private Texture simpleOrc;
-    private TextureRegion idle_orc; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
 
+    private TextureRegion idle_orc; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
     private TextureRegion idleLeft_orc; // Posturas sin hacer nada mirando hacia distintos lados
     private TextureRegion idleDown_orc;
     private TextureRegion idleRight_orc;
@@ -52,7 +53,28 @@ public class AnimationHandler {
     //Personaje principal
     private Texture mainCharacter;
 
+    private Animation runLeft_mc;
+
+    private Animation runRight_mc;
+    private Animation runUp_mc;
+    private Animation runDown_mc;
+
+    private TextureRegion idle_mc; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
+    private TextureRegion idleLeft_mc; // Posturas sin hacer nada mirando hacia distintos lados
+    private TextureRegion idleDown_mc;
+    private TextureRegion idleRight_mc;
+
     private TextureRegion movingBlock;
+
+    //Bola de fuego
+
+    private Texture fireBall;
+
+    private Animation fanim_up;
+    private Animation fanim_down;
+    private Animation fanim_left;
+    private Animation fanim_right;
+
 
     private AnimationHandler(){
 
@@ -61,12 +83,15 @@ public class AnimationHandler {
         simpleOrc = new Texture(Gdx.files.internal("simple_orc.png"));
         coin = new Texture(Gdx.files.internal("coin.png"));
         mainCharacter = new Texture(Gdx.files.internal("main.png"));
+        fireBall = new Texture(Gdx.files.internal("package_64.png"));
 
         movingBlock = new TextureRegion(sidescroll, 32, 192, 64, 32);
 
         initSkeletonAnimations(simpleSkeleton);
         initOrcAnimations(simpleOrc);
         initCoinAnimation(coin);
+        initMCAnimations(mainCharacter);
+        initFireBallAnimations(fireBall);
     }
 
     public static AnimationHandler getAnimationHandler(){
@@ -155,8 +180,68 @@ public class AnimationHandler {
 
     }
 
-    public Texture getSidescroll() {
-        return sidescroll;
+    private void initMCAnimations(Texture mainTexture){
+
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+
+        for(int i = 0; i < 9; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 512, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        runUp_mc = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 9; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 576, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        runLeft_mc = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 9; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 640, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        runDown_mc = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 9; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 704, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        runRight_mc = new Animation(0.1f, frames);
+        frames.clear();
+
+        idle_mc = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
+        idleLeft_mc = new TextureRegion(mainTexture, 0 , 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
+        idleRight_mc = new TextureRegion(mainTexture, 0 , 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
+        idleDown_mc = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
+    }
+
+    private void initFireBallAnimations(Texture mainTexture){
+
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+
+        for(int i = 0; i < 8; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        fanim_left = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 8; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        fanim_up = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 8; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 256, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        fanim_right = new Animation(0.1f, frames);
+
+        frames.clear();
+
+        for(int i = 0; i < 8; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 384, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        fanim_down = new Animation(0.1f, frames);
+        frames.clear();
     }
 
     public Texture getSimpleSkeleton() {
@@ -167,16 +252,8 @@ public class AnimationHandler {
         return simpleOrc;
     }
 
-    public Texture getCoin() {
-        return coin;
-    }
-
     public TextureRegion getMovingBlock() {
         return movingBlock;
-    }
-
-    public Texture getMainCharacter() {
-        return mainCharacter;
     }
 
     public TextureRegion getIdle_sk() {return idle_sk;}
@@ -212,4 +289,38 @@ public class AnimationHandler {
     public Animation getRunDown_orc() {return runDown_orc;}
 
     public Animation getCoinAnimation(){return coinAnimation;}
+
+    public Animation getRunLeft_mc() {return runLeft_mc;}
+
+    public Animation getRunRight_mc() {return runRight_mc;}
+
+    public Animation getRunUp_mc() {return runUp_mc;}
+
+    public Animation getRunDown_mc() {return runDown_mc;}
+
+    public TextureRegion getIdle_mc() {return idle_mc;}
+
+    public TextureRegion getIdleLeft_mc() {return idleLeft_mc;}
+
+    public TextureRegion getIdleDown_mc() {return idleDown_mc;}
+
+    public TextureRegion getIdleRight_mc() {return idleRight_mc;}
+
+    public Animation getFanim_up() {return fanim_up;}
+
+    public Animation getFanim_down() {return fanim_down;}
+
+    public Animation getFanim_left() {return fanim_left;}
+
+    public Animation getFanim_right() {return fanim_right;}
+
+    @Override
+    public void dispose() {
+        sidescroll.dispose();
+        simpleSkeleton.dispose();
+        simpleOrc.dispose();
+        coin.dispose();
+        mainCharacter.dispose();
+        fireBall.dispose();
+    }
 }

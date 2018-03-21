@@ -3,10 +3,8 @@ package com.phoenix.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -25,6 +23,7 @@ import com.phoenix.game.Entities.Skeleton;
 import com.phoenix.game.Game;
 import com.phoenix.game.Scenes.Main_UI;
 import com.phoenix.game.Tools.B2WorldCreator;
+import com.phoenix.game.Tools.Controller;
 import com.phoenix.game.Tools.ScreenHandler;
 import com.phoenix.game.Tools.WorldContactListener;
 
@@ -50,14 +49,6 @@ public class GameScreen implements Screen {
     private final long FBCD = 500000000; //CD en nanosegundos de la bola de fuego
     private long startTime = 0;
 
-    //Variables relacionadas con los enemigos
-    private final int numberOfSkeletons = 10; //Número total de Skeletons
-    private final int numberOfOrcs = 10; //Número total de Orcos
-    private final int dActiveEnemies = 5; //Distancia al personaje a la que se activan/desactivan los enemigos
-
-    private Skeleton[] skeletons; //Declaramos los enemigos de tipo Skeleton
-    private Orc[] orcs; // Declaramos los enemigos tipo Orc
-
     //Variables relacionadas con el/los mapas
     private TmxMapLoader mapLoader;
     private TiledMap green_map;
@@ -67,8 +58,6 @@ public class GameScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr; //Dibuja las líneas de los polígonos para la colisión
 
-    private Music OWtheme;
-
     //Objetos con los que se puede interaccionar
 
     private B2WorldCreator b2wc;
@@ -76,10 +65,13 @@ public class GameScreen implements Screen {
     private boolean dungeonFlag = false;
     private boolean greenMapFlag = false;
     private boolean sideScrollFlag = false;
+    private boolean cityFlag = false;
     private boolean tpFlag = false;
 
     private boolean sideScroll = false;
     public boolean ladder = false;
+
+    public Controller controller;
 
     public GameScreen(Game game, String map, boolean gravity){
         this.game = game;
@@ -106,17 +98,16 @@ public class GameScreen implements Screen {
         mcharacter = new MainCharacter(world, this);
 
         //Crea el Body Box2D de los enemigos
-        initializeEnemies(world);
+        //initializeEnemies(world);
 
         //Nueva Interfaz Gráfica general
         this.UI = new Main_UI(game.batch, this.mcharacter);
 
+        //Controles
+        this.controller = new Controller(game.batch);
+
         //Listener para todas nuestras colisiones
         world.setContactListener(new WorldContactListener());
-
-        OWtheme = Game.assetManager.get("audio/themes/overworld.ogg", Music.class);
-        OWtheme.setLooping(true);
-        //OWtheme.play();
 
         this.fbLock = false;
         this.jumpLock = false;
@@ -153,18 +144,13 @@ public class GameScreen implements Screen {
         //Crea el Body Box2D de nuestro personaje principal
         mcharacter = new MainCharacter(world, this, mc);
 
-        //Crea el Body Box2D de los enemigos
-        initializeEnemies(world);
-
         //Nueva Interfaz Gráfica general
         this.UI = new Main_UI(game.batch, this.mcharacter);
 
+        this.controller = new Controller(game.batch);
+
         //Listener para todas nuestras colisiones
         world.setContactListener(new WorldContactListener());
-
-        OWtheme = Game.assetManager.get("audio/themes/overworld.ogg", Music.class);
-        OWtheme.setLooping(true);
-        //OWtheme.play();
 
         this.fbLock = false;
         this.jumpLock = false;
@@ -183,7 +169,7 @@ public class GameScreen implements Screen {
         else
             handleInput(delta);
 
-        world.step(1/60f, 6, 2);
+        world.step(1f/60f, 6, 2);
 
         //La cámara sigue al jugador
         cam.position.x = mcharacter.b2body.getPosition().x;
@@ -204,58 +190,34 @@ public class GameScreen implements Screen {
         for(MovingBlock mb : b2wc.getMbArray()){
             mb.update(delta);
         }
+        for(Skeleton sk : b2wc.getSkeletonArray()){
+            sk.update(delta);
+        }
+        for(Orc orc : b2wc.getOrcArray()){
+            orc.update(delta);
+        }
     }
 
     public World getWorld(){
         return this.world;
     }
 
-    public void initializeEnemies(World world){
-        //Inicializamos el número de enemigos declarados en las variables finales de cada enemigo.
-        skeletons = new Skeleton[numberOfSkeletons];
-        orcs = new Orc[numberOfOrcs];
-        for (int i = 0; (i < numberOfSkeletons); i++) {
-            skeletons[i] = new Skeleton(world);
-        }
-        for (int i = 0; (i < numberOfOrcs); i++) {
-            orcs[i] = new Orc(world);
-        }
-    }
-
-    public void enemiesMovement(MainCharacter mcharacter){
-        //Declaramos la variable distance, la cual obtiene  la distancia del enemigo al Mcharacter
-        Vector2 player = mcharacter.b2body.getPosition();
-        Vector2 enemy;
-        float distance;
-        //Movemos cada enemigo uno a uno
-        for (int i = 0; i < numberOfSkeletons; i++) { //Movimiento de los Skeletons
-            enemy = skeletons[i].b2body.getPosition();
-            distance = enemy.dst(player); //Obtenemos la distancia del personaje al enemigo
-            if ((distance) < dActiveEnemies) { //Si la distancia es menor que "dActiveEnemies" activamos al enemigo y su moviento
-                skeletons[i].b2body.setActive(true);
-                skeletons[i].enemyMovement(mcharacter);
-            } else { //Si la distancia es mayor entonces desactivamos al enemigo
-                skeletons[i].b2body.setActive(false);
-            }
-        }
-    }
-
     public void handleInput(float delta){
 
-        if(Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {//Maneja el movimiento de las 4 flechas de dirección
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mcharacter.b2body.getLinearVelocity().x < TOP_SPEED) {
+        if(Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)|| Gdx.input.isTouched()) {//Maneja el movimiento de las 4 flechas de dirección
+            if (controller.isRightPressed() && mcharacter.b2body.getLinearVelocity().x < TOP_SPEED) {
                 mcharacter.b2body.applyLinearImpulse(new Vector2(MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && mcharacter.b2body.getLinearVelocity().x > -TOP_SPEED) {
+            if (controller.isLeftPressed() && mcharacter.b2body.getLinearVelocity().x > -TOP_SPEED) {
                 mcharacter.b2body.applyLinearImpulse(new Vector2(-MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.UP) && mcharacter.b2body.getLinearVelocity().y < TOP_SPEED) {
+            if (controller.isUpPressed() && mcharacter.b2body.getLinearVelocity().y < TOP_SPEED) {
                 mcharacter.b2body.applyLinearImpulse(new Vector2(0, MCSpeed), mcharacter.b2body.getWorldCenter(), true);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && mcharacter.b2body.getLinearVelocity().y > -TOP_SPEED) {
+            if (controller.isDownPressed() && mcharacter.b2body.getLinearVelocity().y > -TOP_SPEED) {
                 mcharacter.b2body.applyLinearImpulse(new Vector2(0, -MCSpeed), mcharacter.b2body.getWorldCenter(), true);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && fbLock == false) {
+            if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !fbLock) {
                 mcharacter.fire(); //Dispara una bola de fuego
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
@@ -273,10 +235,10 @@ public class GameScreen implements Screen {
     }
 
     public void handleSCInput(float delta){
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mcharacter.b2body.getLinearVelocity().x < TOP_SPEED) {
+        if (controller.isRightPressed() && mcharacter.b2body.getLinearVelocity().x < TOP_SPEED) {
                 mcharacter.b2body.applyLinearImpulse(new Vector2(MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && mcharacter.b2body.getLinearVelocity().x > -TOP_SPEED) {
+        if (controller.isLeftPressed() && mcharacter.b2body.getLinearVelocity().x > -TOP_SPEED) {
                 mcharacter.b2body.applyLinearImpulse(new Vector2(-MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && jumpLock == false) {
@@ -284,7 +246,7 @@ public class GameScreen implements Screen {
                 startTime = TimeUtils.nanoTime();
                 jumpLock = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) && mcharacter.b2body.getLinearVelocity().y < 1 && ladder) {
+        if (controller.isUpPressed() && mcharacter.b2body.getLinearVelocity().y < 1 && ladder) {
             mcharacter.b2body.applyLinearImpulse(new Vector2(0, 1.0f), mcharacter.b2body.getWorldCenter(), true);
         }
         if(jumpLock){
@@ -298,15 +260,6 @@ public class GameScreen implements Screen {
 
         //Dibuja al personaje siguiendo nuestra cámara
         mcharacter.update(delta);
-        for(Skeleton skeleton : skeletons){
-            skeleton.update(delta);
-        }
-        for(Orc orc : orcs){
-            orc.update(delta);
-        }
-
-        //Consigue que los enemigos persigan al jugador
-        enemiesMovement(mcharacter);
 
         //Limpia la pantalla con negro
         Gdx.gl20.glClearColor(0, 0, 0, 1);
@@ -334,13 +287,12 @@ public class GameScreen implements Screen {
                 mb.draw(game.batch);
             }
         }
-        for(Skeleton skeleton : skeletons){
-            skeleton.draw(game.batch);
+        for(Skeleton sk : b2wc.getSkeletonArray()){
+            sk.draw(game.batch);
         }
-        for(Orc orc : orcs){
+        for(Orc orc : b2wc.getOrcArray()){
             orc.draw(game.batch);
         }
-
         //El batch dibuja la UI con la cámara de la UI, que es estática
         game.batch.setProjectionMatrix(UI.stage.getCamera().combined);
 
@@ -348,14 +300,19 @@ public class GameScreen implements Screen {
 
         UI.stage.draw();
 
+        controller.draw();
+
         if(dungeonFlag){
-            ScreenHandler.setDungeonScreen(mcharacter);
+            ScreenHandler.getScreenHandler().setDungeonScreen(mcharacter);
         }
         if(greenMapFlag){
-            ScreenHandler.setGameScreenBack(mcharacter);
+            ScreenHandler.getScreenHandler().setGameScreenBack(mcharacter);
         }
         if(sideScrollFlag){
-            ScreenHandler.setSideScrollScreen(mcharacter);
+            ScreenHandler.getScreenHandler().setSideScrollScreen(mcharacter);
+        }
+        if(cityFlag){
+            ScreenHandler.getScreenHandler().setCityScreen(mcharacter);
         }
         if(tpFlag){
             mcharacter.teleport(1, 1);
@@ -389,10 +346,13 @@ public class GameScreen implements Screen {
         sideScrollFlag = true;
     }
 
+    public void setCityFlag(){
+        cityFlag = true;
+    }
+
     public void setTpFlag(){ tpFlag = true; }
 
-    public void setLadder(boolean value){
-        ladder = value; }
+    public void setLadder(boolean value){ ladder = value; }
 
     public com.badlogic.gdx.Game getGame(){
         return game;
@@ -403,9 +363,14 @@ public class GameScreen implements Screen {
     }
 
     public MainCharacter getMcharacter(){ return mcharacter; }
+
+    public Main_UI getUI(){
+        return UI;
+    }
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+        controller.resize(width, height);
     }
 
     @Override

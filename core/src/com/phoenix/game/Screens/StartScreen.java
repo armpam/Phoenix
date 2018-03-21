@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.phoenix.game.Game;
 import com.phoenix.game.Tools.ScreenHandler;
+import com.phoenix.game.Tools.SoundHandler;
 
 /**
  * Created by alesd on 4/1/2017.
@@ -48,7 +49,7 @@ public class StartScreen implements Screen {
 
         stage.addActor(table);
 
-        introTheme = Game.assetManager.get("audio/themes/intro_song.ogg", Music.class);
+        introTheme = SoundHandler.getSoundHandler().getAssetManager().get("audio/themes/intro_song.ogg", Music.class);
         introTheme.setLooping(true);
         introTheme.play();
     }
@@ -63,7 +64,7 @@ public class StartScreen implements Screen {
     public void render(float delta) {
         if(Gdx.input.justTouched()){
             introTheme.stop();
-            ScreenHandler.setGameScreen();
+            ScreenHandler.getScreenHandler().setGameScreen();
             dispose();
         }
         Gdx.gl.glClearColor(0,0,0,1);

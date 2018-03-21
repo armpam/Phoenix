@@ -1,9 +1,12 @@
 package com.phoenix.game.Entities;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Game;
+import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
 
 import java.util.Random;
@@ -14,18 +17,11 @@ import java.util.Random;
 
 public class Orc extends Enemy {
 
-    //Posición inicial del enemigo
-    private Random randomGenerator = new Random();
-
-    public Orc(World world){
-        super(world, AnimationHandler.getAnimationHandler().getSimpleOrc()); //
-        this.x = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de x
-        this.y = randomGenerator.nextInt(2000);  //Genera la posición aleatoria de y
-        defineEnemy(this.x,this.y);
-        this.bdef.type = BodyDef.BodyType.StaticBody;
+    public Orc(GameScreen gscreen, float x, float y, MapObject object, TiledMap map){
+        super(gscreen, x, y, object, map); //
+        define();
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
-        this.b2body.setActive(false); //Desactivamos al enemigo al crearlo para ahorrar recursos.
     }
 
     private TextureRegion getFrame(float delta){
@@ -65,7 +61,7 @@ public class Orc extends Enemy {
     }
 
     public void update(float delta){
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
     }
 }

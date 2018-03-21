@@ -3,7 +3,6 @@ package com.phoenix.game.Entities;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -50,7 +49,7 @@ public abstract class RectTileObject {
     }
 
     //Crea el cuerpo Box2D con colisión de polígono rectangular
-    public void create(){
+    private void create(){
 
         bdef.type = BodyDef.BodyType.StaticBody; //Cuerpo estático, no se mueve
         bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / Game.PPM, (bounds.getY() + bounds.getHeight() / 2) / Game.PPM );
@@ -64,6 +63,7 @@ public abstract class RectTileObject {
     }
 
     public abstract void onPlayerHit(); //Define qué pasa cuando el jugador choca contra este objeto
+
     public abstract void onFireBallHit();
 
     public void setCategoryFilter(short bit){ //Ponemos al objeto el bit que queramos

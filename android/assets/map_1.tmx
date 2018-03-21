@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextobjectid="154">
+<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextobjectid="161">
  <properties>
   <property name="map_1" value="map_1"/>
  </properties>
@@ -3027,8 +3027,12 @@
   </object>
   <object id="143" x="224" y="6180" width="125" height="29">
    <properties>
-    <property name="sidescroll_1" value="sidescroll_1"/>
+    <property name="city_1" value="city_1"/>
    </properties>
   </object>
  </objectgroup>
+ <objectgroup name="skeletons">
+  <object id="160" x="153" y="6114" width="29" height="41"/>
+ </objectgroup>
+ <objectgroup name="orc"/>
 </map>

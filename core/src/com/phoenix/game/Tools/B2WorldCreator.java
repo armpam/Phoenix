@@ -10,8 +10,10 @@ import com.phoenix.game.Entities.Chest;
 import com.phoenix.game.Entities.Coin;
 import com.phoenix.game.Entities.Ladder;
 import com.phoenix.game.Entities.MovingBlock;
+import com.phoenix.game.Entities.Orc;
 import com.phoenix.game.Entities.Rock;
 import com.phoenix.game.Entities.Sensor;
+import com.phoenix.game.Entities.Skeleton;
 import com.phoenix.game.Entities.Tree;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
@@ -28,6 +30,8 @@ public class B2WorldCreator {
 
     private Array<Coin> coinArray;
     private Array<MovingBlock> mbArray;
+    private Array<Skeleton> skeletonArray;
+    private Array<Orc> orcArray;
 
     public B2WorldCreator(World world, TiledMap map, GameScreen screen){
         this.world = world;
@@ -35,11 +39,15 @@ public class B2WorldCreator {
         this.screen = screen;
         coinArray = new Array<Coin>();
         mbArray = new Array<MovingBlock>();
+        skeletonArray = new Array<Skeleton>();
+        orcArray = new Array<Orc>();
 
         if(map.getProperties().containsKey("map_1")) {
             createRocks(16);
             createChests(15);
             createCoins(14);
+            createSkeletons(17);
+            createOrcs(18);
         }
         else if(map.getProperties().containsKey("dungeon_1")){
             createWalls(5);
@@ -52,6 +60,9 @@ public class B2WorldCreator {
             createLadders(6);
             createMovingBlocks(5);
             createSensors(7);
+        }
+        else if(map.getProperties().containsKey("city_1")){
+            createWalls(1);
         }
     }
 
@@ -110,8 +121,28 @@ public class B2WorldCreator {
         }
     }
 
+    private void createSkeletons(int layer){
+        for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            Skeleton sk = new Skeleton(this.screen, rect.x / Game.PPM, rect.y / Game.PPM, object, map);
+            skeletonArray.add(sk);
+        }
+    }
+
+    private void createOrcs(int layer){
+        for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            Orc orc = new Orc(this.screen, rect.x / Game.PPM, rect.y / Game.PPM, object, map);
+            orcArray.add(orc);
+        }
+    }
+
     public Array<Coin> getCoinArray(){
         return coinArray;
     }
     public Array<MovingBlock> getMbArray(){ return mbArray; }
+    public Array<Skeleton> getSkeletonArray(){return skeletonArray;}
+    public Array<Orc> getOrcArray(){return orcArray;}
 }

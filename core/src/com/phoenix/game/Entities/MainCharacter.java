@@ -1,9 +1,6 @@
 package com.phoenix.game.Entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -27,6 +24,7 @@ public class MainCharacter extends Sprite {
     private World world;
     public Body b2body;
     protected Fixture fixture;
+
     //Posición inicial del jugador
     private int x =50;
     private int y = 50;
@@ -36,26 +34,18 @@ public class MainCharacter extends Sprite {
     private Integer mana;
     private Integer money;
     private Integer level;
+
     //Invisible al daño cuando es True
     private boolean iframe = false;
+
     //Devuelve la hora del reloj en nanosegundos.
     private long startTime = TimeUtils.nanoTime();
 
-    private Texture mainTexture;
     private final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
-    private TextureRegion idle; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
-    private TextureRegion idleLeft; // Posturas sin hacer nada mirando hacia distintos lados
-    private TextureRegion idleDown;
-    private TextureRegion idleRight;
+
     private enum MovState {UP, DOWN, LEFT, RIGHT, IDLE}; //Hacia dónde se mueve
     private MovState currentState; //Estado actual del personaje
     private MovState previousState;// Estado en el que se ha quedado al pararse
-
-    //Animaciones del movimiento en 4 direcciones
-    private Animation runLeft;
-    private Animation runRight;
-    private Animation runUp;
-    private Animation runDown;
 
     private Array<MainFireball> fireballs;
 
@@ -71,15 +61,7 @@ public class MainCharacter extends Sprite {
         this.screen = screen;
         this.fireballs = new Array<MainFireball>();
 
-        mainTexture = AnimationHandler.getAnimationHandler().getMainCharacter(); //La imagen con todos los sprites
-        initAnimations();
-
-        idle = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
-        idleLeft = new TextureRegion(mainTexture, 0 , 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleRight = new TextureRegion(mainTexture, 0 , 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleDown = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
         setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
-        setRegion(idle); //Le dices que región dibujar (Hace falta para que el método draw sepa qué dibujar)
 
         this.life = 1000;
         this.mana = 200;
@@ -95,15 +77,7 @@ public class MainCharacter extends Sprite {
         this.screen = screen;
         this.fireballs = new Array<MainFireball>();
 
-        mainTexture = new Texture(Gdx.files.internal("main.png")); //La imagen con todos los sprites
-        initAnimations();
-
-        idle = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
-        idleLeft = new TextureRegion(mainTexture, 0 , 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleRight = new TextureRegion(mainTexture, 0 , 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleDown = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
         setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
-        setRegion(idle); //Le dices que región dibujar (Hace falta para que el método draw sepa qué dibujar)
 
         //Aquí se da el proceso de copiar los atributos del jugador que viene de otro mapa
         this.life = cmc.getLife();
@@ -125,34 +99,6 @@ public class MainCharacter extends Sprite {
         }
     }
 
-    private void initAnimations(){
-        Array<TextureRegion> frames = new Array<TextureRegion>();
-
-        for(int i = 0; i < 9; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 512, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
-        }
-        runUp = new Animation(0.1f, frames);
-        frames.clear();
-
-        for(int i = 0; i < 9; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 576, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
-        }
-        runLeft = new Animation(0.1f, frames);
-        frames.clear();
-
-        for(int i = 0; i < 9; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 640, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
-        }
-        runDown = new Animation(0.1f, frames);
-        frames.clear();
-
-        for(int i = 0; i < 9; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 704, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
-        }
-        runRight = new Animation(0.1f, frames);
-        frames.clear();
-    }
-
     //Da el frame a dibujar según el estado del jugador
     private TextureRegion getFrame(float delta){
         currentState = getState();
@@ -160,29 +106,29 @@ public class MainCharacter extends Sprite {
         TextureRegion region;
         switch(currentState){
             case UP:
-                region = (TextureRegion)runUp.getKeyFrame(stateTimer, true);
+                region = (TextureRegion)AnimationHandler.getAnimationHandler().getRunUp_mc().getKeyFrame(stateTimer, true);
                 break;
             case DOWN:
-                region = (TextureRegion)runDown.getKeyFrame(stateTimer, true);
+                region = (TextureRegion)AnimationHandler.getAnimationHandler().getRunDown_mc().getKeyFrame(stateTimer, true);
                 break;
             case LEFT:
-                region = (TextureRegion)runLeft.getKeyFrame(stateTimer, true);
+                region = (TextureRegion)AnimationHandler.getAnimationHandler().getRunLeft_mc().getKeyFrame(stateTimer, true);
                 break;
             case RIGHT:
-                region = (TextureRegion)runRight.getKeyFrame(stateTimer, true);
+                region = (TextureRegion)AnimationHandler.getAnimationHandler().getRunRight_mc().getKeyFrame(stateTimer, true);
                 break;
             default: //Caso IDLE
                 if(previousState == MovState.DOWN){
-                    region = idleDown; //Se queda quieto mirando abajo
+                    region = AnimationHandler.getAnimationHandler().getIdleDown_mc(); //Se queda quieto mirando abajo
                 }
                 else if(previousState == MovState.LEFT){
-                    region = idleLeft;
+                    region = AnimationHandler.getAnimationHandler().getIdleLeft_mc();
                 }
                 else if(previousState == MovState.RIGHT){
-                    region = idleRight;
+                    region = AnimationHandler.getAnimationHandler().getIdleRight_mc();
                 }
                 else{
-                    region = idle;
+                    region = AnimationHandler.getAnimationHandler().getIdle_mc();
                 }
                 break;
         }
@@ -244,16 +190,6 @@ public class MainCharacter extends Sprite {
             return "RIGHT";
     }
 
-    public Integer getLife(){
-        return this.life;
-    }
-
-    public Integer getMana(){ return this.mana; }
-
-    public Integer getMoney(){ return this.money; }
-
-    public Integer getLevel(){ return this.level; }
-
     public void decreaseLife(int quantity){  //Método para quitarle vida cuando le atacan.
         long iFrameDuration = 3000000000L;
 
@@ -265,6 +201,7 @@ public class MainCharacter extends Sprite {
             this.life = this.life - quantity;
             startTime = TimeUtils.nanoTime();
         }
+        screen.getUI().updateLife(this);
     }
 
     public void addMoney(int sum){
@@ -279,6 +216,14 @@ public class MainCharacter extends Sprite {
     public void teleport(float x, float y){
         b2body.setTransform(x, y, 0);
     }
+
+    public Integer getLife(){return this.life;}
+
+    public Integer getMana(){return this.mana;}
+
+    public Integer getMoney(){return this.money;}
+
+    public Integer getLevel(){return this.level;}
 
     public void setX(int x){
         this.x = x;

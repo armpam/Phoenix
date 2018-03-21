@@ -19,6 +19,7 @@ public class Sensor extends RectTileObject {
         body.setGravityScale(0);
 
         fixture.setUserData(this);
+        fixture.setSensor(true);
         setCategoryFilter(Game.SENSOR_BIT);
     }
     @Override

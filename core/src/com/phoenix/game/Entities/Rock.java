@@ -2,11 +2,9 @@ package com.phoenix.game.Entities;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
-import com.phoenix.game.Tools.ScreenHandler;
 
 /**
  * Created by alesd on 2/24/2017.
@@ -36,6 +34,9 @@ public class Rock extends RectTileObject {
         }
         else if(this.object.getProperties().containsKey("water")) {
             screen.setTpFlag();
+        }
+        else if(this.object.getProperties().containsKey("city_1")){
+            screen.setCityFlag();
         }
     }
 
