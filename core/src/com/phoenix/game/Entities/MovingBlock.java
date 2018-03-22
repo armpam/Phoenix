@@ -86,9 +86,9 @@ public class MovingBlock extends Sprite implements MovingRectTileObject {
     }
 
     public void update(float delta){
-        move();
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta));
+        move();
     }
 
     public TextureRegion getFrame(float delta){

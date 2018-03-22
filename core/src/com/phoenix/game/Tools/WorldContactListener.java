@@ -43,6 +43,7 @@ public class WorldContactListener implements ContactListener {
         handlePlayerCollision(fixA, fixB); //El jugador colisiona con algo
         handleFireBallCollision(fixA, fixB); // Una bola de fuego colisiona con algo
         handleMovingBlockCollision(fixA, fixB);
+        handleEnemyCollision(fixA, fixB);
 
     }
 
@@ -96,10 +97,6 @@ public class WorldContactListener implements ContactListener {
             if(object.getUserData() instanceof Ladder){
                 ((Ladder) object.getUserData()).onPlayerHit();
             }
-            if(object.getUserData() instanceof Skeleton){
-                ((MainCharacter) player.getUserData()).decreaseLife(100);
-                Gdx.app.log("X Inicial: ", Float.toString(((Skeleton) object.getUserData()).getX()));
-            }
         }
     }
 
@@ -143,6 +140,25 @@ public class WorldContactListener implements ContactListener {
                 ((MovingBlock) object.getUserData()).reverseVelocity();
             }else if (object.getUserData() instanceof Sensor){
                 ((MovingBlock) movingBlock.getUserData()).reverseVelocity();
+            }
+        }
+    }
+
+    private void handleEnemyCollision(Fixture fixA, Fixture fixB) {
+
+        if (fixA.getUserData() instanceof Enemy || fixB.getUserData() instanceof Enemy) {
+            Fixture enemy;
+            Fixture object;
+
+            if (fixA.getUserData() instanceof Enemy) {
+                enemy = fixA;
+                object = fixB;
+            } else {
+                enemy = fixB;
+                object = fixA;
+            }
+            if(object.getUserData() instanceof Rock){
+                ((Enemy) enemy.getUserData()).reverseVelocity();
             }
         }
     }

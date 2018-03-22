@@ -14,15 +14,11 @@ import com.phoenix.game.Tools.AnimationHandler;
 
 public class Skeleton extends Enemy{
 
-    //Posición inicial del enemigo
-
-    private float SCSpeed = 0.05f; //Velocidad del enemigo en persecución
-    private boolean fight = false; //Indica si el enemigo está en modo lucha
-    private final float AGGRO = 150; //Distancia para que empieze el modo lucha
-
     public Skeleton(GameScreen gscreen, float x, float y, MapObject object, TiledMap map) {
         super(gscreen, x, y, object, map);
-        movSpeed = 0.005f;
+        movSpeed = 1f;
+        SCSpeed = 0.2f;
+        AGGRO = 1;
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
     }
@@ -68,30 +64,5 @@ public class Skeleton extends Enemy{
         move();
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
-    }
-
-    public void move() {  //Movimiento del enemigo
-        this.body.setLinearVelocity(new Vector2(0.005f, 0 ));
-    }
-
-    private void chase(MainCharacter mcharacter, float distance) {
-        if (distance > (AGGRO / Game.PPM)){  //Si el Mcaracter se aleja lo suficiente entonces deja de persegirlo
-            if (fight == true) {
-                this.body.setLinearVelocity(0,0); //Para que el enémigo no salga disparado si estaba persiguiendo
-            }
-                fight = false;
-        } else  //Sino se aleja lo suficiente persigue al protagonista según su posición
-            if ((this.body.getPosition().x < mcharacter.b2body.getPosition().x) && (this.body.getLinearVelocity().x < 0.8)) {
-                this.body.applyLinearImpulse(new Vector2(SCSpeed, 0), this.body.getWorldCenter(), true);
-        }
-            if ((this.body.getPosition().y > mcharacter.b2body.getPosition().y) && (this.body.getLinearVelocity().y > -0.8)) {
-                this.body.applyLinearImpulse(new Vector2(0, -SCSpeed), this.body.getWorldCenter(), true);
-        }
-            if ((this.body.getPosition().x > mcharacter.b2body.getPosition().x && (this.body.getLinearVelocity().x > -0.8))) {
-                this.body.applyLinearImpulse(new Vector2(-SCSpeed, 0), this.body.getWorldCenter(), true);
-        }
-            if ((this.body.getPosition().y < mcharacter.b2body.getPosition().y) && (this.body.getLinearVelocity().y < 0.8)) {
-                this.body.applyLinearImpulse(new Vector2(0, SCSpeed), this.body.getWorldCenter(), true);
-        }
     }
 }
