@@ -30,7 +30,6 @@ public abstract class Enemy extends Sprite {
     protected World world;
 
     protected float SCSpeed; //Velocidad del enemigo en persecución
-    protected boolean fight = false; //Indica si el enemigo está en modo lucha
     protected boolean retreatFlag = false;
     protected boolean changeDirections = false;
     protected float AGGRO; //Distancia para que empieze el modo lucha
@@ -43,6 +42,7 @@ public abstract class Enemy extends Sprite {
     protected float initialX;
     protected float initialY;
     protected Vector2 initialVector;
+    protected Vector2 directionVector;
 
     protected Rectangle bounds;
     protected BodyDef bdef;
@@ -68,6 +68,7 @@ public abstract class Enemy extends Sprite {
         this.initialY = y;
         this.object = object;
         this.initialVector = new Vector2(x, y);
+        this.directionVector = new Vector2(25.2f, 8.96f);
 
         shape = new PolygonShape();
 
@@ -83,7 +84,7 @@ public abstract class Enemy extends Sprite {
         fixture.setUserData(this);
     }
 
-    protected void define(){ //Este metodo lo definiremos en cada Enemigo, ya que cada Enemigo es diferente
+    private void define(){ //Este metodo lo definiremos en cada Enemigo, ya que cada Enemigo es diferente
 
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / Game.PPM, (bounds.getY() + bounds.getHeight() / 2) / Game.PPM );
@@ -134,8 +135,15 @@ public abstract class Enemy extends Sprite {
                 if((int) body.getPosition().x == (int) initialX && (int)body.getPosition().y == (int) initialY) {
                     changeDirections = false;
                 }
-            } else if (direction.equals("vertical")) {
+            } else if (direction.equals("vertical") && (body.getPosition().dst(screen.getMcharacter().b2body.getPosition())) > AGGRO) {
                 this.body.setLinearVelocity(0, movSpeed);
+                if(body.getPosition().dst2(initialVector) > 5 && !changeDirections){
+                    reverseVelocity();
+                    changeDirections = true;
+                }
+                if((int) body.getPosition().x == (int) initialX && (int)body.getPosition().y == (int) initialY) {
+                    changeDirections = false;
+                }
             }
             else{
                 chase(screen.getMcharacter());
@@ -146,47 +154,28 @@ public abstract class Enemy extends Sprite {
                 retreatFlag = true;
             }
             else{
-                if(body.getPosition().x < initialX && body.getLinearVelocity().x < 0.3){
-                    body.applyLinearImpulse(SCSpeed, 0, initialX, initialY, true);
-                }
-                if(body.getPosition().x > initialX && body.getLinearVelocity().x > -0.3){
-                    body.applyLinearImpulse(-SCSpeed, 0, initialX, initialY, true);
-                }
-                if(body.getPosition().y < initialY && body.getLinearVelocity().y < 0.3){
-                    body.applyLinearImpulse(0, SCSpeed, initialX, initialY, true);
-                }
-                if(body.getPosition().y > initialY && body.getLinearVelocity().y > -0.3){
-                    body.applyLinearImpulse(0, -SCSpeed, initialX, initialY, true);
-                }
-                if((int) body.getPosition().x == (int) initialX && (int)body.getPosition().y == (int) initialY){
+                directionVector = initialVector.sub(body.getPosition());
+                directionVector.nor();
+                body.setLinearVelocity(directionVector);
+                initialVector.x = initialX;
+                initialVector.y = initialY;
+                if((int) body.getPosition().x == (int) initialX && (int)body.getPosition().y == (int) initialY) {
                     retreatFlag = false;
                 }
             }
         }
     }
 
-    protected void chase(MainCharacter mc){
+    private void chase(MainCharacter mc){
 
-        if(body.getPosition().x < mc.b2body.getPosition().x && body.getLinearVelocity().x < 0.1){
-            body.applyLinearImpulse(SCSpeed, 0, initialX, initialY, true);
-        }
-        if(body.getPosition().x > mc.b2body.getPosition().x && body.getLinearVelocity().x > -0.1){
-            body.applyLinearImpulse(-SCSpeed, 0, initialX, initialY, true);
-        }
-        if(body.getPosition().y < mc.b2body.getPosition().y && body.getLinearVelocity().y < 0.1){
-            body.applyLinearImpulse(0, SCSpeed, initialX, initialY, true);
-        }
-        if(body.getPosition().y > mc.b2body.getPosition().y && body.getLinearVelocity().y > -0.1){
-            body.applyLinearImpulse(0, -SCSpeed, initialX, initialY, true);
-        }
+        body.setLinearVelocity((mc.b2body.getPosition().sub(body.getPosition())).nor());
     }
 
     public void reverseVelocity(){
         movSpeed = -movSpeed;
     }
 
-    protected void getDirection(){
-
+    private void getDirection(){
         if(this.object.getProperties().get("direction").equals("horizontal")){
             direction = "horizontal";
         }

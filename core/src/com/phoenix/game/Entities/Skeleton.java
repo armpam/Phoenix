@@ -17,8 +17,8 @@ public class Skeleton extends Enemy{
     public Skeleton(GameScreen gscreen, float x, float y, MapObject object, TiledMap map) {
         super(gscreen, x, y, object, map);
         movSpeed = 1f;
-        SCSpeed = 0.2f;
-        AGGRO = 1;
+        SCSpeed = 0.4f;
+        AGGRO = 3;
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
     }

@@ -18,8 +18,10 @@ import java.util.Random;
 public class Orc extends Enemy {
 
     public Orc(GameScreen gscreen, float x, float y, MapObject object, TiledMap map){
-        super(gscreen, x, y, object, map); //
-        define();
+        super(gscreen, x, y, object, map);
+        movSpeed = 0.5f;
+        SCSpeed = 0.25f;
+        AGGRO = 2;
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
     }
@@ -61,6 +63,7 @@ public class Orc extends Enemy {
     }
 
     public void update(float delta){
+        move();
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
     }
