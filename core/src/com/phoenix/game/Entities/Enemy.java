@@ -33,6 +33,7 @@ public abstract class Enemy extends Sprite {
     protected boolean retreatFlag = false;
     protected boolean changeDirections = false;
     protected float AGGRO; //Distancia para que empieze el modo lucha
+    protected float CHASEDISTANCE;
     protected float movSpeed;
     protected String direction;
 
@@ -82,6 +83,7 @@ public abstract class Enemy extends Sprite {
 
         setCategoryFilter(Game.ENEMY_BIT);
         fixture.setUserData(this);
+        body.setActive(false);
     }
 
     private void define(){ //Este metodo lo definiremos en cada Enemigo, ya que cada Enemigo es diferente
@@ -125,7 +127,7 @@ public abstract class Enemy extends Sprite {
     }
 
     protected void move(){
-        if(this.body.getPosition().dst2(initialVector) < 10 && !retreatFlag) {
+        if(this.body.getPosition().dst2(initialVector) < CHASEDISTANCE && !retreatFlag) {
             if (direction.equals("horizontal") && (body.getPosition().dst(screen.getMcharacter().b2body.getPosition())) > AGGRO) {
                 this.body.setLinearVelocity(movSpeed, 0);
                 if(body.getPosition().dst2(initialVector) > 5 && !changeDirections){
@@ -167,7 +169,6 @@ public abstract class Enemy extends Sprite {
     }
 
     private void chase(MainCharacter mc){
-
         body.setLinearVelocity((mc.b2body.getPosition().sub(body.getPosition())).nor());
     }
 
@@ -188,5 +189,9 @@ public abstract class Enemy extends Sprite {
         else{
             direction = "none";
         }
+    }
+
+    public Body getBody(){
+        return body;
     }
 }

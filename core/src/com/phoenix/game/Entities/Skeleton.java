@@ -17,8 +17,9 @@ public class Skeleton extends Enemy{
     public Skeleton(GameScreen gscreen, float x, float y, MapObject object, TiledMap map) {
         super(gscreen, x, y, object, map);
         movSpeed = 1f;
-        SCSpeed = 0.4f;
-        AGGRO = 3;
+        SCSpeed = 0.8f;
+        AGGRO = 2;
+        CHASEDISTANCE = 40;
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
     }
@@ -61,8 +62,10 @@ public class Skeleton extends Enemy{
     }
 
     public void update(float delta){
-        move();
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-        setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
+            if(body.isActive()) {
+                move();
+                setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+            }
+            setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
     }
 }

@@ -3,13 +3,9 @@ package com.phoenix.game.Entities;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
-
-import java.util.Random;
 
 /**
  * Created by alesd on 23/03/2017.
@@ -22,6 +18,7 @@ public class Orc extends Enemy {
         movSpeed = 0.5f;
         SCSpeed = 0.25f;
         AGGRO = 2;
+        CHASEDISTANCE = 40;
         fixture.setUserData(this);
         setCategoryFilter(Game.ENEMY_BIT);
     }

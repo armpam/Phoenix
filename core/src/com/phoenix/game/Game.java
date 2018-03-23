@@ -23,6 +23,7 @@ public class Game extends com.badlogic.gdx.Game {
 	public static final short ENEMY_BIT = 512;
 	public static final short LADDER_BIT = 1024;
 	public static final short MB_BIT = 2048;
+	public static final short LIGHTBALL_BIT = 5096;
 	
 	@Override
 	public void create () {

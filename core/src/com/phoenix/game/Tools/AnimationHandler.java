@@ -15,7 +15,10 @@ public class AnimationHandler implements Disposable {
 
     private static AnimationHandler mAnimationHandler = null;
 
+    Array<TextureRegion> frames = new Array<TextureRegion>();
+
     private Texture sidescroll;
+    private Texture ballsPack;
 
     //Esqueleto simple
     private Texture simpleSkeleton;
@@ -43,6 +46,15 @@ public class AnimationHandler implements Disposable {
     private Animation runRight_orc;
     private Animation runUp_orc;
     private Animation runDown_orc;
+
+    //Elfo oscuro
+
+    private Texture darkElf;
+
+    private TextureRegion idle_elf;
+
+    private Animation shootingRight;
+    private Animation shootingLeft;
 
     //Moneda
     private Texture coin;
@@ -75,23 +87,40 @@ public class AnimationHandler implements Disposable {
     private Animation fanim_left;
     private Animation fanim_right;
 
+    //Murciélago
+    private Texture dungeon;
+
+    private Animation bat_up;
+    private Animation bat_down;
+    private Animation bat_left;
+    private Animation bat_right;
+
+    //Texturas sueltas
+
+    private TextureRegion lightBall;
 
     private AnimationHandler(){
 
         sidescroll = new Texture(Gdx.files.internal("generic_platformer_tiles.png"));
         simpleSkeleton = new Texture(Gdx.files.internal("simple_skeleton.png"));
+        darkElf = new Texture(Gdx.files.internal("dark_elf.png"));
         simpleOrc = new Texture(Gdx.files.internal("simple_orc.png"));
         coin = new Texture(Gdx.files.internal("coin.png"));
         mainCharacter = new Texture(Gdx.files.internal("main.png"));
         fireBall = new Texture(Gdx.files.internal("package_64.png"));
+        ballsPack = new Texture(Gdx.files.internal("balls.png"));
+        dungeon = new Texture(Gdx.files.internal("dungeon_pack.png"));
 
         movingBlock = new TextureRegion(sidescroll, 32, 192, 64, 32);
+        lightBall = new TextureRegion(ballsPack,0, 0 , 32, 32);
 
         initSkeletonAnimations(simpleSkeleton);
         initOrcAnimations(simpleOrc);
         initCoinAnimation(coin);
         initMCAnimations(mainCharacter);
         initFireBallAnimations(fireBall);
+        initElfAnimations(darkElf);
+        initBatAnimations(dungeon);
     }
 
     public static AnimationHandler getAnimationHandler(){
@@ -102,8 +131,6 @@ public class AnimationHandler implements Disposable {
     }
 
     private void initSkeletonAnimations(Texture mainTexture){
-
-        Array<TextureRegion> frames = new Array<TextureRegion>();
 
         for(int i = 0; i < 9; i++){
             frames.add(new TextureRegion(mainTexture, i* 64, 512, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
@@ -136,7 +163,6 @@ public class AnimationHandler implements Disposable {
     }
 
     private void initOrcAnimations(Texture mainTexture){
-        Array<TextureRegion> frames = new Array<TextureRegion>();
 
         for(int i = 0; i < 9; i++){
             frames.add(new TextureRegion(mainTexture, i* 64, 512, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
@@ -170,8 +196,6 @@ public class AnimationHandler implements Disposable {
 
     private void initCoinAnimation(Texture mainTexture){
 
-        Array<TextureRegion> frames = new Array<TextureRegion>();
-
         for(int i = 0; i < 7; i++){
             frames.add(new TextureRegion(mainTexture, i* 64, 0, 32, 32));
         }
@@ -181,8 +205,6 @@ public class AnimationHandler implements Disposable {
     }
 
     private void initMCAnimations(Texture mainTexture){
-
-        Array<TextureRegion> frames = new Array<TextureRegion>();
 
         for(int i = 0; i < 9; i++){
             frames.add(new TextureRegion(mainTexture, i* 64, 512, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
@@ -216,8 +238,6 @@ public class AnimationHandler implements Disposable {
 
     private void initFireBallAnimations(Texture mainTexture){
 
-        Array<TextureRegion> frames = new Array<TextureRegion>();
-
         for(int i = 0; i < 8; i++){
             frames.add(new TextureRegion(mainTexture, i* 64, 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
         }
@@ -244,12 +264,49 @@ public class AnimationHandler implements Disposable {
         frames.clear();
     }
 
-    public Texture getSimpleSkeleton() {
-        return simpleSkeleton;
+    private void initElfAnimations(Texture mainTexture){
+
+        for(int i = 0; i < 6; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        shootingRight = new Animation(0.2f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 6; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        }
+        shootingLeft = new Animation(0.2f, frames);
+        frames.clear();
+
+        idle_elf = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
     }
 
-    public Texture getSimpleOrc() {
-        return simpleOrc;
+    private void initBatAnimations(Texture mainTexture){
+
+        for(int i = 0; i < 2; i++){
+            frames.add(new TextureRegion(mainTexture, i* 32, 160, 32, 32));
+        }
+        bat_left = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 2; i++){
+            frames.add(new TextureRegion(mainTexture, i* 32, 128, 32, 32));
+        }
+        bat_up = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 0; i < 2; i++){
+            frames.add(new TextureRegion(mainTexture, i* 32, 224, 32, 32));
+        }
+        bat_right = new Animation(0.1f, frames);
+
+        frames.clear();
+
+        for(int i = 0; i < 2; i++){
+            frames.add(new TextureRegion(mainTexture, i* 32, 192, 32, 32));
+        }
+        bat_down = new Animation(0.1f, frames);
+        frames.clear();
     }
 
     public TextureRegion getMovingBlock() {
@@ -313,6 +370,24 @@ public class AnimationHandler implements Disposable {
     public Animation getFanim_left() {return fanim_left;}
 
     public Animation getFanim_right() {return fanim_right;}
+
+    public TextureRegion getIdleElf(){
+        return idle_elf;
+    }
+
+    public Animation getElfShootingRight(){return shootingRight;}
+
+    public Animation getElfShootingLeft(){return shootingLeft;}
+
+    public TextureRegion getLightBall(){return lightBall;}
+
+    public Animation getBatUp(){return bat_up;}
+
+    public Animation getBatDown(){return bat_down;}
+
+    public Animation getBatLeft(){return bat_left;}
+
+    public Animation getBatRight(){return bat_right;}
 
     @Override
     public void dispose() {

@@ -36,6 +36,8 @@ public class MainFireball extends Sprite {
 
     Body b2body;
     Fixture fixture;
+    BodyDef bdef = new BodyDef();
+    FixtureDef fdef = new FixtureDef();
 
     public MainFireball(GameScreen gscreen, float x, float y, String direction ){
 
@@ -50,19 +52,16 @@ public class MainFireball extends Sprite {
 
     private void defineFireball(){
 
-        BodyDef bdef = new BodyDef();
         bdef.position.set(getX(), getY());
         bdef.type = BodyDef.BodyType.DynamicBody;
         if(!world.isLocked()){ //Si no hemos parado el mundo
             b2body = world.createBody(bdef);
         }
 
-        FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Game.PPM);
         fdef.filter.categoryBits = Game.MAIN_FBALL_BIT;
-        fdef.filter.maskBits = Game.CHEST_BIT | Game.TREE_BIT |Game.ROCK_BIT |
-                Game.MC_BIT | Game.ENEMY_BIT;
+        fdef.filter.maskBits = Game.CHEST_BIT | Game.TREE_BIT |Game.ROCK_BIT | Game.ENEMY_BIT;
 
         fdef.shape = shape;
         fdef.restitution = 0;
@@ -133,7 +132,6 @@ public class MainFireball extends Sprite {
 
         stateTime = stateTime + delta; //El StateTimer es magia, pero hay que sumarle delta para que se anime bien
         return region;
-
     }
 
     public void setToDestroy(){

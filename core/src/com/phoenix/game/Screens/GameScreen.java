@@ -14,7 +14,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.phoenix.game.Entities.Bat;
 import com.phoenix.game.Entities.Coin;
+import com.phoenix.game.Entities.DarkElf;
+import com.phoenix.game.Entities.LightBall;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Entities.MainFireball;
 import com.phoenix.game.Entities.MovingBlock;
@@ -39,6 +42,9 @@ public class GameScreen implements Screen {
     private Viewport gamePort;
     private Main_UI UI;
 
+    static final float STEP_TIME = 1f/60f;
+    float accumulator = 0;
+
     private MainCharacter mcharacter;
     private float spawnX;
     private float spawnY;
@@ -49,6 +55,7 @@ public class GameScreen implements Screen {
     private boolean jumpLock;
     private final long JMPCD = 900000000;
     private final long FBCD = 500000000; //CD en nanosegundos de la bola de fuego
+    private final float ACTIVATE_DISTANCE = 13;
     private long startTime = 0;
 
     //Variables relacionadas con el/los mapas
@@ -172,7 +179,7 @@ public class GameScreen implements Screen {
         else
             handleInput(delta);
 
-        world.step(1f/60f, 6, 2);
+        stepWorld();
 
         //La cámara sigue al jugador
         cam.position.x = mcharacter.b2body.getPosition().x;
@@ -195,9 +202,30 @@ public class GameScreen implements Screen {
         }
         for(Skeleton sk : b2wc.getSkeletonArray()){
             sk.update(delta);
+            if(!sk.getBody().isActive()) {
+                if (sk.getBody().getPosition().dst2(mcharacter.b2body.getPosition()) < ACTIVATE_DISTANCE) {
+                    sk.getBody().setActive(true);
+                    }
+            }
         }
         for(Orc orc : b2wc.getOrcArray()){
             orc.update(delta);
+            if(!orc.getBody().isActive()) {
+                if (orc.getBody().getPosition().dst2(mcharacter.b2body.getPosition()) < ACTIVATE_DISTANCE) {
+                    orc.getBody().setActive(true);
+                    }
+                }
+        }
+        for(DarkElf de : b2wc.getElfArray()){
+            de.update(delta);
+            if(!de.getBody().isActive()) {
+            if (de.getBody().getPosition().dst2(mcharacter.b2body.getPosition()) < ACTIVATE_DISTANCE) {
+             de.getBody().setActive(true);
+            }
+             }
+        }
+        for(Bat bat : b2wc.getBatArray()){
+            bat.update(delta);
         }
     }
 
@@ -296,6 +324,17 @@ public class GameScreen implements Screen {
         for(Orc orc : b2wc.getOrcArray()){
             orc.draw(game.batch);
         }
+        for(DarkElf de : b2wc.getElfArray()){
+            de.draw(game.batch);
+        }
+        for(DarkElf darkElf : b2wc.getElfArray()){
+            for(LightBall lb : darkElf.getLightBalls()){
+                lb.draw(game.batch);
+            }
+        }
+        for(Bat bat : b2wc.getBatArray()){
+            bat.draw(game.batch);
+        }
         //El batch dibuja la UI con la cámara de la UI, que es estática
         game.batch.setProjectionMatrix(UI.stage.getCamera().combined);
 
@@ -379,6 +418,18 @@ public class GameScreen implements Screen {
                 spawnX = 6.1f;
                 spawnY = 9.4f;
             }
+        }
+    }
+
+    private void stepWorld() {
+        float delta = Gdx.graphics.getDeltaTime();
+
+        accumulator += Math.min(delta, 0.25f);
+
+        if (accumulator >= STEP_TIME) {
+            accumulator -= STEP_TIME;
+
+            world.step(STEP_TIME, 6, 2);
         }
     }
 

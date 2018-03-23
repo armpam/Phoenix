@@ -11,6 +11,7 @@ import com.phoenix.game.Entities.Chest;
 import com.phoenix.game.Entities.Coin;
 import com.phoenix.game.Entities.Enemy;
 import com.phoenix.game.Entities.Ladder;
+import com.phoenix.game.Entities.LightBall;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Entities.MainFireball;
 import com.phoenix.game.Entities.MovingBlock;
@@ -96,6 +97,10 @@ public class WorldContactListener implements ContactListener {
 
             if(object.getUserData() instanceof Ladder){
                 ((Ladder) object.getUserData()).onPlayerHit();
+            }
+
+            if(object.getUserData() instanceof LightBall){
+                ((LightBall) object.getUserData()).setToDestroy();
             }
         }
     }
