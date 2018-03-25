@@ -1,4 +1,4 @@
-package com.phoenix.game.Entities;
+package com.phoenix.game.Enemies;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
@@ -16,7 +16,7 @@ import com.phoenix.game.Tools.AnimationHandler;
 
 public class DarkElf extends Enemy {
 
-    private Array<LightBall> lightBalls;
+    private Array<com.phoenix.game.Projectiles.LightBall> lightBalls;
     private boolean lockLB;
     private final long LBCD = 300000000;
     private float stateTime;
@@ -30,16 +30,19 @@ public class DarkElf extends Enemy {
         SCSpeed = 0f;
         AGGRO = 10;
         CHASEDISTANCE = 0;
-        lightBalls = new Array<LightBall>();
+        hp = 500;
+        ap = 100;
+        xp = 150;
+        lightBalls = new Array<com.phoenix.game.Projectiles.LightBall>();
         region = new TextureRegion();
         lockLB = false;
         fixture.setUserData(this);
         body.setType(BodyDef.BodyType.StaticBody);
-        fdef.filter.maskBits = Game.MAIN_FBALL_BIT;
         setCategoryFilter(Game.ENEMY_BIT);
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
     }
 
+    @Override
     public void update(float delta){
         if(body.isActive()) {
             if (body.getPosition().dst2(screen.getMcharacter().b2body.getPosition()) < AGGRO && !lockLB) {
@@ -58,7 +61,7 @@ public class DarkElf extends Enemy {
         if(lockLB){
             lockLightBall(startTime);
         }
-        for(LightBall lb : lightBalls){ //Actualiza las bolas de fuego
+        for(com.phoenix.game.Projectiles.LightBall lb : lightBalls){ //Actualiza las bolas de fuego
             lb.update(delta);
             if(lb.isDestroyed()){
                 lightBalls.removeValue(lb, true); //Elimina la bola de fuego del array si se ha destruido
@@ -67,7 +70,7 @@ public class DarkElf extends Enemy {
     }
 
     private void shoot(){
-        LightBall lb = new LightBall(this.screen, body.getPosition().x, body.getPosition().y);
+        com.phoenix.game.Projectiles.LightBall lb = new com.phoenix.game.Projectiles.LightBall(this.screen, body.getPosition().x, body.getPosition().y);
         lightBalls.add(lb);
     }
 
@@ -86,7 +89,7 @@ public class DarkElf extends Enemy {
         }
     }
 
-    private TextureRegion getFrame(float delta){
+    public TextureRegion getFrame(float delta){
 
         if (right){
             region = (TextureRegion) AnimationHandler.getAnimationHandler().getElfShootingRight().getKeyFrame(stateTime, true);
@@ -98,7 +101,12 @@ public class DarkElf extends Enemy {
        return region;
     }
 
-    public Array<LightBall> getLightBalls(){
+    @Override
+    public void move(){
+
+    }
+
+    public Array<com.phoenix.game.Projectiles.LightBall> getLightBalls(){
         return lightBalls;
     }
 }

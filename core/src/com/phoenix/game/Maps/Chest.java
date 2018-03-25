@@ -1,4 +1,4 @@
-package com.phoenix.game.Entities;
+package com.phoenix.game.Maps;
 
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.maps.MapObject;
@@ -6,14 +6,13 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Game;
-import com.phoenix.game.Tools.ScreenHandler;
 import com.phoenix.game.Tools.SoundHandler;
 
 /**
  * Created by alesd on 3/22/2017.
  */
 
-public class Chest extends RectTileObject {
+public class Chest extends com.phoenix.game.Maps.RectTileObject {
 
     private static TiledMapTileSet tileset;
     private final int OPEN_CHEST_MAP_1 = 1026;

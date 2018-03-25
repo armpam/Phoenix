@@ -1,4 +1,4 @@
-package com.phoenix.game.Entities;
+package com.phoenix.game.Projectiles;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -82,7 +82,7 @@ public class LightBall extends Sprite {
     }
 
     public Vector2 getDirection(){
-        return screen.getMcharacter().b2body.getPosition().sub(b2body.getPosition()).nor();
+        return screen.getMcharacter().b2body.getPosition().sub(b2body.getPosition()).nor().scl(2);
     }
 
     public void setToDestroy(){

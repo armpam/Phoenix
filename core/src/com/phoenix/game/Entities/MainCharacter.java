@@ -1,6 +1,6 @@
 package com.phoenix.game.Entities;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -12,8 +12,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.phoenix.game.Game;
+import com.phoenix.game.Projectiles.IceBall;
+import com.phoenix.game.Projectiles.LightBall;
+import com.phoenix.game.Projectiles.LightningBall;
+import com.phoenix.game.Projectiles.MainFireball;
+import com.phoenix.game.Projectiles.MainProjectile;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
+import com.phoenix.game.Tools.SoundHandler;
 
 /**
  * Created by alesd on 2/23/2017.
@@ -30,10 +36,16 @@ public class MainCharacter extends Sprite {
     private int y = 100;
 
     //Atributos del jugador
-    private Integer life;
-    private Integer mana;
-    private Integer money;
-    private Integer level;
+    private int life;
+    private int maxLife;
+    private int mana;
+    private int maxMana;
+    private int money;
+    private int level;
+    private int ap;
+    private int dp;
+    private int currentXp;
+    private int xpGoal;
 
     //Invisible al daño cuando es True
     private boolean iframe = false;
@@ -50,7 +62,7 @@ public class MainCharacter extends Sprite {
     private BodyDef bdef = new BodyDef();
     private FixtureDef fdef = new FixtureDef();
 
-    private Array<MainFireball> fireballs;
+    private Array<MainProjectile> projectiles;
 
     private float stateTimer;
 
@@ -62,14 +74,18 @@ public class MainCharacter extends Sprite {
         currentState = MovState.IDLE;
         stateTimer = 0;
         this.screen = screen;
-        this.fireballs = new Array<MainFireball>();
+        this.projectiles = new Array<MainProjectile>();
 
         setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
 
         this.life = 1000;
-        this.mana = 200;
+        this.mana = 1000;
         this.money = 0;
         this.level = 1;
+        this.ap = 1;
+        this.dp = 1;
+        this.currentXp = 0;
+        this.xpGoal = 1000;
     }
 
     public MainCharacter(World world, GameScreen screen, MainCharacter cmc){
@@ -78,7 +94,7 @@ public class MainCharacter extends Sprite {
         currentState = MovState.IDLE;
         stateTimer = 0;
         this.screen = screen;
-        this.fireballs = new Array<MainFireball>();
+        this.projectiles = new Array<MainProjectile>();
 
         setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
 
@@ -94,10 +110,10 @@ public class MainCharacter extends Sprite {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
 
-        for(MainFireball fireball : fireballs){ //Actualiza las bolas de fuego
-            fireball.update(delta);
-            if(fireball.isDestroyed()){
-                fireballs.removeValue(fireball, true); //Elimina la bola de fuego del array si se ha destruido
+        for(com.phoenix.game.Projectiles.MainProjectile projectile : projectiles){ //Actualiza las bolas de fuego
+            projectile.update(delta);
+            if(projectile.isDestroyed()){
+                projectiles.removeValue(projectile, true); //Elimina la bola de fuego del array si se ha destruido
             }
         }
     }
@@ -206,29 +222,61 @@ public class MainCharacter extends Sprite {
         screen.getUI().updateLife(this);
     }
 
-    public void addMoney(int sum){
-        money = money + sum;
+    public void fire(int projectile){
+        if(projectile == 1){
+            MainFireball fireball = new MainFireball(this.screen, b2body.getPosition().x, b2body.getPosition().y, getPreviousState());
+            projectiles.add(fireball);
+            mana = mana - 100;
+        }
+        else if(projectile == 2){
+            IceBall iceball = new IceBall(this.screen, b2body.getPosition().x, b2body.getPosition().y, getPreviousState());
+            projectiles.add(iceball);
+            mana = mana - 50;
+        }
+        else{
+            LightningBall lightningBall = new LightningBall(this.screen, b2body.getPosition().x, b2body.getPosition().y, getPreviousState());
+            projectiles.add(lightningBall);
+            mana = mana - 50;
+        }
+        screen.getUI().updateMana(this);
     }
 
-    public void fire(){
-        MainFireball fireball = new MainFireball(this.screen, b2body.getPosition().x, b2body.getPosition().y, getPreviousState());
-        fireballs.add(fireball);
+    public void onCoinHit(int value){
+        money = money + value;
+        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/coin.ogg", Music.class).play();
+        screen.getUI().updateScore(this);
+    }
+
+    public void lvlUp(){
+        level = level + 1;
+        maxLife = life + 200;
+        maxMana = maxMana + 200;
+        life = maxLife;
+        mana = maxMana;
+        ap = ap + 1;
+        dp = dp + 1;
+        xpGoal = xpGoal * 2;
+        screen.getUI().updateUI(this);
     }
 
     public void teleport(float x, float y){
         b2body.setTransform(x, y, 0);
     }
 
-    public Integer getLife(){return this.life;}
+    public int getLife(){return this.life;}
 
-    public Integer getMana(){return this.mana;}
+    public int getMana(){return this.mana;}
 
-    public Integer getMoney(){return this.money;}
+    public int getAp(){return ap;}
 
-    public Integer getLevel(){return this.level;}
+    public int getDp(){return dp;}
 
-    public Array<MainFireball> getFireballs(){
-        return this.fireballs;
+    public int getMoney(){return this.money;}
+
+    public int getLevel(){return this.level;}
+
+    public Array<MainProjectile> getProjectiles(){
+        return this.projectiles;
     }
 
 }

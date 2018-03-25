@@ -1,4 +1,4 @@
-package com.phoenix.game.Entities;
+package com.phoenix.game.Enemies;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
@@ -10,7 +10,7 @@ import com.phoenix.game.Tools.AnimationHandler;
  * Created by alesd on 3/23/2018.
  */
 
-public class Bat extends Enemy {
+public class Bat extends com.phoenix.game.Enemies.Enemy {
 
     private TextureRegion region;
     private float stateTimer;
@@ -18,17 +18,14 @@ public class Bat extends Enemy {
     public Bat(GameScreen gscreen, float x, float y, MapObject object, TiledMap map){
         super(gscreen, x, y, object, map);
         movSpeed = 3f;
+        hp = 1000;
+        ap =  100;
+        xp = 100;
         body.setActive(true);
         fixture.setUserData(this);
     }
 
-    public void update(float delta){
-        move();
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-        setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
-    }
-
-    private TextureRegion getFrame(float delta){
+    public TextureRegion getFrame(float delta){
         currentState = getState();
 
         switch(currentState) {
@@ -51,7 +48,7 @@ public class Bat extends Enemy {
     }
 
     @Override
-    protected void move(){
+    public void move(){
         if(direction.equals("horizontal")){
             this.body.setLinearVelocity(movSpeed, 0);
         }

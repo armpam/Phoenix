@@ -1,31 +1,25 @@
 package com.phoenix.game.Tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.phoenix.game.Entities.Chest;
-import com.phoenix.game.Entities.Coin;
-import com.phoenix.game.Entities.Enemy;
-import com.phoenix.game.Entities.Ladder;
-import com.phoenix.game.Entities.LightBall;
+import com.phoenix.game.Maps.Chest;
+import com.phoenix.game.Maps.Coin;
+import com.phoenix.game.Enemies.Enemy;
+import com.phoenix.game.Maps.Ladder;
+import com.phoenix.game.Maps.Tree;
+import com.phoenix.game.Projectiles.IceBall;
+import com.phoenix.game.Projectiles.LightBall;
 import com.phoenix.game.Entities.MainCharacter;
-import com.phoenix.game.Entities.MainFireball;
-import com.phoenix.game.Entities.MovingBlock;
-import com.phoenix.game.Entities.Rock;
-import com.phoenix.game.Entities.Sensor;
-import com.phoenix.game.Entities.Skeleton;
-import com.phoenix.game.Game;
+import com.phoenix.game.Projectiles.MainFireball;
+import com.phoenix.game.Projectiles.MainProjectile;
+import com.phoenix.game.Maps.MovingBlock;
+import com.phoenix.game.Maps.Rock;
+import com.phoenix.game.Maps.Sensor;
 import com.phoenix.game.Scenes.Main_UI;
-
-import org.lwjgl.Sys;
-
-import java.util.Random;
-
-import sun.applet.Main;
 
 /**
  * Created by alesd on 3/22/2017.
@@ -42,7 +36,7 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
 
         handlePlayerCollision(fixA, fixB); //El jugador colisiona con algo
-        handleFireBallCollision(fixA, fixB); // Una bola de fuego colisiona con algo
+        handleProjectileCollision(fixA, fixB); // Una bola de fuego colisiona con algo
         handleMovingBlockCollision(fixA, fixB);
         handleEnemyCollision(fixA, fixB);
 
@@ -86,13 +80,15 @@ public class WorldContactListener implements ContactListener {
 
             if (object.getUserData() instanceof Coin){
                 ((Coin) object.getUserData()).setToDestroy();
-                ((MainCharacter) player.getUserData()).addMoney(((Coin) object.getUserData()).getValue());
-                Main_UI.updateScore((MainCharacter) player.getUserData());
-                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/coin.ogg", Music.class).play();
+                ((MainCharacter) player.getUserData()).onCoinHit(((Coin) object.getUserData()).getValue());
             }
 
             if (object.getUserData() instanceof Rock) {
                 ((Rock) object.getUserData()).onPlayerHit();
+            }
+
+            if (object.getUserData() instanceof Tree) {
+                ((Tree) object.getUserData()).onPlayerHit();
             }
 
             if(object.getUserData() instanceof Ladder){
@@ -105,17 +101,17 @@ public class WorldContactListener implements ContactListener {
         }
     }
 
-    private void handleFireBallCollision(Fixture fixA, Fixture fixB) {
+    private void handleProjectileCollision(Fixture fixA, Fixture fixB) {
 
-        if (fixA.getUserData() instanceof MainFireball || fixB.getUserData() instanceof MainFireball) {
-            Fixture fireBall;
+        if (fixA.getUserData() instanceof MainProjectile || fixB.getUserData() instanceof MainProjectile) {
+            Fixture projectile;
             Fixture object;
 
-            if (fixA.getUserData() instanceof MainFireball) {
-                fireBall = fixA;
+            if (fixA.getUserData() instanceof MainProjectile) {
+                projectile = fixA;
                 object = fixB;
             } else {
-                fireBall = fixB;
+                projectile = fixB;
                 object = fixA;
             }
 
@@ -123,7 +119,17 @@ public class WorldContactListener implements ContactListener {
                 ((Chest) object.getUserData()).onFireBallHit(); //Sabemos que es un cofre asi que lo casteamos a cofre
             }
 
-            ((MainFireball) fireBall.getUserData()).setToDestroy(); //Si choca con algo la marcamos para que se destruya
+            if(object.getUserData() instanceof Enemy){
+                if (projectile.getUserData() instanceof IceBall){
+                    ((Enemy) object.getUserData()).slow();
+                }
+                if (projectile.getUserData() instanceof MainFireball){
+                    ((MainFireball) projectile.getUserData()).hurt((Enemy)object.getUserData());
+                }
+
+            }
+
+            ((MainProjectile) projectile.getUserData()).setToDestroy(); //Si choca con algo la marcamos para que se destruya
         }
     }
 
@@ -162,7 +168,7 @@ public class WorldContactListener implements ContactListener {
                 enemy = fixB;
                 object = fixA;
             }
-            if(object.getUserData() instanceof Rock){
+            if(object.getUserData() instanceof Rock || object.getUserData() instanceof Tree){
                 ((Enemy) enemy.getUserData()).reverseVelocity();
             }
         }

@@ -1,4 +1,4 @@
-package com.phoenix.game.Entities;
+package com.phoenix.game.Projectiles;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,29 +8,32 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.phoenix.game.Enemies.Enemy;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
 
 /**
- * Created by alesd on 3/24/2017.
+ * Created by alesd on 3/24/2018.
  */
 
-public class MainFireball extends Sprite {
+public abstract class MainProjectile extends Sprite {
 
     private GameScreen screen;
     private World world;
 
-    private float stateTime;
+    protected float stateTime;
 
     private boolean destroyed; //Está la bola destruida
     private boolean setToDestroy; //Marca la bola para que se destruya
 
-    private enum MovState {UP, DOWN, LEFT, RIGHT};
-    private MovState direction; // Dirección de la bola
+    private int damage;
 
-    private final int TEXT_WIDTH = 64;
-    private final int TEXT_HEIGHT = 64;
+    protected enum MovState {UP, DOWN, LEFT, RIGHT};
+    private MainProjectile.MovState direction; // Dirección de la bola
+
+    private final int TEXT_WIDTH = 32;
+    private final int TEXT_HEIGHT = 32;
 
     private final int FB_SPEED = 2; //Velocidad de la bola
 
@@ -39,18 +42,19 @@ public class MainFireball extends Sprite {
     BodyDef bdef = new BodyDef();
     FixtureDef fdef = new FixtureDef();
 
-    public MainFireball(GameScreen gscreen, float x, float y, String direction ){
+    public MainProjectile(GameScreen gscreen, float x, float y, String direction ){
 
         this.screen = gscreen;
         this.direction = intDirection(direction);
         this.world = screen.getWorld();
+        damage = 200 * screen.getMcharacter().getAp();
 
         setBounds(x, y, TEXT_WIDTH / Game.PPM, TEXT_HEIGHT / Game.PPM); //Posición en la que dibujar y tamaño del sprite
 
-        defineFireball();
+        define();
     }
 
-    private void defineFireball(){
+    private void define(){
 
         bdef.position.set(getX(), getY());
         bdef.type = BodyDef.BodyType.DynamicBody;
@@ -60,8 +64,8 @@ public class MainFireball extends Sprite {
 
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Game.PPM);
-        fdef.filter.categoryBits = Game.MAIN_FBALL_BIT;
-        fdef.filter.maskBits = Game.CHEST_BIT | Game.TREE_BIT |Game.ROCK_BIT | Game.ENEMY_BIT;
+        fdef.filter.categoryBits = Game.MAIN_PROJ_BIT;
+        fdef.filter.maskBits = Game.CHEST_BIT | Game.TREE_BIT | Game.ENEMY_BIT;
 
         fdef.shape = shape;
         fdef.restitution = 0;
@@ -70,13 +74,13 @@ public class MainFireball extends Sprite {
         fixture = b2body.createFixture(fdef);
         fixture.setUserData(this); //Clave para la colisión
 
-        if(direction == MovState.DOWN){
+        if(direction == MainProjectile.MovState.DOWN){
             b2body.setLinearVelocity(0,-FB_SPEED);
         }
-        else if(direction == MovState.UP){
+        else if(direction == MainProjectile.MovState.UP){
             b2body.setLinearVelocity(0,FB_SPEED);
         }
-        else if(direction == MovState.LEFT){
+        else if(direction == MainProjectile.MovState.LEFT){
             b2body.setLinearVelocity(-FB_SPEED,0);
         }
         else{
@@ -98,40 +102,28 @@ public class MainFireball extends Sprite {
     }
 
     //Interpreta la dirección en la que mira el jugador
-    private MovState intDirection(String direction){
+    private MainProjectile.MovState intDirection(String direction){
 
         if(direction.equals("UP"))
-            return MovState.UP;
+            return MainProjectile.MovState.UP;
         else if(direction.equals("LEFT"))
-            return MovState.LEFT;
+            return MainProjectile.MovState.LEFT;
         else if(direction.equals("RIGHT"))
-            return MovState.RIGHT;
+            return MainProjectile.MovState.RIGHT;
         else
-            return MovState.DOWN;
+            return MainProjectile.MovState.DOWN;
     }
 
-    private TextureRegion getFrame(float delta, MovState state){
+    protected TextureRegion getFrame(float delta, MainProjectile.MovState state){
 
-        TextureRegion region = new TextureRegion();
-
-        switch(state){
-
-            case UP:
-                region = (TextureRegion) AnimationHandler.getAnimationHandler().getFanim_up().getKeyFrame(stateTime, true);
-                break;
-            case DOWN:
-                region = (TextureRegion) AnimationHandler.getAnimationHandler().getFanim_down().getKeyFrame(stateTime, true);
-                break;
-            case LEFT:
-                region = (TextureRegion) AnimationHandler.getAnimationHandler().getFanim_left().getKeyFrame(stateTime, true);
-                break;
-            case RIGHT:
-                region = (TextureRegion) AnimationHandler.getAnimationHandler().getFanim_right().getKeyFrame(stateTime, true);
-                break;
-        }
+        TextureRegion region = (TextureRegion) AnimationHandler.getAnimationHandler().getFanim().getKeyFrame(stateTime, true);
 
         stateTime = stateTime + delta; //El StateTimer es magia, pero hay que sumarle delta para que se anime bien
         return region;
+    }
+
+    public void hurt(Enemy enemy){
+        enemy.decreaseLife(damage);
     }
 
     public void setToDestroy(){
@@ -141,5 +133,4 @@ public class MainFireball extends Sprite {
     public boolean isDestroyed(){
         return destroyed;
     }
-
 }

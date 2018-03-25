@@ -18,16 +18,12 @@ public class AnimationHandler implements Disposable {
     Array<TextureRegion> frames = new Array<TextureRegion>();
 
     private Texture sidescroll;
-    private Texture ballsPack;
 
     //Esqueleto simple
     private Texture simpleSkeleton;
     private final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
 
     private TextureRegion idle_sk; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
-    private TextureRegion idleLeft_sk; // Posturas sin hacer nada mirando hacia distintos lados
-    private TextureRegion idleDown_sk;
-    private TextureRegion idleRight_sk;
 
     private Animation runLeft_sk;
     private Animation runRight_sk;
@@ -38,9 +34,6 @@ public class AnimationHandler implements Disposable {
     private Texture simpleOrc;
 
     private TextureRegion idle_orc; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
-    private TextureRegion idleLeft_orc; // Posturas sin hacer nada mirando hacia distintos lados
-    private TextureRegion idleDown_orc;
-    private TextureRegion idleRight_orc;
 
     private Animation runLeft_orc;
     private Animation runRight_orc;
@@ -78,14 +71,10 @@ public class AnimationHandler implements Disposable {
 
     private TextureRegion movingBlock;
 
-    //Bola de fuego
-
-    private Texture fireBall;
-
-    private Animation fanim_up;
-    private Animation fanim_down;
-    private Animation fanim_left;
-    private Animation fanim_right;
+    //Bolas elementales
+    private Animation fanim;
+    private Animation ibAnim;
+    private Animation lbAnim;
 
     //Murciélago
     private Texture dungeon;
@@ -94,6 +83,12 @@ public class AnimationHandler implements Disposable {
     private Animation bat_down;
     private Animation bat_left;
     private Animation bat_right;
+
+    //Planta carnívora
+    private Animation plant_up;
+    private Animation plant_down;
+    private Animation plant_left;
+    private Animation plant_right;
 
     //Texturas sueltas
 
@@ -107,20 +102,19 @@ public class AnimationHandler implements Disposable {
         simpleOrc = new Texture(Gdx.files.internal("simple_orc.png"));
         coin = new Texture(Gdx.files.internal("coin.png"));
         mainCharacter = new Texture(Gdx.files.internal("main.png"));
-        fireBall = new Texture(Gdx.files.internal("package_64.png"));
-        ballsPack = new Texture(Gdx.files.internal("balls.png"));
-        dungeon = new Texture(Gdx.files.internal("dungeon_pack.png"));
+        dungeon = new Texture(Gdx.files.internal("dungeon_pack_2.png"));
 
         movingBlock = new TextureRegion(sidescroll, 32, 192, 64, 32);
-        lightBall = new TextureRegion(ballsPack,0, 0 , 32, 32);
+        lightBall = new TextureRegion(dungeon,192, 224 , 32, 32);
 
         initSkeletonAnimations(simpleSkeleton);
         initOrcAnimations(simpleOrc);
         initCoinAnimation(coin);
         initMCAnimations(mainCharacter);
-        initFireBallAnimations(fireBall);
+        initBallAnimations(dungeon);
         initElfAnimations(darkElf);
         initBatAnimations(dungeon);
+        initPlantAnimations(dungeon);
     }
 
     public static AnimationHandler getAnimationHandler(){
@@ -157,9 +151,6 @@ public class AnimationHandler implements Disposable {
         frames.clear();
 
         idle_sk = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
-        idleLeft_sk = new TextureRegion(mainTexture, 0 , 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleRight_sk = new TextureRegion(mainTexture, 0 , 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleDown_sk = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
     }
 
     private void initOrcAnimations(Texture mainTexture){
@@ -189,9 +180,6 @@ public class AnimationHandler implements Disposable {
         frames.clear();
 
         idle_orc = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
-        idleLeft_orc = new TextureRegion(mainTexture, 0 , 64, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleRight_orc = new TextureRegion(mainTexture, 0 , 192, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
-        idleDown_orc = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
     }
 
     private void initCoinAnimation(Texture mainTexture){
@@ -236,31 +224,24 @@ public class AnimationHandler implements Disposable {
         idleDown_mc = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
     }
 
-    private void initFireBallAnimations(Texture mainTexture){
+    private void initBallAnimations(Texture mainTexture){
 
-        for(int i = 0; i < 8; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        for(int i = 0; i < 2; i++){
+            frames.add(new TextureRegion(mainTexture, i* 32, 160, 32, 32));
         }
-        fanim_left = new Animation(0.1f, frames);
+        fanim = new Animation(0.1f, frames);
         frames.clear();
 
-        for(int i = 0; i < 8; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        for(int i = 3; i < 5; i++){
+            frames.add(new TextureRegion(mainTexture, i* 32, 160, 32, 32));
         }
-        fanim_up = new Animation(0.1f, frames);
+        ibAnim = new Animation(0.1f, frames);
         frames.clear();
 
-        for(int i = 0; i < 8; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 256, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
+        for(int i = 6; i < 8; i++){
+            frames.add(new TextureRegion(mainTexture, i* 32, 160, 32, 32));
         }
-        fanim_right = new Animation(0.1f, frames);
-
-        frames.clear();
-
-        for(int i = 0; i < 8; i++){
-            frames.add(new TextureRegion(mainTexture, i* 64, 384, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT));
-        }
-        fanim_down = new Animation(0.1f, frames);
+        lbAnim = new Animation(0.1f, frames);
         frames.clear();
     }
 
@@ -284,28 +265,55 @@ public class AnimationHandler implements Disposable {
     private void initBatAnimations(Texture mainTexture){
 
         for(int i = 0; i < 2; i++){
-            frames.add(new TextureRegion(mainTexture, i* 32, 160, 32, 32));
+            frames.add(new TextureRegion(mainTexture, i* 32, 32, 32, 32));
         }
         bat_left = new Animation(0.1f, frames);
         frames.clear();
 
         for(int i = 0; i < 2; i++){
-            frames.add(new TextureRegion(mainTexture, i* 32, 128, 32, 32));
+            frames.add(new TextureRegion(mainTexture, i* 32, 0, 32, 32));
         }
         bat_up = new Animation(0.1f, frames);
         frames.clear();
 
         for(int i = 0; i < 2; i++){
-            frames.add(new TextureRegion(mainTexture, i* 32, 224, 32, 32));
+            frames.add(new TextureRegion(mainTexture, i* 32, 96, 32, 32));
         }
         bat_right = new Animation(0.1f, frames);
 
         frames.clear();
 
         for(int i = 0; i < 2; i++){
-            frames.add(new TextureRegion(mainTexture, i* 32, 192, 32, 32));
+            frames.add(new TextureRegion(mainTexture, i* 32, 64, 32, 32));
         }
         bat_down = new Animation(0.1f, frames);
+        frames.clear();
+    }
+
+    private void initPlantAnimations(Texture mainTexture){
+        for(int i = 6; i < 8; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 161, 64, 76));
+        }
+        plant_left = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 6; i < 8; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 85, 64, 76));
+        }
+        plant_up = new Animation(0.1f, frames);
+        frames.clear();
+
+        for(int i = 6; i < 8; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 313, 64, 76));
+        }
+        plant_right = new Animation(0.1f, frames);
+
+        frames.clear();
+
+        for(int i = 6; i < 8; i++){
+            frames.add(new TextureRegion(mainTexture, i* 64, 237, 64, 76));
+        }
+        plant_down = new Animation(0.1f, frames);
         frames.clear();
     }
 
@@ -314,12 +322,6 @@ public class AnimationHandler implements Disposable {
     }
 
     public TextureRegion getIdle_sk() {return idle_sk;}
-
-    public TextureRegion getIdleLeft_sk() {return idleLeft_sk;}
-
-    public TextureRegion getIdleDown_sk() {return idleDown_sk;}
-
-    public TextureRegion getIdleRight_sk() {return idleRight_sk;}
 
     public Animation getRunLeft_sk() {return runLeft_sk;}
 
@@ -330,12 +332,6 @@ public class AnimationHandler implements Disposable {
     public Animation getRunDown_sk() {return runDown_sk;}
 
     public TextureRegion getIdle_orc() {return idle_orc;}
-
-    public TextureRegion getIdleLeft_orc() {return idleLeft_orc;}
-
-    public TextureRegion getIdleDown_orc() {return idleDown_orc;}
-
-    public TextureRegion getIdleRight_orc() {return idleRight_orc;}
 
     public Animation getRunLeft_orc() {return runLeft_orc;}
 
@@ -363,13 +359,11 @@ public class AnimationHandler implements Disposable {
 
     public TextureRegion getIdleRight_mc() {return idleRight_mc;}
 
-    public Animation getFanim_up() {return fanim_up;}
+    public Animation getFanim() {return fanim;}
 
-    public Animation getFanim_down() {return fanim_down;}
+    public Animation getIbAnim(){ return ibAnim;}
 
-    public Animation getFanim_left() {return fanim_left;}
-
-    public Animation getFanim_right() {return fanim_right;}
+    public Animation getLbAnim(){return lbAnim;}
 
     public TextureRegion getIdleElf(){
         return idle_elf;
@@ -389,6 +383,14 @@ public class AnimationHandler implements Disposable {
 
     public Animation getBatRight(){return bat_right;}
 
+    public Animation getPlant_left(){return plant_left;}
+
+    public Animation getPlant_right(){return plant_right;}
+
+    public Animation getPlant_up(){return plant_up;}
+
+    public Animation getPlant_down(){return plant_down;}
+
     @Override
     public void dispose() {
         sidescroll.dispose();
@@ -396,6 +398,6 @@ public class AnimationHandler implements Disposable {
         simpleOrc.dispose();
         coin.dispose();
         mainCharacter.dispose();
-        fireBall.dispose();
+        dungeon.dispose();
     }
 }

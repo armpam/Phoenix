@@ -1,4 +1,4 @@
-package com.phoenix.game.Entities;
+package com.phoenix.game.Maps;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -10,7 +10,7 @@ import com.phoenix.game.Screens.GameScreen;
  * Created by alesd on 3/18/2018.
  */
 
-public class Ladder extends RectTileObject {
+public class Ladder extends com.phoenix.game.Maps.RectTileObject {
 
     private GameScreen screen;
 

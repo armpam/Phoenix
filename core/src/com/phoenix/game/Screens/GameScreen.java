@@ -14,16 +14,19 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.phoenix.game.Entities.Bat;
-import com.phoenix.game.Entities.Coin;
-import com.phoenix.game.Entities.DarkElf;
-import com.phoenix.game.Entities.LightBall;
+import com.phoenix.game.Enemies.Bat;
+import com.phoenix.game.Enemies.Enemy;
+import com.phoenix.game.Maps.Coin;
+import com.phoenix.game.Enemies.DarkElf;
+import com.phoenix.game.Projectiles.LightBall;
 import com.phoenix.game.Entities.MainCharacter;
-import com.phoenix.game.Entities.MainFireball;
-import com.phoenix.game.Entities.MovingBlock;
-import com.phoenix.game.Entities.Orc;
-import com.phoenix.game.Entities.Skeleton;
+import com.phoenix.game.Projectiles.MainFireball;
+import com.phoenix.game.Enemies.ManEatingPlant;
+import com.phoenix.game.Maps.MovingBlock;
+import com.phoenix.game.Enemies.Orc;
+import com.phoenix.game.Enemies.Skeleton;
 import com.phoenix.game.Game;
+import com.phoenix.game.Projectiles.MainProjectile;
 import com.phoenix.game.Scenes.Main_UI;
 import com.phoenix.game.Tools.B2WorldCreator;
 import com.phoenix.game.Tools.Controller;
@@ -200,32 +203,18 @@ public class GameScreen implements Screen {
         for(MovingBlock mb : b2wc.getMbArray()){
             mb.update(delta);
         }
-        for(Skeleton sk : b2wc.getSkeletonArray()){
-            sk.update(delta);
-            if(!sk.getBody().isActive()) {
-                if (sk.getBody().getPosition().dst2(mcharacter.b2body.getPosition()) < ACTIVATE_DISTANCE) {
-                    sk.getBody().setActive(true);
-                    }
-            }
-        }
-        for(Orc orc : b2wc.getOrcArray()){
-            orc.update(delta);
-            if(!orc.getBody().isActive()) {
-                if (orc.getBody().getPosition().dst2(mcharacter.b2body.getPosition()) < ACTIVATE_DISTANCE) {
-                    orc.getBody().setActive(true);
-                    }
+
+        for(Enemy enemy : b2wc.getEnemyArray()){
+            enemy.update(delta);
+            if(!enemy.getBody().isActive()) {
+                if (enemy.getBody().getPosition().dst2(mcharacter.b2body.getPosition()) < ACTIVATE_DISTANCE) {
+                    enemy.getBody().setActive(true);
                 }
-        }
-        for(DarkElf de : b2wc.getElfArray()){
-            de.update(delta);
-            if(!de.getBody().isActive()) {
-            if (de.getBody().getPosition().dst2(mcharacter.b2body.getPosition()) < ACTIVATE_DISTANCE) {
-             de.getBody().setActive(true);
             }
-             }
-        }
-        for(Bat bat : b2wc.getBatArray()){
-            bat.update(delta);
+            if(enemy.getSetToDestroy()){
+                world.destroyBody(enemy.getBody());
+                b2wc.getEnemyArray().removeValue(enemy, true);
+            }
         }
     }
 
@@ -248,8 +237,18 @@ public class GameScreen implements Screen {
             if (controller.isDownPressed() && mcharacter.b2body.getLinearVelocity().y > -TOP_SPEED) {
                 mcharacter.b2body.applyLinearImpulse(new Vector2(0, -MCSpeed), mcharacter.b2body.getWorldCenter(), true);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !fbLock) {
-                mcharacter.fire(); //Dispara una bola de fuego
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1) && !fbLock) {
+                mcharacter.fire(1); //Dispara una bola de fuego
+                startTime = TimeUtils.nanoTime();
+                fbLock = true;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_2) && !fbLock) {
+                mcharacter.fire(2); //Dispara una bola de hielo
+                startTime = TimeUtils.nanoTime();
+                fbLock = true;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_3) && !fbLock) {
+                mcharacter.fire(3); //Dispara una bola de rayo
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
@@ -306,9 +305,10 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
         mcharacter.draw(game.batch);
-        //Dibuja las bolas de fuego
-        for(MainFireball fireball : mcharacter.getFireballs()){
-            fireball.draw(game.batch);
+
+        //Dibuja las bolas elementales
+        for(MainProjectile projectile : mcharacter.getProjectiles()){
+            projectile.draw(game.batch);
         }
         for(Coin coin : b2wc.getCoinArray()){
             coin.draw(game.batch);
@@ -318,23 +318,20 @@ public class GameScreen implements Screen {
                 mb.draw(game.batch);
             }
         }
-        for(Skeleton sk : b2wc.getSkeletonArray()){
-            sk.draw(game.batch);
-        }
-        for(Orc orc : b2wc.getOrcArray()){
-            orc.draw(game.batch);
-        }
-        for(DarkElf de : b2wc.getElfArray()){
-            de.draw(game.batch);
-        }
-        for(DarkElf darkElf : b2wc.getElfArray()){
-            for(LightBall lb : darkElf.getLightBalls()){
-                lb.draw(game.batch);
+        for(Enemy enemy : b2wc.getEnemyArray()){
+            enemy.draw(game.batch);
+            if(enemy instanceof DarkElf){
+                for(LightBall lb : ((DarkElf) enemy).getLightBalls()){
+                    lb.draw(game.batch);
+                }
+            }
+            if(enemy instanceof ManEatingPlant){
+                for(LightBall lb : ((ManEatingPlant) enemy).getLbArray()){
+                    lb.draw(game.batch);
+                }
             }
         }
-        for(Bat bat : b2wc.getBatArray()){
-            bat.draw(game.batch);
-        }
+
         //El batch dibuja la UI con la cámara de la UI, que es estática
         game.batch.setProjectionMatrix(UI.stage.getCamera().combined);
 
@@ -345,15 +342,18 @@ public class GameScreen implements Screen {
         controller.draw();
 
         if(dungeonFlag){
+            b2wc.getEnemyArray().clear();
             ScreenHandler.getScreenHandler().setDungeonScreen(mcharacter);
         }
         if(greenMapFlag){
+            b2wc.getEnemyArray().clear();
             ScreenHandler.getScreenHandler().setGameScreenBack(mcharacter);
         }
         if(sideScrollFlag){
             ScreenHandler.getScreenHandler().setSideScrollScreen(mcharacter);
         }
         if(cityFlag){
+            b2wc.getEnemyArray().clear();
             ScreenHandler.getScreenHandler().setCityScreen(mcharacter);
         }
         if(tpFlag){

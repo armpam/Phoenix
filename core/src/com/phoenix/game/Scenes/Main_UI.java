@@ -61,8 +61,11 @@ public class Main_UI implements Disposable {
 
     }
 
-    public static void updateScore(MainCharacter mc){
-        scoreLabel.setText("Puntuación: " + mc.getMoney());
+    public void updateUI(MainCharacter mc){
+        lifeLabel.setText("Vida: " + mc.getLife());
+        manaLabel.setText("Maná: " + mc.getMana());
+        levelLabel.setText("Nivel: " + mc.getLevel());
+        scoreLabel.setText("Dinero: " + mc.getMoney());
     }
 
     public void updateLife(MainCharacter mc){
@@ -73,9 +76,9 @@ public class Main_UI implements Disposable {
         manaLabel.setText("Maná: " + mc.getMana());
     }
 
-    public void updateLevel(MainCharacter mc){
-        levelLabel.setText("Nivel: " + mc.getLevel());
-    }
+    public void updateLevel(MainCharacter mc){levelLabel.setText("Nivel: " + mc.getLevel());}
+
+    public void updateScore(MainCharacter mc){scoreLabel.setText("Dinero: " + mc.getMoney());}
 
     @Override
     public void dispose() {

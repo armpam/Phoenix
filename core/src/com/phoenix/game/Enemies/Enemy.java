@@ -1,8 +1,6 @@
-package com.phoenix.game.Entities;
+package com.phoenix.game.Enemies;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -10,35 +8,43 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.phoenix.game.Entities.MainCharacter;
+import com.phoenix.game.Maps.MovingRectTileObject;
 import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
-import com.phoenix.game.Tools.AnimationHandler;
 
 /**
  * Created by alesd on 05/03/2017.
  */
 
-public abstract class Enemy extends Sprite {
+public abstract class Enemy extends Sprite implements MovingRectTileObject {
 
     protected GameScreen screen;
     protected World world;
 
-    protected float SCSpeed; //Velocidad del enemigo en persecución
-    protected boolean retreatFlag = false;
-    protected boolean changeDirections = false;
     protected float AGGRO; //Distancia para que empieze el modo lucha
     protected float CHASEDISTANCE;
     protected float movSpeed;
+    protected float SCSpeed; //Velocidad del enemigo en persecución
+    protected int hp;
+    protected int ap;
+    protected int xp;
+
+    protected boolean destroyed;
+    protected boolean setToDestroy;
+
+    protected boolean retreatFlag = false;
+    protected boolean changeDirections = false;
+    protected  boolean chasing = false;
     protected String direction;
 
-    protected final int TEXT_WIDTH = 64;
-    protected final int TEXT_HEIGHT = 64;
+    protected int TEXT_WIDTH = 64;
+    protected int TEXT_HEIGHT = 64;
 
     protected float initialX;
     protected float initialY;
@@ -86,7 +92,7 @@ public abstract class Enemy extends Sprite {
         body.setActive(false);
     }
 
-    private void define(){ //Este metodo lo definiremos en cada Enemigo, ya que cada Enemigo es diferente
+    public void define(){ //Este metodo lo definiremos en cada Enemigo, ya que cada Enemigo es diferente
 
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / Game.PPM, (bounds.getY() + bounds.getHeight() / 2) / Game.PPM );
@@ -97,6 +103,14 @@ public abstract class Enemy extends Sprite {
         fdef.shape = shape;
         fdef.filter.maskBits = Game.ROCK_BIT | Game.MC_BIT;
         fixture = body.createFixture(fdef);
+    }
+
+    public void update(float delta){
+        if(body.isActive()) {
+            move();
+            setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+        }
+        setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
     }
 
     //Devuelve el estado de movimiento del jugador (corriendo hacia la dcha/izquierda, quieto...)
@@ -120,13 +134,13 @@ public abstract class Enemy extends Sprite {
         else return MovState.IDLE;
     }
 
-    protected void setCategoryFilter(short bit){
+    public void setCategoryFilter(short bit){
         Filter filter = new Filter();
         filter.categoryBits = bit;
         fixture.setFilterData(filter);
     }
 
-    protected void move(){
+    public void move(){
         if(this.body.getPosition().dst2(initialVector) < CHASEDISTANCE && !retreatFlag) {
             if (direction.equals("horizontal") && (body.getPosition().dst(screen.getMcharacter().b2body.getPosition())) > AGGRO) {
                 this.body.setLinearVelocity(movSpeed, 0);
@@ -149,11 +163,13 @@ public abstract class Enemy extends Sprite {
             }
             else{
                 chase(screen.getMcharacter());
+                chasing = true;
             }
         }
         else{
             if(!retreatFlag){
                 retreatFlag = true;
+                chasing = false;
             }
             else{
                 directionVector = initialVector.sub(body.getPosition());
@@ -169,7 +185,7 @@ public abstract class Enemy extends Sprite {
     }
 
     private void chase(MainCharacter mc){
-        body.setLinearVelocity((mc.b2body.getPosition().sub(body.getPosition())).nor());
+        body.setLinearVelocity((mc.b2body.getPosition().sub(body.getPosition())).nor().scl(SCSpeed));
     }
 
     public void reverseVelocity(){
@@ -191,7 +207,26 @@ public abstract class Enemy extends Sprite {
         }
     }
 
+    public void decreaseLife(int value){
+        hp = hp - value;
+        if (hp <= 0){
+            setToDestroy();
+        }
+    }
+
+    public void slow(){
+        movSpeed = movSpeed / 2;
+    }
+
     public Body getBody(){
         return body;
     }
+
+    public int getLife(){return hp;}
+
+    public void setToDestroy(){setToDestroy = true;}
+
+    public boolean getSetToDestroy(){return setToDestroy;}
+
+    public boolean isDestroyed(){return destroyed;}
 }

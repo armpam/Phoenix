@@ -1,4 +1,4 @@
-package com.phoenix.game.Entities;
+package com.phoenix.game.Maps;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -10,15 +10,15 @@ import com.phoenix.game.Screens.GameScreen;
  * Created by alesd on 2/24/2017.
  */
 
-public class Rock extends RectTileObject {
+public class Tree extends RectTileObject {
 
     private GameScreen screen;
 
-    public Rock(World world, TiledMap map, MapObject object, GameScreen screen){
+    public Tree(World world, TiledMap map, MapObject object, GameScreen screen){
         super(world, map, object);
-        this.screen = screen;
         fixture.setUserData(this);
-        setCategoryFilter(Game.ROCK_BIT);
+        this.screen = screen;
+        setCategoryFilter(Game.TREE_BIT);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.phoenix.game.Entities;
+package com.phoenix.game.Maps;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -22,7 +22,7 @@ import com.phoenix.game.Tools.AnimationHandler;
  * Created by alesd on 3/18/2018.
  */
 
-public class MovingBlock extends Sprite implements MovingRectTileObject {
+public class MovingBlock extends Sprite implements com.phoenix.game.Maps.MovingRectTileObject {
 
     private GameScreen screen;
     private World world;
