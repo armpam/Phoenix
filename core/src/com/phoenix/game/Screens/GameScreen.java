@@ -398,8 +398,8 @@ public class GameScreen implements Screen {
 
             }
             else if(ScreenHandler.getScreenHandler().getPreviousMap().equals("dungeon_1")){
-                spawnX = 30;
-                spawnY = 51.5f;
+                spawnX = 13.2f;
+                spawnY = 13f;
             }
         }
         else if(this.green_map.getProperties().get("name").equals("dungeon_1")){

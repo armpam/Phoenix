@@ -39,25 +39,30 @@ public class ManEatingPlant extends com.phoenix.game.Enemies.Enemy {
     }
 
     public void update(float delta){
-        move();
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-        setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
+        if(!dead) {
+            move();
+            setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+            setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
 
-        if(chasing && !lockLB){
-            shoot();
-            lockLB = true;
-            startTime = TimeUtils.nanoTime();
-        }
-
-        if(lockLB){
-            lockLightBall(startTime);
-        }
-
-        for(com.phoenix.game.Projectiles.LightBall lb : lbArray){ //Actualiza las bolas de fuego
-            lb.update(delta);
-            if(lb.isDestroyed()){
-                lbArray.removeValue(lb, true); //Elimina la bola de fuego del array si se ha destruido
+            if (chasing && !lockLB) {
+                shoot();
+                lockLB = true;
+                startTime = TimeUtils.nanoTime();
             }
+
+            if (lockLB) {
+                lockLightBall(startTime);
+            }
+
+            for (com.phoenix.game.Projectiles.LightBall lb : lbArray) { //Actualiza las bolas de fuego
+                lb.update(delta);
+                if (lb.isDestroyed()) {
+                    lbArray.removeValue(lb, true); //Elimina la bola de fuego del array si se ha destruido
+                }
+            }
+        }
+        else{
+            setToDestroy();
         }
     }
 

@@ -79,6 +79,10 @@ public class AnimationHandler implements Disposable {
     private Animation ibAnim;
     private Animation lbAnim;
 
+    private TextureRegion fanim_region;
+    private TextureRegion iceball_region;
+    private TextureRegion lightningball_region;
+
     //Murciélago
     private Texture dungeon;
 
@@ -248,6 +252,10 @@ public class AnimationHandler implements Disposable {
         }
         lbAnim = new Animation(0.1f, frames);
         frames.clear();
+
+        fanim_region = new TextureRegion(mainTexture, 0, 160, 32, 32);
+        iceball_region = new TextureRegion(mainTexture, 96, 160, 32, 32);
+        lightningball_region = new TextureRegion(mainTexture, 192, 160, 32, 32);
     }
 
     private void initElfAnimations(Texture mainTexture){
@@ -374,6 +382,12 @@ public class AnimationHandler implements Disposable {
     public Animation getIbAnim(){ return ibAnim;}
 
     public Animation getLbAnim(){return lbAnim;}
+
+    public TextureRegion getFanim_region(){return fanim_region;}
+
+    public TextureRegion getIceball_region(){return iceball_region;}
+
+    public TextureRegion getLightningball_region(){return lightningball_region;}
 
     public TextureRegion getIdleElf(){
         return idle_elf;

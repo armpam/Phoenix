@@ -47,6 +47,7 @@ public class LightBall extends Sprite {
         this.damage = damage;
 
         setBounds(x, y, TEXT_WIDTH / Game.PPM, TEXT_HEIGHT / Game.PPM); //Posición en la que dibujar y tamaño del sprite
+        setRegion(AnimationHandler.getAnimationHandler().getLightBall());
 
         define();
         direction = getDirection();

@@ -14,6 +14,7 @@ public class IceBall extends MainProjectile {
         super(gscreen, x, y, direction);
         b2body.setUserData(this);
         damage = 0;
+        setRegion(AnimationHandler.getAnimationHandler().getIceball_region());
     }
 
     protected TextureRegion getFrame(float delta, MainProjectile.MovState state){
