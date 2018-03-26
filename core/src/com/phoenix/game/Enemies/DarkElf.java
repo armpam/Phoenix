@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.phoenix.game.Game;
+import com.phoenix.game.Projectiles.LightBall;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
 
@@ -21,6 +22,7 @@ public class DarkElf extends Enemy {
     private final long LBCD = 300000000;
     private float stateTime;
     private long startTime = 0;
+    private float deathCount;
     private TextureRegion region;
     private boolean right;
 
@@ -31,7 +33,7 @@ public class DarkElf extends Enemy {
         AGGRO = 10;
         CHASEDISTANCE = 0;
         hp = 500;
-        ap = 100;
+        ap = 200;
         xp = 150;
         lightBalls = new Array<com.phoenix.game.Projectiles.LightBall>();
         region = new TextureRegion();
@@ -44,33 +46,42 @@ public class DarkElf extends Enemy {
 
     @Override
     public void update(float delta){
-        if(body.isActive()) {
-            if (body.getPosition().dst2(screen.getMcharacter().b2body.getPosition()) < AGGRO && !lockLB) {
-                getDirection2();
-                shoot();
-                lockLB = true;
-                startTime = TimeUtils.nanoTime();
-                setRegion(getFrame(delta));
+        if(!dead) {
+            if (body.isActive()) {
+                if (body.getPosition().dst2(screen.getMcharacter().b2body.getPosition()) < AGGRO && !lockLB) {
+                    getDirection2();
+                    shoot();
+                    lockLB = true;
+                    startTime = TimeUtils.nanoTime();
+                    setRegion(getFrame(delta));
+                } else {
+                    setRegion(getFrame(delta));
+                }
             } else {
-                setRegion(getFrame(delta));
+                setRegion(AnimationHandler.getAnimationHandler().getIdleElf());
+            }
+            if (lockLB) {
+                lockLightBall(startTime);
+            }
+            for (com.phoenix.game.Projectiles.LightBall lb : lightBalls) { //Actualiza las bolas de fuego
+                lb.update(delta);
+                if (lb.isDestroyed()) {
+                    lightBalls.removeValue(lb, true); //Elimina la bola de fuego del array si se ha destruido
+                }
             }
         }
         else{
-            setRegion(AnimationHandler.getAnimationHandler().getIdleElf());
-        }
-        if(lockLB){
-            lockLightBall(startTime);
-        }
-        for(com.phoenix.game.Projectiles.LightBall lb : lightBalls){ //Actualiza las bolas de fuego
-            lb.update(delta);
-            if(lb.isDestroyed()){
-                lightBalls.removeValue(lb, true); //Elimina la bola de fuego del array si se ha destruido
+            setRegion(AnimationHandler.getAnimationHandler().getDead_elf());
+            stateTimer += delta;
+            deathCount += delta;
+            if(deathCount > 1) {
+                setToDestroy();
             }
         }
     }
 
     private void shoot(){
-        com.phoenix.game.Projectiles.LightBall lb = new com.phoenix.game.Projectiles.LightBall(this.screen, body.getPosition().x, body.getPosition().y);
+        LightBall lb = new LightBall(this.screen, body.getPosition().x, body.getPosition().y, ap);
         lightBalls.add(lb);
     }
 
@@ -106,7 +117,7 @@ public class DarkElf extends Enemy {
 
     }
 
-    public Array<com.phoenix.game.Projectiles.LightBall> getLightBalls(){
+    public Array<LightBall> getLightBalls(){
         return lightBalls;
     }
 }

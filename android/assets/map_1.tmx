@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextobjectid="187">
+<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextobjectid="363">
  <properties>
   <property name="name" value="map_1"/>
  </properties>
@@ -2880,6 +2880,88 @@
   <object id="137" x="3312" y="5538"/>
   <object id="138" x="3523" y="5425"/>
   <object id="139" x="3580" y="5788"/>
+  <object id="187" x="3612" y="5128"/>
+  <object id="188" x="3980" y="5262"/>
+  <object id="189" x="4530" y="5168"/>
+  <object id="190" x="4526" y="4616"/>
+  <object id="191" x="4492" y="4538"/>
+  <object id="192" x="4374" y="4466"/>
+  <object id="193" x="4174" y="4186"/>
+  <object id="194" x="3764" y="4144"/>
+  <object id="195" x="3548" y="4444" width="4" height="2"/>
+  <object id="196" x="3704" y="4658" width="4" height="2"/>
+  <object id="197" x="2874" y="4674"/>
+  <object id="198" x="2630" y="4610"/>
+  <object id="199" x="2614" y="3710"/>
+  <object id="200" x="2744" y="3408"/>
+  <object id="201" x="3240" y="3288"/>
+  <object id="202" x="3234" y="3588"/>
+  <object id="203" x="2196" y="3716"/>
+  <object id="205" x="2110" y="3470"/>
+  <object id="206" x="1698" y="2492"/>
+  <object id="207" x="1928" y="2762"/>
+  <object id="208" x="2178" y="2826"/>
+  <object id="209" x="2000" y="1944"/>
+  <object id="210" x="1508" y="1922"/>
+  <object id="211" x="1258" y="1784"/>
+  <object id="212" x="640" y="1872"/>
+  <object id="213" x="232" y="1410"/>
+  <object id="214" x="314" y="1170"/>
+  <object id="215" x="626" y="1520"/>
+  <object id="216" x="674" y="1040"/>
+  <object id="217" x="508" y="1080"/>
+  <object id="218" x="442" y="664"/>
+  <object id="219" x="232" y="796"/>
+  <object id="220" x="316" y="784"/>
+  <object id="221" x="350" y="854"/>
+  <object id="222" x="274" y="912"/>
+  <object id="223" x="200" y="892"/>
+  <object id="224" x="268" y="3910"/>
+  <object id="225" x="346" y="3892"/>
+  <object id="226" x="372" y="3808"/>
+  <object id="227" x="304" y="3754"/>
+  <object id="228" x="188" y="3760"/>
+  <object id="229" x="188" y="3856"/>
+  <object id="230" x="266" y="4226"/>
+  <object id="231" x="406" y="4108"/>
+  <object id="232" x="192" y="4076"/>
+  <object id="233" x="330" y="4818"/>
+  <object id="234" x="378" y="5466"/>
+  <object id="235" x="1156" y="5636"/>
+  <object id="236" x="1148" y="5056"/>
+  <object id="237" x="880" y="4832"/>
+  <object id="238" x="1368" y="4410"/>
+  <object id="239" x="1926" y="5538"/>
+  <object id="240" x="2650" y="5558"/>
+  <object id="241" x="4478" y="5596"/>
+  <object id="242" x="5366" y="5674"/>
+  <object id="243" x="5296" y="5238"/>
+  <object id="244" x="5958" y="5456"/>
+  <object id="245" x="5708" y="4188"/>
+  <object id="246" x="5460" y="3852"/>
+  <object id="247" x="6108" y="3280"/>
+  <object id="248" x="5956" y="2092"/>
+  <object id="249" x="5814" y="1600"/>
+  <object id="250" x="4916" y="1618"/>
+  <object id="251" x="4902" y="2144"/>
+  <object id="252" x="4112" y="1700"/>
+  <object id="253" x="4238" y="1702"/>
+  <object id="254" x="4376" y="1698" width="2"/>
+  <object id="255" x="3624" y="1938"/>
+  <object id="256" x="3748" y="1764"/>
+  <object id="257" x="3460" y="1718"/>
+  <object id="258" x="3778" y="2194"/>
+  <object id="259" x="2844" y="2390"/>
+  <object id="260" x="2086" y="2068"/>
+  <object id="261" x="2144" y="2066"/>
+  <object id="262" x="2224" y="2060"/>
+  <object id="263" x="2316" y="2068"/>
+  <object id="264" x="4368" y="416"/>
+  <object id="265" x="5398" y="856"/>
+  <object id="266" x="5264" y="498"/>
+  <object id="267" x="5462" y="270"/>
+  <object id="268" x="5578" y="772"/>
+  <object id="269" x="6126" y="1046" height="2"/>
  </objectgroup>
  <objectgroup name="chests">
   <object id="126" x="6050" y="2559" width="26" height="16"/>
@@ -3028,31 +3110,326 @@
   </object>
  </objectgroup>
  <objectgroup name="skeletons">
-  <object id="165" x="2882" y="5920" width="23" height="37">
+  <object id="289" x="2944" y="5664" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="290" x="2302.67" y="5144" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="291" x="1158.67" y="4798.67" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="292" x="1497.33" y="4518.67" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="293" x="1826.67" y="2589.33" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="294" x="1592" y="2246.67" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="295" x="2013.33" y="1196" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="296" x="200" y="994.667" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="297" x="289.333" y="600" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="298" x="441.333" y="2377.33" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="299" x="350.667" y="3360" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="300" x="4884" y="3992" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="301" x="6082.67" y="4421.33" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="302" x="5392" y="5009.33" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="303" x="5514.67" y="5725.33" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="304" x="4152" y="5996" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="305" x="4265.33" y="2630.67" width="29.3333" height="42.6667">
    <properties>
     <property name="direction" value="vertical"/>
    </properties>
   </object>
-  <object id="174" x="2520" y="5473" width="24" height="35">
+  <object id="306" x="3177.33" y="2082.67" width="29.3333" height="42.6667">
    <properties>
-    <property name="direction" value="horizontal"/>
+    <property name="direction" value="vertical"/>
    </properties>
   </object>
-  <object id="175" x="4063" y="6113" width="24" height="42">
+  <object id="307" x="5782.67" y="3542.67" width="29.3333" height="42.6667">
    <properties>
-    <property name="direction" value="horizontal"/>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="327" x="5927.76" y="2402.91" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="328" x="5358.06" y="1142.3" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="329" x="2200.48" y="1651.39" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="330" x="2179.27" y="4405.94" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="331" x="2039.88" y="5921.09" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup name="orc">
-  <object id="177" x="3563" y="5680" width="28" height="37">
+  <object id="333" x="4664.97" y="2341.7" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="334" x="4155.03" y="1418.06" width="29.3333" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="335" x="3415.3" y="2384.73" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="336" x="2381.97" y="3881.7" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="337" x="2224.39" y="2360.48" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="338" x="2857.73" y="2493.82" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="339" x="2569.85" y="1660.48" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="340" x="621.364" y="2657.45" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="341" x="2033.48" y="781.697" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="342" x="4339.55" y="972.606" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="343" x="3785" y="2827.15" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="344" x="3745.61" y="4660.48" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="345" x="5994.09" y="6218.06" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="346" x="5285" y="4581.7" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="347" x="4894.09" y="1851.39" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="348" x="1357.73" y="363.515" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="349" x="2509.24" y="6187.76" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="horizontal"/>
+   </properties>
+  </object>
+  <object id="350" x="4291.06" y="3512" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="351" x="4463.79" y="3833.21" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="352" x="2821.36" y="3021.09" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="353" x="4657.73" y="1339.27" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="354" x="3088.03" y="1393.82" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="355" x="903.182" y="5496.85" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="356" x="1391.06" y="5748.36" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="357" x="3742.58" y="3257.45" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="358" x="6094.09" y="1681.7" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="359" x="1636.52" y="1142.3" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="360" x="1751.67" y="5118.06" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="361" x="1139.55" y="6015.03" width="30" height="42.6667">
+   <properties>
+    <property name="direction" value="vertical"/>
+   </properties>
+  </object>
+  <object id="362" x="5188.03" y="3230.18" width="30" height="42.6667">
    <properties>
     <property name="direction" value="vertical"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup name="darkelf">
-  <object id="185" x="2332" y="4936">
+  <object id="278" x="5306.67" y="6077.33" width="26.6667" height="29.3333">
+   <properties>
+    <property name="direction" value="none"/>
+   </properties>
+  </object>
+  <object id="280" x="5301.33" y="5984" width="26.6667" height="29.3333">
+   <properties>
+    <property name="direction" value="none"/>
+   </properties>
+  </object>
+  <object id="281" x="849.333" y="4436" width="26.6667" height="29.3333">
+   <properties>
+    <property name="direction" value="none"/>
+   </properties>
+  </object>
+  <object id="282" x="952" y="3857.33" width="26.6667" height="29.3333">
+   <properties>
+    <property name="direction" value="none"/>
+   </properties>
+  </object>
+  <object id="283" x="1092" y="3940" width="26.6667" height="29.3333">
+   <properties>
+    <property name="direction" value="none"/>
+   </properties>
+  </object>
+  <object id="284" x="1338.67" y="3938.67" width="26.6667" height="29.3333">
+   <properties>
+    <property name="direction" value="none"/>
+   </properties>
+  </object>
+  <object id="285" x="373.333" y="1806.67" width="26.6667" height="29.3333">
+   <properties>
+    <property name="direction" value="none"/>
+   </properties>
+  </object>
+  <object id="286" x="1681.33" y="246.667" width="26.6667" height="29.3333">
+   <properties>
+    <property name="direction" value="none"/>
+   </properties>
+  </object>
+  <object id="287" x="2321.33" y="4918.67" width="26.6667" height="29.3333">
+   <properties>
+    <property name="direction" value="none"/>
+   </properties>
+  </object>
+  <object id="288" x="1745.33" y="3324" width="26.6667" height="29.3333">
    <properties>
     <property name="direction" value="none"/>
    </properties>

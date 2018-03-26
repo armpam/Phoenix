@@ -30,8 +30,6 @@ public class StartScreen implements Screen {
     private Label.LabelStyle font;
     private Table table;
 
-    private Music introTheme;
-
     public StartScreen(Game game){
 
         this.game = game;
@@ -48,10 +46,6 @@ public class StartScreen implements Screen {
         table.add(startLabel).expandX();
 
         stage.addActor(table);
-
-        introTheme = SoundHandler.getSoundHandler().getAssetManager().get("audio/themes/intro_song.ogg", Music.class);
-        introTheme.setLooping(true);
-        introTheme.play();
     }
 
 
@@ -63,7 +57,6 @@ public class StartScreen implements Screen {
     @Override
     public void render(float delta) {
         if(Gdx.input.justTouched()){
-            introTheme.stop();
             ScreenHandler.getScreenHandler().setGameScreen();
             dispose();
         }

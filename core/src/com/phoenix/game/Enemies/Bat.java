@@ -3,6 +3,7 @@ package com.phoenix.game.Enemies;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
 
@@ -18,11 +19,12 @@ public class Bat extends com.phoenix.game.Enemies.Enemy {
     public Bat(GameScreen gscreen, float x, float y, MapObject object, TiledMap map){
         super(gscreen, x, y, object, map);
         movSpeed = 3f;
-        hp = 1000;
-        ap =  100;
+        hp = 4000;
+        ap =  400;
         xp = 100;
         body.setActive(true);
         fixture.setUserData(this);
+        fixture.setSensor(true);
     }
 
     public TextureRegion getFrame(float delta){

@@ -45,13 +45,13 @@ public class B2WorldCreator {
         enemyArray = new Array<Enemy>();
 
         if (map.getProperties().containsKey("name")) {
-            if (map.getProperties().get("name").equals("map_1")) {
-                createRocks(16);
-                createChests(15);
-                createCoins(14);
-                createSkeletons(17);
-                createOrcs(18);
-                createElfs(19);
+            if (map.getProperties().get("name").equals("forest_1")) {
+                createRocks(5);
+                createChests(4);
+                createCoins(3);
+                createSkeletons(6);
+                createOrcs(7);
+                createElfs(8);
             } else if (map.getProperties().get("name").equals("dungeon_1")) {
                 createTrees(5);
                 createChests(6);

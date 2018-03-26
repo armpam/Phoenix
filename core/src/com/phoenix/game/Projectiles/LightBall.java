@@ -26,6 +26,8 @@ public class LightBall extends Sprite {
 
     private Vector2 direction;
 
+    private int damage;
+
     private float stateTime;
 
     private final int TEXT_WIDTH = 16;
@@ -36,12 +38,13 @@ public class LightBall extends Sprite {
     private BodyDef bdef;
     private FixtureDef fdef;
 
-    public LightBall(GameScreen gscreen, float x, float y ){
+    public LightBall(GameScreen gscreen, float x, float y, int damage ){
 
         this.screen = gscreen;
         this.world = screen.getWorld();
         this.bdef = new BodyDef();
         this.fdef = new FixtureDef();
+        this.damage = damage;
 
         setBounds(x, y, TEXT_WIDTH / Game.PPM, TEXT_HEIGHT / Game.PPM); //Posición en la que dibujar y tamaño del sprite
 
@@ -92,4 +95,6 @@ public class LightBall extends Sprite {
     public boolean isDestroyed(){
         return destroyed;
     }
+
+    public int getDamage(){return  damage;}
 }

@@ -4,6 +4,7 @@ package com.phoenix.game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.phoenix.game.Tools.AnimationHandler;
 import com.phoenix.game.Tools.ScreenHandler;
 
 public class Game extends com.badlogic.gdx.Game {
@@ -41,6 +42,8 @@ public class Game extends com.badlogic.gdx.Game {
 
 	@Override
 	public void dispose () {
-		batch.dispose();
+        ScreenHandler.getScreenHandler().dispose();
+        AnimationHandler.getAnimationHandler().dispose();
+        batch.dispose();
 	}
 }

@@ -15,7 +15,7 @@ import com.phoenix.game.Tools.SoundHandler;
 public class Chest extends com.phoenix.game.Maps.RectTileObject {
 
     private static TiledMapTileSet tileset;
-    private final int OPEN_CHEST_MAP_1 = 1026;
+    private final int OPEN_CHEST_MAP_1 = 2630;
     private final int OPEN_CHEST_DUNG = 1327;
     private final int SC_CHEST = 770;
 
@@ -23,8 +23,8 @@ public class Chest extends com.phoenix.game.Maps.RectTileObject {
 
     public Chest(World world, TiledMap map, MapObject object){
         super(world, map, object);
-        if(map.getProperties().get("name").equals("map_1")){
-            tileset = map.getTileSets().getTileSet("package");
+        if(map.getProperties().get("name").equals("forest_1")){
+            tileset = map.getTileSets().getTileSet("dungeon_pack");
         }
         else if(map.getProperties().get("name").equals("dungeon_1")){
             tileset = map.getTileSets().getTileSet("dungeon_pack");
@@ -44,8 +44,8 @@ public class Chest extends com.phoenix.game.Maps.RectTileObject {
     @Override
     public void onPlayerHit() {
 
-        if(map.getProperties().get("name").equals("map_1")){
-            getCell(12).setTile(tileset.getTile(OPEN_CHEST_MAP_1));
+        if(map.getProperties().get("name").equals("forest_1")){
+            getCell(2).setTile(tileset.getTile(OPEN_CHEST_MAP_1));
         }
         else if(map.getProperties().get("name").equals("dungeon_1")){
             getCell(3).setTile(tileset.getTile(OPEN_CHEST_DUNG));
@@ -56,7 +56,6 @@ public class Chest extends com.phoenix.game.Maps.RectTileObject {
         else if(map.getProperties().get("name").equals("city_1")){
 
         }
-
         if(!open) {
             SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/openChest.ogg", Music.class).play(); //Sonido del cofre al abrirse
             open = true;

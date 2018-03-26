@@ -14,6 +14,7 @@ import com.phoenix.game.Maps.Tree;
 import com.phoenix.game.Projectiles.IceBall;
 import com.phoenix.game.Projectiles.LightBall;
 import com.phoenix.game.Entities.MainCharacter;
+import com.phoenix.game.Projectiles.LightningBall;
 import com.phoenix.game.Projectiles.MainFireball;
 import com.phoenix.game.Projectiles.MainProjectile;
 import com.phoenix.game.Maps.MovingBlock;
@@ -96,7 +97,12 @@ public class WorldContactListener implements ContactListener {
             }
 
             if(object.getUserData() instanceof LightBall){
+                ((MainCharacter)player.getUserData()).onLightBallHit((LightBall) object.getUserData());
                 ((LightBall) object.getUserData()).setToDestroy();
+            }
+
+            if(object.getUserData() instanceof Enemy){
+                ((MainCharacter)player.getUserData()).onEnemyHit((Enemy)object.getUserData());
             }
         }
     }
@@ -120,13 +126,7 @@ public class WorldContactListener implements ContactListener {
             }
 
             if(object.getUserData() instanceof Enemy){
-                if (projectile.getUserData() instanceof IceBall){
-                    ((Enemy) object.getUserData()).slow();
-                }
-                if (projectile.getUserData() instanceof MainFireball){
-                    ((MainFireball) projectile.getUserData()).hurt((Enemy)object.getUserData());
-                }
-
+                ((Enemy) object.getUserData()).onProjectileHit((MainProjectile) projectile.getUserData());
             }
 
             ((MainProjectile) projectile.getUserData()).setToDestroy(); //Si choca con algo la marcamos para que se destruya
@@ -168,7 +168,7 @@ public class WorldContactListener implements ContactListener {
                 enemy = fixB;
                 object = fixA;
             }
-            if(object.getUserData() instanceof Rock || object.getUserData() instanceof Tree){
+            if(object.getUserData() instanceof Rock || object.getUserData() instanceof Tree || object.getUserData() instanceof Chest){
                 ((Enemy) enemy.getUserData()).reverseVelocity();
             }
         }

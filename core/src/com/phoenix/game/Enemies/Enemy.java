@@ -1,6 +1,9 @@
 package com.phoenix.game.Enemies;
 
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -16,7 +19,13 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Maps.MovingRectTileObject;
 import com.phoenix.game.Game;
+import com.phoenix.game.Projectiles.IceBall;
+import com.phoenix.game.Projectiles.LightningBall;
+import com.phoenix.game.Projectiles.MainFireball;
+import com.phoenix.game.Projectiles.MainProjectile;
 import com.phoenix.game.Screens.GameScreen;
+import com.phoenix.game.Tools.AnimationHandler;
+import com.phoenix.game.Tools.SoundHandler;
 
 /**
  * Created by alesd on 05/03/2017.
@@ -37,6 +46,7 @@ public abstract class Enemy extends Sprite implements MovingRectTileObject {
 
     protected boolean destroyed;
     protected boolean setToDestroy;
+    protected boolean dead = false;
 
     protected boolean retreatFlag = false;
     protected boolean changeDirections = false;
@@ -106,11 +116,14 @@ public abstract class Enemy extends Sprite implements MovingRectTileObject {
     }
 
     public void update(float delta){
-        if(body.isActive()) {
+        if (body.isActive()) {
             move();
             setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         }
         setRegion(getFrame(delta)); //Decide la región del spritesheet que va a dibujar
+        if(dead){
+            setToDestroy();
+        }
     }
 
     //Devuelve el estado de movimiento del jugador (corriendo hacia la dcha/izquierda, quieto...)
@@ -210,19 +223,34 @@ public abstract class Enemy extends Sprite implements MovingRectTileObject {
     public void decreaseLife(int value){
         hp = hp - value;
         if (hp <= 0){
-            setToDestroy();
+            dead = true;
+            screen.getMcharacter().addXP(xp);
+        }
+        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/hit.ogg", Music.class).play();
+    }
+
+    public void onProjectileHit(MainProjectile projectile){
+        if(projectile instanceof MainFireball){
+            decreaseLife(projectile.getDamage());
+        }
+        else if(projectile instanceof IceBall){
+            slow();
+        }
+        else if(projectile instanceof LightningBall){
+            decreaseLife(projectile.getDamage());
         }
     }
 
+    public int getAp(){return ap;}
+
     public void slow(){
+        SCSpeed = SCSpeed / 2;
         movSpeed = movSpeed / 2;
     }
 
     public Body getBody(){
         return body;
     }
-
-    public int getLife(){return hp;}
 
     public void setToDestroy(){setToDestroy = true;}
 

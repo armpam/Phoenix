@@ -3,6 +3,7 @@ package com.phoenix.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -31,6 +32,7 @@ import com.phoenix.game.Scenes.Main_UI;
 import com.phoenix.game.Tools.B2WorldCreator;
 import com.phoenix.game.Tools.Controller;
 import com.phoenix.game.Tools.ScreenHandler;
+import com.phoenix.game.Tools.SoundHandler;
 import com.phoenix.game.Tools.WorldContactListener;
 
 
@@ -57,7 +59,7 @@ public class GameScreen implements Screen {
     private boolean fbLock; //Está la fireball en cooldown?
     private boolean jumpLock;
     private final long JMPCD = 900000000;
-    private final long FBCD = 500000000; //CD en nanosegundos de la bola de fuego
+    private final long FBCD = 1000000000; //CD en nanosegundos de la bola de fuego
     private final float ACTIVATE_DISTANCE = 13;
     private long startTime = 0;
 
@@ -239,16 +241,19 @@ public class GameScreen implements Screen {
             }
             if (Gdx.input.isKeyPressed(Input.Keys.NUM_1) && !fbLock) {
                 mcharacter.fire(1); //Dispara una bola de fuego
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/fireball.wav", Music.class).play();
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.NUM_2) && !fbLock) {
                 mcharacter.fire(2); //Dispara una bola de hielo
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/iceball.wav", Music.class).play();
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.NUM_3) && !fbLock) {
                 mcharacter.fire(3); //Dispara una bola de rayo
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/lightningball.wav", Music.class).play();
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
@@ -266,15 +271,16 @@ public class GameScreen implements Screen {
 
     public void handleSCInput(float delta){
         if (controller.isRightPressed() && mcharacter.b2body.getLinearVelocity().x < TOP_SPEED) {
-                mcharacter.b2body.applyLinearImpulse(new Vector2(MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
+            mcharacter.b2body.applyLinearImpulse(new Vector2(MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
         }
         if (controller.isLeftPressed() && mcharacter.b2body.getLinearVelocity().x > -TOP_SPEED) {
-                mcharacter.b2body.applyLinearImpulse(new Vector2(-MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
+            mcharacter.b2body.applyLinearImpulse(new Vector2(-MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && jumpLock == false) {
-                mcharacter.b2body.applyLinearImpulse(new Vector2(0, JUMP_STR), mcharacter.b2body.getWorldCenter(), true);
-                startTime = TimeUtils.nanoTime();
-                jumpLock = true;
+            mcharacter.b2body.applyLinearImpulse(new Vector2(0, JUMP_STR), mcharacter.b2body.getWorldCenter(), true);
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/jump.wav", Music.class).play();
+            startTime = TimeUtils.nanoTime();
+            jumpLock = true;
         }
         if (controller.isUpPressed() && mcharacter.b2body.getLinearVelocity().y < 1 && ladder) {
             mcharacter.b2body.applyLinearImpulse(new Vector2(0, 1.0f), mcharacter.b2body.getWorldCenter(), true);
@@ -307,8 +313,10 @@ public class GameScreen implements Screen {
         mcharacter.draw(game.batch);
 
         //Dibuja las bolas elementales
-        for(MainProjectile projectile : mcharacter.getProjectiles()){
-            projectile.draw(game.batch);
+        if(mcharacter.getProjectiles() != null) {
+            for (MainProjectile projectile : mcharacter.getProjectiles()) {
+                projectile.draw(game.batch);
+            }
         }
         for(Coin coin : b2wc.getCoinArray()){
             coin.draw(game.batch);
@@ -321,13 +329,17 @@ public class GameScreen implements Screen {
         for(Enemy enemy : b2wc.getEnemyArray()){
             enemy.draw(game.batch);
             if(enemy instanceof DarkElf){
-                for(LightBall lb : ((DarkElf) enemy).getLightBalls()){
-                    lb.draw(game.batch);
+                if(((DarkElf) enemy).getLightBalls() != null) {
+                    for (LightBall lb : ((DarkElf) enemy).getLightBalls()) {
+                        lb.draw(game.batch);
+                    }
                 }
             }
             if(enemy instanceof ManEatingPlant){
-                for(LightBall lb : ((ManEatingPlant) enemy).getLbArray()){
-                    lb.draw(game.batch);
+                if(((ManEatingPlant) enemy).getLbArray() != null) {
+                    for (LightBall lb : ((ManEatingPlant) enemy).getLbArray()) {
+                        lb.draw(game.batch);
+                    }
                 }
             }
         }
@@ -381,7 +393,7 @@ public class GameScreen implements Screen {
         }
     }
     private void setSpawn(){
-        if(this.green_map.getProperties().get("name").equals("map_1")){
+        if(this.green_map.getProperties().get("name").equals("forest_1")){
             if(ScreenHandler.getScreenHandler().getPreviousMap().equals("none")){
 
             }
@@ -391,7 +403,7 @@ public class GameScreen implements Screen {
             }
         }
         else if(this.green_map.getProperties().get("name").equals("dungeon_1")){
-            if(ScreenHandler.getScreenHandler().getPreviousMap().equals("map_1")){
+            if(ScreenHandler.getScreenHandler().getPreviousMap().equals("forest_1")){
                 spawnX = 15f;
                 spawnY = 1.5f;
             }
@@ -418,6 +430,10 @@ public class GameScreen implements Screen {
                 spawnX = 6.1f;
                 spawnY = 9.4f;
             }
+        }
+        else{
+            spawnY = 0;
+            spawnX = 0;
         }
     }
 

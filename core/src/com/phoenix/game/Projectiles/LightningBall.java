@@ -13,6 +13,7 @@ public class LightningBall extends MainProjectile {
     public LightningBall(GameScreen gscreen, float x, float y, String direction ){
         super(gscreen, x, y, direction);
         b2body.setUserData(this);
+        damage = 300 * screen.getMcharacter().getAp();
     }
 
     protected TextureRegion getFrame(float delta, MovState state){

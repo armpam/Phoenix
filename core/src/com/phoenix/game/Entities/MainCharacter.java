@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.phoenix.game.Enemies.Enemy;
 import com.phoenix.game.Game;
 import com.phoenix.game.Projectiles.IceBall;
 import com.phoenix.game.Projectiles.LightBall;
@@ -32,8 +33,8 @@ public class MainCharacter extends Sprite {
     protected Fixture fixture;
 
     //Posición inicial del jugador
-    private int x = 3000;
-    private int y = 100;
+    private int x = 700;
+    private int y = 140;
 
     //Atributos del jugador
     private int life;
@@ -80,12 +81,14 @@ public class MainCharacter extends Sprite {
 
         this.life = 1000;
         this.mana = 1000;
+        this.maxLife = 1000;
+        this.maxMana = 1000;
         this.money = 0;
         this.level = 1;
         this.ap = 1;
         this.dp = 1;
         this.currentXp = 0;
-        this.xpGoal = 1000;
+        this.xpGoal = 100;
     }
 
     public MainCharacter(World world, GameScreen screen, MainCharacter cmc){
@@ -103,6 +106,12 @@ public class MainCharacter extends Sprite {
         this.mana = cmc.getMana();
         this.money = cmc.getMoney();
         this.level = cmc.getLevel();
+        this.maxLife = cmc.getMaxLife();
+        this.maxMana = cmc.getMaxMana();
+        this.ap = cmc.getAp();
+        this.dp = cmc.getDp();
+        this.currentXp = cmc.getCurrentExp();
+        this.xpGoal = cmc.getXpGoal();
     }
 
     //Actualiza la posición de dónde dibujamos al jugador (sigue a la cámara)
@@ -209,7 +218,7 @@ public class MainCharacter extends Sprite {
     }
 
     public void decreaseLife(int quantity){  //Método para quitarle vida cuando le atacan.
-        long iFrameDuration = 3000000000L;
+        long iFrameDuration = 1000000000L;
 
         if ( TimeUtils.timeSinceNanos(startTime) > iFrameDuration) {
             iframe = false;
@@ -217,6 +226,7 @@ public class MainCharacter extends Sprite {
         if (!iframe) {
             iframe = true;
             this.life = this.life - quantity;
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/hurt.ogg", Music.class).play();
             startTime = TimeUtils.nanoTime();
         }
         screen.getUI().updateLife(this);
@@ -247,16 +257,35 @@ public class MainCharacter extends Sprite {
         screen.getUI().updateScore(this);
     }
 
-    public void lvlUp(){
+    private void lvlUp(){
         level = level + 1;
-        maxLife = life + 200;
+        maxLife = maxLife + 200;
         maxMana = maxMana + 200;
         life = maxLife;
         mana = maxMana;
         ap = ap + 1;
         dp = dp + 1;
         xpGoal = xpGoal * 2;
+        currentXp = 0;
         screen.getUI().updateUI(this);
+    }
+
+    public void onLightBallHit(LightBall lb){
+        decreaseLife(lb.getDamage() / dp);
+        screen.getUI().updateLife(this);
+    }
+
+    public void onEnemyHit(Enemy enemy){
+        decreaseLife(enemy.getAp() / dp);
+        screen.getUI().updateLife(this);
+    }
+
+    public void addXP(int xp){
+        currentXp = currentXp + xp;
+        if(currentXp >= xpGoal){
+            lvlUp();
+            screen.getUI().updateUI(this);
+        }
     }
 
     public void teleport(float x, float y){
@@ -265,7 +294,11 @@ public class MainCharacter extends Sprite {
 
     public int getLife(){return this.life;}
 
+    public int getMaxLife(){return this.maxLife;}
+
     public int getMana(){return this.mana;}
+
+    public int getMaxMana(){return this.maxMana;}
 
     public int getAp(){return ap;}
 
@@ -274,6 +307,11 @@ public class MainCharacter extends Sprite {
     public int getMoney(){return this.money;}
 
     public int getLevel(){return this.level;}
+
+    public int getCurrentExp(){return currentXp;}
+
+    public int getXpGoal(){return xpGoal;}
+
 
     public Array<MainProjectile> getProjectiles(){
         return this.projectiles;

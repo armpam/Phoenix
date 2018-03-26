@@ -30,8 +30,8 @@ public class ManEatingPlant extends com.phoenix.game.Enemies.Enemy {
         AGGRO = 2;
         CHASEDISTANCE = 5;
         hp = 10000;
-        ap = 150;
-        xp = 2000;
+        ap = 500;
+        xp = 4000;
         setBounds(x, y, WIDTH / Game.PPM, HEIGHT / Game.PPM);
         fixture.setUserData(this);
         body.setActive(true);
@@ -88,7 +88,7 @@ public class ManEatingPlant extends com.phoenix.game.Enemies.Enemy {
     }
 
     private void shoot(){
-        com.phoenix.game.Projectiles.LightBall lb = new com.phoenix.game.Projectiles.LightBall(this.screen, body.getPosition().x, body.getPosition().y);
+        com.phoenix.game.Projectiles.LightBall lb = new com.phoenix.game.Projectiles.LightBall(this.screen, body.getPosition().x, body.getPosition().y, ap);
         lbArray.add(lb);
     }
 

@@ -19,7 +19,7 @@ import com.phoenix.game.Tools.AnimationHandler;
 
 public abstract class MainProjectile extends Sprite {
 
-    private GameScreen screen;
+    protected GameScreen screen;
     private World world;
 
     protected float stateTime;
@@ -27,7 +27,7 @@ public abstract class MainProjectile extends Sprite {
     private boolean destroyed; //Está la bola destruida
     private boolean setToDestroy; //Marca la bola para que se destruya
 
-    private int damage;
+    protected int damage;
 
     protected enum MovState {UP, DOWN, LEFT, RIGHT};
     private MainProjectile.MovState direction; // Dirección de la bola
@@ -47,7 +47,6 @@ public abstract class MainProjectile extends Sprite {
         this.screen = gscreen;
         this.direction = intDirection(direction);
         this.world = screen.getWorld();
-        damage = 200 * screen.getMcharacter().getAp();
 
         setBounds(x, y, TEXT_WIDTH / Game.PPM, TEXT_HEIGHT / Game.PPM); //Posición en la que dibujar y tamaño del sprite
 
@@ -122,9 +121,7 @@ public abstract class MainProjectile extends Sprite {
         return region;
     }
 
-    public void hurt(Enemy enemy){
-        enemy.decreaseLife(damage);
-    }
+   public int getDamage(){return damage;}
 
     public void setToDestroy(){
         setToDestroy = true;

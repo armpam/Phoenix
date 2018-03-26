@@ -13,7 +13,10 @@ public class SoundHandler implements Disposable {
     private static SoundHandler mSoundHandler;
     private AssetManager assetManager;
 
+    private Music currentTheme;
+
     private SoundHandler(){
+
         init();
     }
 
@@ -27,11 +30,72 @@ public class SoundHandler implements Disposable {
     private void init(){
 
         assetManager = new AssetManager();
-        assetManager.load("audio/themes/overworld.ogg", Music.class);
-        assetManager.load("audio/themes/intro_song.ogg", Music.class);
+        assetManager.load("audio/themes/intro_theme.ogg", Music.class);
+        assetManager.load("audio/themes/forest_theme.ogg", Music.class);
+        assetManager.load("audio/themes/dungeon_theme.ogg", Music.class);
+        assetManager.load("audio/themes/town_theme.ogg", Music.class);
+        assetManager.load("audio/themes/platformer_theme.ogg", Music.class);
         assetManager.load("audio/sounds/openChest.ogg", Music.class);
         assetManager.load("audio/sounds/coin.ogg", Music.class);
+        assetManager.load("audio/sounds/hurt.ogg", Music.class);
+        assetManager.load("audio/sounds/hit.ogg", Music.class);
+        assetManager.load("audio/sounds/fireball.wav", Music.class);
+        assetManager.load("audio/sounds/iceball.wav", Music.class);
+        assetManager.load("audio/sounds/lightningball.wav", Music.class);
+        assetManager.load("audio/sounds/jump.wav", Music.class);
         assetManager.finishLoading();
+
+
+    }
+
+    public void playIntroTheme(){
+        if(currentTheme != null) {
+            currentTheme.stop();
+            currentTheme = assetManager.get("audio/themes/intro_theme.ogg", Music.class);
+            currentTheme.setLooping(true);
+            currentTheme.play();
+        }
+        else{
+            currentTheme = assetManager.get("audio/themes/intro_theme.ogg", Music.class);
+            currentTheme.setLooping(true);
+            currentTheme.play();
+        }
+    }
+
+    public void playForestTheme(){
+        if(currentTheme != null) {
+            currentTheme.stop();
+            currentTheme = assetManager.get("audio/themes/forest_theme.ogg", Music.class);
+            currentTheme.setLooping(true);
+            currentTheme.play();
+        }
+    }
+
+    public void playDungeonTheme(){
+        if(currentTheme != null) {
+            currentTheme.stop();
+            currentTheme = assetManager.get("audio/themes/dungeon_theme.ogg", Music.class);
+            currentTheme.setLooping(true);
+            currentTheme.play();
+        }
+    }
+
+    public void playTownTheme(){
+        if(currentTheme != null) {
+            currentTheme.stop();
+            currentTheme = assetManager.get("audio/themes/town_theme.ogg", Music.class);
+            currentTheme.setLooping(true);
+            currentTheme.play();
+        }
+    }
+
+    public void playPlatformerTheme(){
+        if(currentTheme != null) {
+            currentTheme.stop();
+            currentTheme = assetManager.get("audio/themes/platformer_theme.ogg", Music.class);
+            currentTheme.setLooping(true);
+            currentTheme.play();
+        }
     }
 
     public AssetManager getAssetManager(){

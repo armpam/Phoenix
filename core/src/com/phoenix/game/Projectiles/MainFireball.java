@@ -13,6 +13,7 @@ public class MainFireball extends com.phoenix.game.Projectiles.MainProjectile {
     public MainFireball(GameScreen gscreen, float x, float y, String direction ){
         super(gscreen, x, y, direction);
         b2body.setUserData(this);
+        damage = 500 * screen.getMcharacter().getAp();
     }
 
     protected TextureRegion getFrame(float delta, MovState state){

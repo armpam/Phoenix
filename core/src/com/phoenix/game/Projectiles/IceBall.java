@@ -13,6 +13,7 @@ public class IceBall extends MainProjectile {
     public IceBall(GameScreen gscreen, float x, float y, String direction ){
         super(gscreen, x, y, direction);
         b2body.setUserData(this);
+        damage = 0;
     }
 
     protected TextureRegion getFrame(float delta, MainProjectile.MovState state){

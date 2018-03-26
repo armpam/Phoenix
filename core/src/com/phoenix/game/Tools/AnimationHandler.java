@@ -24,6 +24,7 @@ public class AnimationHandler implements Disposable {
     private final int MAIN_TEXT_WIDTH = 64, MAIN_TEXT_HEIGHT =64 ; //Altura y anchura de los sprites del spritesheet del MC
 
     private TextureRegion idle_sk; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
+    private TextureRegion dead_sk;
 
     private Animation runLeft_sk;
     private Animation runRight_sk;
@@ -34,6 +35,7 @@ public class AnimationHandler implements Disposable {
     private Texture simpleOrc;
 
     private TextureRegion idle_orc; //Postura sin hacer nada mirando a la izquierda (Sprite (TextureRegion))
+    private TextureRegion dead_orc;
 
     private Animation runLeft_orc;
     private Animation runRight_orc;
@@ -45,6 +47,7 @@ public class AnimationHandler implements Disposable {
     private Texture darkElf;
 
     private TextureRegion idle_elf;
+    private TextureRegion dead_elf;
 
     private Animation shootingRight;
     private Animation shootingLeft;
@@ -151,6 +154,7 @@ public class AnimationHandler implements Disposable {
         frames.clear();
 
         idle_sk = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
+        dead_sk = new TextureRegion(mainTexture, 320 , 1280, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
     }
 
     private void initOrcAnimations(Texture mainTexture){
@@ -180,6 +184,7 @@ public class AnimationHandler implements Disposable {
         frames.clear();
 
         idle_orc = new TextureRegion(mainTexture, 0 , 0, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT ); //Cogemos el sprite del punto 0,0 con W y H 64
+        dead_orc = new TextureRegion(mainTexture, 320 , 1280, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
     }
 
     private void initCoinAnimation(Texture mainTexture){
@@ -260,6 +265,7 @@ public class AnimationHandler implements Disposable {
         frames.clear();
 
         idle_elf = new TextureRegion(mainTexture, 0 , 128, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
+        dead_elf = new TextureRegion(mainTexture, 320 , 1280, MAIN_TEXT_WIDTH, MAIN_TEXT_HEIGHT );
     }
 
     private void initBatAnimations(Texture mainTexture){
@@ -331,7 +337,11 @@ public class AnimationHandler implements Disposable {
 
     public Animation getRunDown_sk() {return runDown_sk;}
 
+    public TextureRegion getDead_sk(){return dead_sk;}
+
     public TextureRegion getIdle_orc() {return idle_orc;}
+
+    public TextureRegion getDead_orc(){return dead_orc;}
 
     public Animation getRunLeft_orc() {return runLeft_orc;}
 
@@ -368,6 +378,8 @@ public class AnimationHandler implements Disposable {
     public TextureRegion getIdleElf(){
         return idle_elf;
     }
+
+    public TextureRegion getDead_elf(){return dead_elf;}
 
     public Animation getElfShootingRight(){return shootingRight;}
 
