@@ -43,6 +43,8 @@ public class SoundHandler implements Disposable {
         assetManager.load("audio/sounds/iceball.wav", Music.class);
         assetManager.load("audio/sounds/lightningball.wav", Music.class);
         assetManager.load("audio/sounds/jump.wav", Music.class);
+        assetManager.load("audio/sounds/heal.wav", Music.class);
+        assetManager.load("audio/sounds/error.wav", Music.class);
         assetManager.finishLoading();
 
 

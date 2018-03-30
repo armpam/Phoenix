@@ -13,6 +13,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.phoenix.game.Enemies.Enemy;
 import com.phoenix.game.Game;
+import com.phoenix.game.Items.Armor;
+import com.phoenix.game.Items.EquipableItem;
+import com.phoenix.game.Items.HpPotion;
+import com.phoenix.game.Items.MpPotion;
+import com.phoenix.game.Items.UsableItem;
+import com.phoenix.game.Items.Weapon;
+import com.phoenix.game.Maps.Chest;
 import com.phoenix.game.Projectiles.IceBall;
 import com.phoenix.game.Projectiles.LightBall;
 import com.phoenix.game.Projectiles.LightningBall;
@@ -48,6 +55,12 @@ public class MainCharacter extends Sprite {
     private int currentXp;
     private int xpGoal;
 
+    private Array<UsableItem> usableInventory;
+    private Array<EquipableItem> equipableInventory;
+
+    private Weapon eqWeapon;
+    private Armor eqArmor;
+
     //Invisible al daño cuando es True
     private boolean iframe = false;
 
@@ -76,6 +89,10 @@ public class MainCharacter extends Sprite {
         stateTimer = 0;
         this.screen = screen;
         this.projectiles = new Array<MainProjectile>();
+        this.usableInventory = new Array<UsableItem>();
+        this.equipableInventory = new Array<EquipableItem>();
+        eqWeapon = new Weapon("swords", "type_1");
+        eqArmor = new Armor("chests", "type_1");
 
         setBounds(0, 0, MAIN_TEXT_WIDTH / Game.PPM, MAIN_TEXT_HEIGHT / Game.PPM);
 
@@ -85,8 +102,8 @@ public class MainCharacter extends Sprite {
         this.maxMana = 1000;
         this.money = 0;
         this.level = 1;
-        this.ap = 1;
-        this.dp = 1;
+        this.ap = 1 * eqWeapon.getEffect();
+        this.dp = 1 * eqArmor.getEffect();
         this.currentXp = 0;
         this.xpGoal = 100;
     }
@@ -112,6 +129,10 @@ public class MainCharacter extends Sprite {
         this.dp = cmc.getDp();
         this.currentXp = cmc.getCurrentExp();
         this.xpGoal = cmc.getXpGoal();
+        this.usableInventory = cmc.usableInventory;
+        this.equipableInventory = cmc.equipableInventory;
+        this.eqArmor = cmc.getEqArmor();
+        this.eqWeapon = cmc.getEqWeapon();
     }
 
     //Actualiza la posición de dónde dibujamos al jugador (sigue a la cámara)
@@ -280,12 +301,116 @@ public class MainCharacter extends Sprite {
         screen.getUI().updateLife(this);
     }
 
+    public void onChestHit(Chest chest){
+        if(!chest.isOpen()) {
+            if (chest.getObject().getProperties().containsKey("item")) {
+                if (chest.getObject().getProperties().get("item").equals("hpPotion")) {
+                    usableInventory.add(new HpPotion());
+                    screen.getUI().updateHpPots(this);
+                } else if (chest.getObject().getProperties().get("item").equals("mpPotion")) {
+                    usableInventory.add(new MpPotion());
+                    screen.getUI().updateMpPots(this);
+                }
+            }
+            else if (chest.getObject().getProperties().containsKey("sword")) {
+                equipableInventory.add(new Weapon("swords", (String)chest.getObject().getProperties().get("sword")));
+            }
+            else if(chest.getObject().getProperties().containsKey("chest")){
+                equipableInventory.add(new Armor("chests", (String)chest.getObject().getProperties().get("chest")));
+            }
+        }
+    }
+
+    public void useHpPot(){
+        boolean found = false;
+        int i = 0;
+        if(getHpPot() > 0){
+            while(!found){
+                if(usableInventory.get(i) instanceof HpPotion){
+                    found = true;
+                    addLife(usableInventory.get(i).getEffect());
+                    usableInventory.removeIndex(i);
+                    screen.getUI().updateHpPots(this);
+                    screen.getUI().updateLife(this);
+                    SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Music.class).play();
+                }
+                i++;
+            }
+        }
+        else{
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/error.wav", Music.class).play();
+        }
+    }
+
+    public void useMpPot(){
+        boolean found = false;
+        int i = 0;
+        if(getMpPot() > 0){
+            while(!found){
+                if(usableInventory.get(i) instanceof MpPotion){
+                    addMana(usableInventory.get(i).getEffect());
+                    usableInventory.removeIndex(i);
+                    found = true;
+                    screen.getUI().updateMpPots(this);
+                    screen.getUI().updateMana(this);
+                    SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Music.class).play();
+                }
+                i++;
+            }
+        }
+        else{
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/error.wav", Music.class).play();
+        }
+    }
+
     public void addXP(int xp){
         currentXp = currentXp + xp;
         if(currentXp >= xpGoal){
             lvlUp();
             screen.getUI().updateUI(this);
         }
+    }
+
+    public int getHpPot(){
+        int count = 0;
+        for(UsableItem item : usableInventory){
+            if(item instanceof HpPotion){
+                count = count + 1;
+            }
+        }
+        return count;
+    }
+
+    public int getMpPot(){
+        int count = 0;
+        for(UsableItem item : usableInventory){
+            if(item instanceof MpPotion){
+                count = count + 1;
+            }
+        }
+        return count;
+    }
+
+    private void addLife(int quant){
+        life = life + quant;
+        if (life > maxLife){
+            life = maxLife;
+        }
+    }
+
+    private void addMana(int quant){
+        mana = mana + quant;
+        if(mana > maxMana){
+            mana = maxMana;
+        }
+    }
+
+    public Weapon getEqWeapon(){
+        return eqWeapon;
+    }
+
+    public Armor getEqArmor(){
+        return eqArmor;
     }
 
     public void teleport(float x, float y){

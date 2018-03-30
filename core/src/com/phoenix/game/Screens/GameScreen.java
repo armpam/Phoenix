@@ -15,17 +15,13 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.phoenix.game.Enemies.Bat;
 import com.phoenix.game.Enemies.Enemy;
 import com.phoenix.game.Maps.Coin;
 import com.phoenix.game.Enemies.DarkElf;
 import com.phoenix.game.Projectiles.LightBall;
 import com.phoenix.game.Entities.MainCharacter;
-import com.phoenix.game.Projectiles.MainFireball;
 import com.phoenix.game.Enemies.ManEatingPlant;
 import com.phoenix.game.Maps.MovingBlock;
-import com.phoenix.game.Enemies.Orc;
-import com.phoenix.game.Enemies.Skeleton;
 import com.phoenix.game.Game;
 import com.phoenix.game.Projectiles.MainProjectile;
 import com.phoenix.game.Scenes.Main_UI;
@@ -111,9 +107,6 @@ public class GameScreen implements Screen {
 
         //Crea el Body Box2D de nuestro personaje principal
         mcharacter = new MainCharacter(world, this);
-
-        //Crea el Body Box2D de los enemigos
-        //initializeEnemies(world);
 
         //Nueva Interfaz Gráfica general
         this.UI = new Main_UI(game.batch, this.mcharacter);
@@ -256,6 +249,12 @@ public class GameScreen implements Screen {
                 SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/lightningball.wav", Music.class).play();
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
+                mcharacter.useHpPot(); //Dispara una bola de rayo
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
+                mcharacter.useMpPot(); //Dispara una bola de rayo
             }
         }
         else{

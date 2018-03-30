@@ -1,9 +1,7 @@
 package com.phoenix.game.Enemies;
 
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -24,7 +22,6 @@ import com.phoenix.game.Projectiles.LightningBall;
 import com.phoenix.game.Projectiles.MainFireball;
 import com.phoenix.game.Projectiles.MainProjectile;
 import com.phoenix.game.Screens.GameScreen;
-import com.phoenix.game.Tools.AnimationHandler;
 import com.phoenix.game.Tools.SoundHandler;
 
 /**

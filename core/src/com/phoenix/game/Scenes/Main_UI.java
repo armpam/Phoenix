@@ -26,10 +26,12 @@ public class Main_UI implements Disposable {
     private BitmapFont hudFont;
     private Label.LabelStyle hudLabelStyle;
 
-    Label lifeLabel;
-    Label manaLabel;
-    static Label scoreLabel;
-    Label levelLabel;
+    private Label lifeLabel;
+    private Label manaLabel;
+    private Label scoreLabel;
+    private Label levelLabel;
+    private Label hpPotLabel;
+    private Label mpPotLabel;
 
 
     public Main_UI(SpriteBatch batch, MainCharacter mCharacter){
@@ -47,7 +49,8 @@ public class Main_UI implements Disposable {
         manaLabel = new Label("Maná: " + Integer.toString(mCharacter.getMana()), hudLabelStyle);
         scoreLabel = new Label("Dinero: " + Integer.toString(mCharacter.getMoney()), hudLabelStyle);
         levelLabel = new Label("Nivel: " + Integer.toString(mCharacter.getLevel()), hudLabelStyle);
-
+        hpPotLabel = new Label("Pociones de vida: " + Integer.toString(mCharacter.getHpPot()), hudLabelStyle);
+        mpPotLabel = new Label("Pociones de maná: " + Integer.toString(mCharacter.getMpPot()), hudLabelStyle);
 
         hudTable.add(lifeLabel).padLeft(20);
         hudTable.row();
@@ -56,6 +59,10 @@ public class Main_UI implements Disposable {
         hudTable.add(scoreLabel).padLeft(20);
         hudTable.row();
         hudTable.add(levelLabel).padLeft(20);
+        hudTable.row();
+        hudTable.add(hpPotLabel).padLeft(20);
+        hudTable.row();
+        hudTable.add(mpPotLabel).padLeft(20);
 
         stage.addActor(hudTable);
 
@@ -76,9 +83,11 @@ public class Main_UI implements Disposable {
         manaLabel.setText("Maná: " + mc.getMana());
     }
 
-    public void updateLevel(MainCharacter mc){levelLabel.setText("Nivel: " + mc.getLevel());}
-
     public void updateScore(MainCharacter mc){scoreLabel.setText("Dinero: " + mc.getMoney());}
+
+    public void updateHpPots(MainCharacter mc){hpPotLabel.setText("Pociones de vida: " + mc.getHpPot());}
+
+    public void updateMpPots(MainCharacter mc){mpPotLabel.setText("Pociones de maná: " + mc.getMpPot());}
 
     @Override
     public void dispose() {

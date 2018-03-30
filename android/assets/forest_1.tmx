@@ -203,10 +203,26 @@
   <object id="106" x="715" y="817"/>
  </objectgroup>
  <objectgroup name="chests">
-  <object id="61" x="225" y="193" width="28" height="15"/>
-  <object id="62" x="448" y="418" width="30" height="27"/>
-  <object id="63" x="352" y="1089" width="31" height="30"/>
-  <object id="64" x="1375" y="1441" width="33" height="17"/>
+  <object id="61" x="225" y="193" width="28" height="15">
+   <properties>
+    <property name="chest" value="type_1"/>
+   </properties>
+  </object>
+  <object id="62" x="448" y="418" width="30" height="27">
+   <properties>
+    <property name="sword" value="type_1"/>
+   </properties>
+  </object>
+  <object id="63" x="352" y="1089" width="31" height="30">
+   <properties>
+    <property name="item" value="mpPotion"/>
+   </properties>
+  </object>
+  <object id="64" x="1375" y="1441" width="33" height="17">
+   <properties>
+    <property name="item" value="hpPotion"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="collision">
   <object id="1" x="590" y="351" width="134" height="158"/>

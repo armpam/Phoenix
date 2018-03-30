@@ -1,0 +1,45 @@
+<equipment>
+	<swords>
+		<type_1>
+			<name>Espada de bronce</name>
+			<description>Espada de bronce. No parece muy afilada</description>
+			<effect>1</effect>
+		</type_1>
+		<type_2>
+			<name>=Espada de plata</name>
+			<description>Espada de plata. Parece en buen estado.</description>
+			<effect>2</effect>
+		</type_2>
+		<type_3>
+			<name>Espada de oro</name>
+			<description>Espada de oro. Está afilada y un estado excelente.</description>
+			<effect>3</effect>
+		</type_3>
+	</swords>
+
+	<spears>
+
+	</spears>
+
+	<chests>
+		<type_1>
+			<name>Armadura de bronce</name>
+			<description>Armadura de bronce. No parece en buen estado.</description>
+			<effect>1</effect>
+		</type_1>
+		<type_2>
+			<name>Armadura de plata</name>
+			<description>Armadura de plata. Parece en buen estado.</description>
+			<effect>2</effect>
+		</type_2>
+		<type_3>
+			<name>Armadura de oro</name>
+			<description>Armadura de oro. Está cuidada y un estado excelente.</description>
+			<effect>3</effect>
+		</type_3>
+	</chests>
+
+	<gloves>
+
+	</gloves>
+</equipment>

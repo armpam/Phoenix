@@ -62,9 +62,17 @@ public class Chest extends com.phoenix.game.Maps.RectTileObject {
         }
     }
 
+    public boolean isOpen(){
+        return open;
+    }
+
     @Override
     public void onFireBallHit() {
 
+    }
+
+    public MapObject getObject(){
+        return object;
     }
 
 }

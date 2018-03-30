@@ -22,6 +22,8 @@ import com.phoenix.game.Maps.Rock;
 import com.phoenix.game.Maps.Sensor;
 import com.phoenix.game.Scenes.Main_UI;
 
+import sun.applet.Main;
+
 /**
  * Created by alesd on 3/22/2017.
  */
@@ -76,6 +78,7 @@ public class WorldContactListener implements ContactListener {
             }
 
             if (object.getUserData() instanceof Chest) { //Si el objeto es de tipo Chest
+                ((MainCharacter) player.getUserData()).onChestHit((Chest)object.getUserData());
                 ((Chest) object.getUserData()).onPlayerHit(); //Sabemos que es un árbol asi que lo casteamos a árbol
             }
 
