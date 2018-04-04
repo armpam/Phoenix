@@ -21,4 +21,12 @@ public abstract class EquipableItem {
     public int getEffect(){
         return  effect;
     }
+
+    public String getName(){
+        return name;
+    }
+
+    public String getDescription(){
+        return  description;
+    }
 }

@@ -177,4 +177,8 @@ public class Controller {
     public void resize(int width, int height){
         viewport.update(width, height);
     }
+
+    public void resetIP(){
+        Gdx.input.setInputProcessor(stage);
+    }
 }

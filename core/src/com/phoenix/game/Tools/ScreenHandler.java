@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Disposable;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Screens.GameScreen;
+import com.phoenix.game.Screens.MainMenu;
 import com.phoenix.game.Screens.StartScreen;
 
 import sun.applet.Main;
@@ -89,6 +90,15 @@ public class ScreenHandler implements Disposable {
         ((GameScreen) currentScreen).setRepositionFlag();
         SoundHandler.getSoundHandler().playTownTheme();
         System.gc();
+    }
+
+    public void setMainMenu(MainCharacter mc){
+        game.setScreen(new MainMenu(game, mc, (GameScreen)currentScreen));
+        System.gc();
+    }
+
+    public void setScreen(Screen screen){
+        game.setScreen(screen);
     }
 
     public String getPreviousMap(){

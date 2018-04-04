@@ -22,4 +22,6 @@ public abstract class UsableItem {
         return description;
     }
 
+    public String getName(){return name;}
+
 }

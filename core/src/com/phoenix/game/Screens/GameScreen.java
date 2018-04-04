@@ -76,6 +76,7 @@ public class GameScreen implements Screen {
     private boolean greenMapFlag = false;
     private boolean sideScrollFlag = false;
     private boolean cityFlag = false;
+    private boolean menuFlag = false;
     private boolean tpFlag = false;
     private boolean repositionFlag = false;
 
@@ -256,6 +257,9 @@ public class GameScreen implements Screen {
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
                 mcharacter.useMpPot(); //Dispara una bola de rayo
             }
+            if(Gdx.input.isKeyJustPressed(Input.Keys.I)){
+                menuFlag = true;
+            }
         }
         else{
             mcharacter.b2body.setLinearVelocity(0,0);
@@ -366,6 +370,10 @@ public class GameScreen implements Screen {
         if(cityFlag){
             b2wc.getEnemyArray().clear();
             ScreenHandler.getScreenHandler().setCityScreen(mcharacter);
+        }
+        if(menuFlag){
+            ScreenHandler.getScreenHandler().setMainMenu(mcharacter);
+            menuFlag = false;
         }
         if(tpFlag){
             mcharacter.teleport(1, 1);
@@ -485,6 +493,11 @@ public class GameScreen implements Screen {
     public Main_UI getUI(){
         return UI;
     }
+
+    public Controller getController(){
+        return controller;
+    }
+
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);

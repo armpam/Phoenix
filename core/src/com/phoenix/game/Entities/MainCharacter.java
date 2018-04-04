@@ -437,6 +437,9 @@ public class MainCharacter extends Sprite {
 
     public int getXpGoal(){return xpGoal;}
 
+    public Array<UsableItem> getUsableInventory(){return  usableInventory;}
+
+    public Array<EquipableItem> getEquipableInventory(){return equipableInventory;}
 
     public Array<MainProjectile> getProjectiles(){
         return this.projectiles;
