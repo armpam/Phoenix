@@ -205,12 +205,12 @@
  <objectgroup name="chests">
   <object id="61" x="225" y="193" width="28" height="15">
    <properties>
-    <property name="chest" value="type_1"/>
+    <property name="chest" value="type_2"/>
    </properties>
   </object>
   <object id="62" x="448" y="418" width="30" height="27">
    <properties>
-    <property name="sword" value="type_1"/>
+    <property name="sword" value="type_2"/>
    </properties>
   </object>
   <object id="63" x="352" y="1089" width="31" height="30">

@@ -133,7 +133,7 @@ public class MainMenu implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
-                System.out.println("jaja");
+                ScreenHandler.getScreenHandler().setScreen(new StatsMenu(game, screen, mc));
             }
 
             @Override
@@ -160,7 +160,7 @@ public class MainMenu implements Screen {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 super.enter(event, x, y, pointer, fromActor);
-                descriptionLabel.setText("Muestra los onjetos en la bolsa");
+                descriptionLabel.setText("Muestra los objetos en la bolsa");
             }
 
             @Override

@@ -23,6 +23,9 @@ public class ItemsMenu extends SubMenu {
     }
 
     private void showItems(){
+        int i = 1;
+        infoTable.add(new Label("", font));
+        infoTable.row();
         for(final UsableItem item : mc.getUsableInventory()){
             Label label = new Label(item.getName(), font);
             label.addListener(new ClickListener(){
@@ -51,7 +54,10 @@ public class ItemsMenu extends SubMenu {
                 }
             });
             infoTable.add(label);
-            infoTable.row();
+            if((i % 2 == 0) && (i != 0)){
+                infoTable.row();
+            }
+            i++;
         }
     }
 }

@@ -50,6 +50,8 @@ public class MainCharacter extends Sprite {
     private int maxMana;
     private int money;
     private int level;
+    private int baseAp;
+    private int baseDp;
     private int ap;
     private int dp;
     private int currentXp;
@@ -102,8 +104,10 @@ public class MainCharacter extends Sprite {
         this.maxMana = 1000;
         this.money = 0;
         this.level = 1;
-        this.ap = 1 * eqWeapon.getEffect();
-        this.dp = 1 * eqArmor.getEffect();
+        this.baseAp = 1;
+        this.baseDp = 1;
+        this.ap = baseAp * eqWeapon.getEffect();
+        this.dp = baseDp * eqArmor.getEffect();
         this.currentXp = 0;
         this.xpGoal = 100;
     }
@@ -125,7 +129,9 @@ public class MainCharacter extends Sprite {
         this.level = cmc.getLevel();
         this.maxLife = cmc.getMaxLife();
         this.maxMana = cmc.getMaxMana();
+        this.baseAp = cmc.getBaseAp();
         this.ap = cmc.getAp();
+        this.baseDp = cmc.getBaseDp();
         this.dp = cmc.getDp();
         this.currentXp = cmc.getCurrentExp();
         this.xpGoal = cmc.getXpGoal();
@@ -284,8 +290,10 @@ public class MainCharacter extends Sprite {
         maxMana = maxMana + 200;
         life = maxLife;
         mana = maxMana;
-        ap = ap + 1;
-        dp = dp + 1;
+        baseAp = baseAp + 1;
+        updateAp();
+        baseDp = baseDp + 1;
+        updateDp();
         xpGoal = xpGoal * 2;
         currentXp = 0;
         screen.getUI().updateUI(this);
@@ -405,6 +413,33 @@ public class MainCharacter extends Sprite {
         }
     }
 
+    private void updateAp(){
+        ap = baseAp * eqWeapon.getEffect();
+    }
+
+    private void updateDp(){
+        dp = baseDp * eqArmor.getEffect();
+    }
+
+    public void switchArmor(Armor armor){
+        Armor previousArmor = eqArmor;
+        eqArmor = armor;
+        equipableInventory.removeValue(armor, true);
+        equipableInventory.add(previousArmor);
+        updateDp();
+        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Music.class).play();
+
+    }
+
+    public void switchWeapon(Weapon weapon){
+        Weapon previousWeapon = eqWeapon;
+        eqWeapon = weapon;
+        equipableInventory.removeValue(weapon, true);
+        equipableInventory.add(previousWeapon);
+        updateAp();
+        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Music.class).play();
+    }
+
     public Weapon getEqWeapon(){
         return eqWeapon;
     }
@@ -436,6 +471,10 @@ public class MainCharacter extends Sprite {
     public int getCurrentExp(){return currentXp;}
 
     public int getXpGoal(){return xpGoal;}
+
+    private int getBaseAp(){return baseAp;}
+
+    private int getBaseDp(){return baseDp;}
 
     public Array<UsableItem> getUsableInventory(){return  usableInventory;}
 

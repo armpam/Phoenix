@@ -352,8 +352,16 @@
   </object>
  </objectgroup>
  <objectgroup name="chests">
-  <object id="53" x="1472.5" y="65" width="29.1667" height="17.5"/>
-  <object id="54" x="1535.83" y="62.5" width="30.8333" height="19.1667"/>
+  <object id="53" x="1472.5" y="65" width="29.1667" height="17.5">
+   <properties>
+    <property name="item" value="hpPotion"/>
+   </properties>
+  </object>
+  <object id="54" x="1535.83" y="62.5" width="30.8333" height="19.1667">
+   <properties>
+    <property name="item" value="mpPotion"/>
+   </properties>
+  </object>
   <object id="55" x="290" y="286.667" width="30" height="20"/>
   <object id="56" x="65.8333" y="1536.67" width="29.1667" height="27.5"/>
   <object id="57" x="802.5" y="770.833" width="26.6667" height="18.3333"/>

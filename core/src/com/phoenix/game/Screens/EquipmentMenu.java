@@ -6,10 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Game;
+import com.phoenix.game.Items.Armor;
 import com.phoenix.game.Items.EquipableItem;
 import com.phoenix.game.Items.HpPotion;
 import com.phoenix.game.Items.MpPotion;
 import com.phoenix.game.Items.UsableItem;
+import com.phoenix.game.Items.Weapon;
 
 /**
  * Created by alesd on 4/4/2018.
@@ -17,13 +19,28 @@ import com.phoenix.game.Items.UsableItem;
 
 public class EquipmentMenu extends SubMenu {
 
+    private Label currentWeapon;
+    private Label currentArmor;
+
     public EquipmentMenu(Game game, MainMenu prevMenu, MainCharacter mc) {
         super(game, prevMenu, mc);
-        titleLabel.setText("OBJETOS");
+        titleLabel.setText("EQUIPO");
         showEquipment();
     }
 
     private void showEquipment(){
+        int i = 1;
+        currentWeapon = new Label("Arma equipada: " + mc.getEqWeapon().getName(), font);
+        currentArmor = new Label("Armadura equipada: " + mc.getEqArmor().getName(), font);
+        infoTable.add(new Label("", font));
+        infoTable.row().colspan(2);
+        infoTable.add(currentWeapon);
+        infoTable.row().colspan(2);
+        infoTable.add(currentArmor);
+        infoTable.row();
+        infoTable.add(new Label("", font));
+        infoTable.row();
+
         for(final EquipableItem item : mc.getEquipableInventory()){
             Label label = new Label(item.getName(), font);
             label.addListener(new ClickListener(){
@@ -31,6 +48,12 @@ public class EquipmentMenu extends SubMenu {
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     super.touchUp(event, x, y, pointer, button);
+                    if(item instanceof Weapon){
+                        mc.switchWeapon((Weapon)item);
+                    }
+                    else if(item instanceof Armor){
+                        mc.switchArmor((Armor)item);
+                    }
                 }
 
                 @Override
@@ -46,7 +69,10 @@ public class EquipmentMenu extends SubMenu {
                 }
             });
             infoTable.add(label);
-            infoTable.row();
+            if((i % 2 == 0) && (i != 0)){
+                infoTable.row();
+            }
+            i++;
         }
     }
 }

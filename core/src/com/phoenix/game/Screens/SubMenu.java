@@ -85,9 +85,10 @@ public abstract class SubMenu implements Screen {
         downTable = new Table();
         infoTable = new Table();
 
+        infoTable.padTop(50);
         infoTable.setDebug(true);
         infoTable.top().left();
-        infoTable.add(titleLabel).expandX();
+        infoTable.add(titleLabel).expandX().colspan(2);
         infoTable.row();
         infoTable.add();
         infoTable.row();
