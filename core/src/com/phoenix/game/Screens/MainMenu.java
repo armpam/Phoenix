@@ -2,6 +2,7 @@ package com.phoenix.game.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,13 +15,17 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Game;
+import com.phoenix.game.Tools.AnimationHandler;
 import com.phoenix.game.Tools.ScreenHandler;
+import com.phoenix.game.Tools.SoundHandler;
 
 /**
  * Created by alesd on 3/31/2018.
@@ -34,18 +39,19 @@ public class MainMenu implements Screen {
     private Game game;
 
     private Label.LabelStyle font;
+    private Skin skin;
     private Texture bgTexture;
     private Table mainTable;
     private Table optionsTable;
     private Table statsTable;
 
-    private Label backLabel;
+    private TextButton backLabel;
     private Label descriptionLabel;
 
-    private Label stateLabel;
-    private Label itemsLabel;
-    private Label equipmentLabel;
-    private Label saveLabel;
+    private TextButton stateLabel;
+    private TextButton itemsLabel;
+    private TextButton equipmentLabel;
+    private TextButton saveLabel;
 
     private Label lifeLabel;
     private Label manaLabel;
@@ -60,6 +66,7 @@ public class MainMenu implements Screen {
     public MainMenu(Game game, MainCharacter mc, GameScreen previousScreen){
         this.game = game;
         this.mc = mc;
+        this.skin = AnimationHandler.getAnimationHandler().getSkin();
         this.previousScreen = previousScreen;
         viewport = new FitViewport(Game.WIDTH, Game.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, (game).batch );
@@ -68,22 +75,22 @@ public class MainMenu implements Screen {
 
         font = new Label.LabelStyle(new BitmapFont(), Color.WHITE );
         mainTable = new Table();
-        optionsTable = new Table();
+        optionsTable = new Table(skin);
+        optionsTable.setColor(Color.DARK_GRAY);
         statsTable = new Table();
 
-        descriptionLabel = new Label("Descripción", font);
+        descriptionLabel = new Label("Descripción", skin);
 
         initStatsTable(mc);
         initOptionsTable();
 
-        optionsTable.add(stateLabel).expandX().padBottom(70);
-        optionsTable.row().padBottom(70);
+        optionsTable.add(stateLabel).expandX().padBottom(40).width(130).height(60);
+        optionsTable.row().padBottom(40).width(130).height(60);
         optionsTable.add(itemsLabel);
-        optionsTable.row().padBottom(70);
+        optionsTable.row().padBottom(40).width(130).height(60);
         optionsTable.add(equipmentLabel);
-        optionsTable.row().padBottom(70);
+        optionsTable.row().padBottom(40).width(130).height(60);
         optionsTable.add(saveLabel);
-        optionsTable.setDebug(true);
 
         statsTable.add(lifeLabel).padBottom(20).padLeft(20);
         statsTable.row().padBottom(20).padLeft(20);
@@ -94,24 +101,26 @@ public class MainMenu implements Screen {
         statsTable.add(xpLabel);
 
         mainTable.add(new Image(new Texture(Gdx.files.internal("mc.jpg")))).height(150).padLeft(100).padBottom(100);
-        mainTable.add(statsTable).left().expand().padBottom(100);
+        mainTable.add(statsTable).left().expand().padBottom(60);
         mainTable.add(optionsTable).width(Game.WIDTH / 4);
         mainTable.row();
         mainTable.add(descriptionLabel).height(Game.HEIGHT / 8).colspan(2);
-        mainTable.add(backLabel);
+        mainTable.add(backLabel).height(60).width(130);
         mainTable.setFillParent(true);
 
         stage.addActor(mainTable);
     }
 
     private void initOptionsTable(){
-        backLabel = new Label("Atrás", font);
+        backLabel = new TextButton("Atrás", skin);
+        backLabel.setColor(Color.DARK_GRAY);
         backLabel.addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
                 screen.dispose();
                 ScreenHandler.getScreenHandler().setScreen(previousScreen);
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/back.wav", Sound.class).play(Game.volume);
                 previousScreen.getController().resetIP();
             }
 
@@ -127,13 +136,15 @@ public class MainMenu implements Screen {
                 descriptionLabel.setText("Descripción");
             }
         });
-        stateLabel = new Label("Estado", font);
+        stateLabel = new TextButton("Estado", skin);
+        stateLabel.setColor(Color.DARK_GRAY);
         stateLabel.addListener(new ClickListener(){
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
                 ScreenHandler.getScreenHandler().setScreen(new StatsMenu(game, screen, mc));
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/pick.wav", Sound.class).play(Game.volume);
             }
 
             @Override
@@ -149,12 +160,14 @@ public class MainMenu implements Screen {
             }
         });
 
-        itemsLabel = new Label("Objetos", font);
+        itemsLabel = new TextButton("Objetos", skin);
+        itemsLabel.setColor(Color.DARK_GRAY);
         itemsLabel.addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
                 ScreenHandler.getScreenHandler().setScreen(new ItemsMenu(game, screen, mc));
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/pick.wav", Sound.class).play(Game.volume);
             }
 
             @Override
@@ -170,12 +183,14 @@ public class MainMenu implements Screen {
             }
         });
 
-        equipmentLabel = new Label("Equipo", font);
+        equipmentLabel = new TextButton("Equipo", skin);
+        equipmentLabel.setColor(Color.DARK_GRAY);
         equipmentLabel.addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
                 ScreenHandler.getScreenHandler().setScreen(new EquipmentMenu(game, screen, mc));
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/pick.wav", Sound.class).play(Game.volume);
             }
 
             @Override
@@ -191,12 +206,14 @@ public class MainMenu implements Screen {
             }
         });
 
-        saveLabel = new Label("Guardar", font);
+        saveLabel = new TextButton("Guardar", skin);
+        saveLabel.setColor(Color.DARK_GRAY);
         saveLabel.addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
                 System.out.println("jaja");
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/error.wav", Sound.class).play(Game.volume);
             }
 
             @Override
@@ -214,10 +231,10 @@ public class MainMenu implements Screen {
     }
 
     private void initStatsTable(MainCharacter mc){
-        lifeLabel = new Label("Vida: " + mc.getLife() + "/ " + mc.getMaxLife(), font);
-        manaLabel = new Label("Maná: " + mc.getMana() + "/ " + mc.getMaxMana(), font);
-        lvlLabel = new Label("Nivel: " + mc.getLevel(), font);
-        xpLabel = new Label("Experiencia: " + mc.getCurrentExp() + "/ " + mc.getXpGoal(), font);
+        lifeLabel = new Label("Vida: " + mc.getLife() + "/ " + mc.getMaxLife(), skin);
+        manaLabel = new Label("Maná: " + mc.getMana() + "/ " + mc.getMaxMana(), skin);
+        lvlLabel = new Label("Nivel: " + mc.getLevel(), skin);
+        xpLabel = new Label("Experiencia: " + mc.getCurrentExp() + "/ " + mc.getXpGoal(), skin);
     }
 
     public void resetIP(){

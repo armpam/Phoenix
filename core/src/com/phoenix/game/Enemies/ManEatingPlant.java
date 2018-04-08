@@ -29,8 +29,8 @@ public class ManEatingPlant extends com.phoenix.game.Enemies.Enemy {
         SCSpeed = 0.5f;
         AGGRO = 2;
         CHASEDISTANCE = 5;
-        hp = 10000;
-        ap = 500;
+        hp = 10000 * Game.difficulty ;
+        ap = 500 * Game.difficulty;
         xp = 4000;
         setBounds(x, y, WIDTH / Game.PPM, HEIGHT / Game.PPM);
         fixture.setUserData(this);

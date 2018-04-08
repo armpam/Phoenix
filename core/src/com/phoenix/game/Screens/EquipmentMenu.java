@@ -1,5 +1,6 @@
 package com.phoenix.game.Screens;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -12,6 +13,7 @@ import com.phoenix.game.Items.HpPotion;
 import com.phoenix.game.Items.MpPotion;
 import com.phoenix.game.Items.UsableItem;
 import com.phoenix.game.Items.Weapon;
+import com.phoenix.game.Tools.SoundHandler;
 
 /**
  * Created by alesd on 4/4/2018.
@@ -30,9 +32,9 @@ public class EquipmentMenu extends SubMenu {
 
     private void showEquipment(){
         int i = 1;
-        currentWeapon = new Label("Arma equipada: " + mc.getEqWeapon().getName(), font);
-        currentArmor = new Label("Armadura equipada: " + mc.getEqArmor().getName(), font);
-        infoTable.add(new Label("", font));
+        currentWeapon = new Label("Arma equipada: " + mc.getEqWeapon().getName(), skin);
+        currentArmor = new Label("Armadura equipada: " + mc.getEqArmor().getName(), skin);
+        infoTable.add(new Label("", skin));
         infoTable.row().colspan(2);
         infoTable.add(currentWeapon);
         infoTable.row().colspan(2);
@@ -42,7 +44,7 @@ public class EquipmentMenu extends SubMenu {
         infoTable.row();
 
         for(final EquipableItem item : mc.getEquipableInventory()){
-            Label label = new Label(item.getName(), font);
+            Label label = new Label(item.getName(), skin);
             label.addListener(new ClickListener(){
 
                 @Override
@@ -50,9 +52,11 @@ public class EquipmentMenu extends SubMenu {
                     super.touchUp(event, x, y, pointer, button);
                     if(item instanceof Weapon){
                         mc.switchWeapon((Weapon)item);
+                        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/equip.wav", Sound.class).play(Game.volume);
                     }
                     else if(item instanceof Armor){
                         mc.switchArmor((Armor)item);
+                        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/equip.wav", Sound.class).play(Game.volume);
                     }
                 }
 

@@ -3,6 +3,7 @@ package com.phoenix.game.Enemies;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
 
@@ -20,8 +21,8 @@ public class Orc extends com.phoenix.game.Enemies.Enemy {
         SCSpeed = 0.5f;
         AGGRO = 2;
         CHASEDISTANCE = 40;
-        hp = 2000;
-        ap = 300;
+        hp = 2000 * Game.difficulty;
+        ap = 300 * Game.difficulty;
         xp = 200;
         fixture.setUserData(this);
     }

@@ -32,8 +32,8 @@ public class DarkElf extends Enemy {
         SCSpeed = 0f;
         AGGRO = 10;
         CHASEDISTANCE = 0;
-        hp = 500;
-        ap = 200;
+        hp = 500 * Game.difficulty;
+        ap = 200 * Game.difficulty;
         xp = 150;
         lightBalls = new Array<com.phoenix.game.Projectiles.LightBall>();
         region = new TextureRegion();

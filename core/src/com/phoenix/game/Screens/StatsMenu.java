@@ -23,7 +23,7 @@ public class StatsMenu extends SubMenu {
     public StatsMenu(Game game, MainMenu prevMenu, MainCharacter mc) {
         super(game, prevMenu, mc);
         titleLabel.setText("ESTADO");
-        infoTable.add(new Label("", font));
+        infoTable.add(new Label("", skin));
         infoTable.row();
 
         initLabels();
@@ -41,12 +41,12 @@ public class StatsMenu extends SubMenu {
     }
 
     private void initLabels(){
-        lifeLabel = new Label("Vida: " + mc.getLife() + "/ " + mc.getMaxLife(), font);
-        manaLabel = new Label("Maná: " + mc.getMana() + "/ " + mc.getMaxMana(), font);
-        lvlLabel = new Label("Nivel: " + mc.getLevel(), font);
-        xpLabel = new Label("Experiencia: " + mc.getCurrentExp() + "/ " + mc.getXpGoal(), font);
-        apLabel = new Label("Puntos de Ataque: " + mc.getAp(), font);
-        dpLabel = new Label("Puntos de Defensa: " + mc.getDp(), font);
+        lifeLabel = new Label("Vida: " + mc.getLife() + "/ " + mc.getMaxLife(), skin);
+        manaLabel = new Label("Maná: " + mc.getMana() + "/ " + mc.getMaxMana(), skin);
+        lvlLabel = new Label("Nivel: " + mc.getLevel(), skin);
+        xpLabel = new Label("Experiencia: " + mc.getCurrentExp() + "/ " + mc.getXpGoal(), skin);
+        apLabel = new Label("Puntos de Ataque: " + mc.getAp(), skin);
+        dpLabel = new Label("Puntos de Defensa: " + mc.getDp(), skin);
 
         lifeLabel.addListener(new ClickListener(){
 

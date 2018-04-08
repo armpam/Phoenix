@@ -3,6 +3,7 @@ package com.phoenix.game.Enemies;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.phoenix.game.Game;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
 
@@ -20,8 +21,8 @@ public class Skeleton extends com.phoenix.game.Enemies.Enemy {
         SCSpeed = 1.1f;
         AGGRO = 2;
         CHASEDISTANCE = 40;
-        hp = 1000;
-        ap = 100;
+        hp = 1000 * Game.difficulty;
+        ap = 100 * Game.difficulty;
         xp = 100;
         fixture.setUserData(this);
     }

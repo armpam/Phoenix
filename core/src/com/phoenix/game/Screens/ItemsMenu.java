@@ -24,10 +24,10 @@ public class ItemsMenu extends SubMenu {
 
     private void showItems(){
         int i = 1;
-        infoTable.add(new Label("", font));
+        infoTable.add(new Label("", skin));
         infoTable.row();
         for(final UsableItem item : mc.getUsableInventory()){
-            Label label = new Label(item.getName(), font);
+            Label label = new Label(item.getName(), skin);
             label.addListener(new ClickListener(){
 
                 @Override

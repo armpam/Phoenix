@@ -1,8 +1,5 @@
 package com.phoenix.game;
 
-
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.phoenix.game.Tools.AnimationHandler;
 import com.phoenix.game.Tools.ScreenHandler;
@@ -12,6 +9,8 @@ public class Game extends com.badlogic.gdx.Game {
 	public static final int WIDTH = 800, HEIGHT = 480; //Resolución del juego
 
 	public static final float PPM = 100; //Pixels por metro en box2d
+	public static float volume = 0.5f;
+	public static int difficulty = 1;
 
 	public static final short DEFAULT_BIT = 2;
 	public static final short MC_BIT = 4;

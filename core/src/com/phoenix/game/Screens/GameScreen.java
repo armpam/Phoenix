@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -235,19 +236,19 @@ public class GameScreen implements Screen {
             }
             if (Gdx.input.isKeyPressed(Input.Keys.NUM_1) && !fbLock) {
                 mcharacter.fire(1); //Dispara una bola de fuego
-                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/fireball.wav", Music.class).play();
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/fireball.wav", Sound.class).play(Game.volume);
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.NUM_2) && !fbLock) {
                 mcharacter.fire(2); //Dispara una bola de hielo
-                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/iceball.wav", Music.class).play();
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/iceball.wav", Sound.class).play(Game.volume);
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.NUM_3) && !fbLock) {
                 mcharacter.fire(3); //Dispara una bola de rayo
-                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/lightningball.wav", Music.class).play();
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/lightningball.wav", Sound.class).play(Game.volume);
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
@@ -281,7 +282,7 @@ public class GameScreen implements Screen {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && jumpLock == false) {
             mcharacter.b2body.applyLinearImpulse(new Vector2(0, JUMP_STR), mcharacter.b2body.getWorldCenter(), true);
-            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/jump.wav", Music.class).play();
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/jump.wav", Sound.class).play(Game.volume);
             startTime = TimeUtils.nanoTime();
             jumpLock = true;
         }

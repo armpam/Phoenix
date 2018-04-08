@@ -2,6 +2,7 @@ package com.phoenix.game.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,13 +12,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.phoenix.game.Entities.MainCharacter;
 import com.phoenix.game.Game;
+import com.phoenix.game.Tools.AnimationHandler;
 import com.phoenix.game.Tools.ScreenHandler;
+import com.phoenix.game.Tools.SoundHandler;
 
 /**
  * Created by alesd on 4/4/2018.
@@ -34,9 +39,10 @@ public abstract class SubMenu implements Screen {
 
     private Texture bg;
     protected Label.LabelStyle font;
+    protected Skin skin;
     protected Label descriptionLabel;
-    private Label backLabel;
-    protected Label titleLabel;
+    private TextButton backLabel;
+    protected TextButton titleLabel;
 
     protected Table mainTable;
     protected Table downTable;
@@ -46,8 +52,10 @@ public abstract class SubMenu implements Screen {
         this.game = game;
         this.prevMenu = prevMenu;
         this.mc = mc;
+        skin = AnimationHandler.getAnimationHandler().getSkin();
         font = new Label.LabelStyle(new BitmapFont(), Color.WHITE );
-        titleLabel = new Label("Prueba", font);
+        titleLabel = new TextButton("Prueba", skin);
+        titleLabel.setColor(Color.DARK_GRAY);
 
         viewport = new FitViewport(Game.WIDTH, Game.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, (game).batch );
@@ -58,14 +66,16 @@ public abstract class SubMenu implements Screen {
     }
 
     private void init(){
-        descriptionLabel = new Label("Descripción", font);
-        backLabel = new Label("Atrás", font);
+        descriptionLabel = new Label("Descripción", skin);
+        backLabel = new TextButton("Atrás", skin);
+        backLabel.setColor(Color.DARK_GRAY);
         backLabel.addListener(new ClickListener(){
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
                 goBack();
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/back.wav", Sound.class).play(Game.volume);
             }
 
             @Override
@@ -81,26 +91,23 @@ public abstract class SubMenu implements Screen {
             }
         });
 
-        mainTable = new Table();
-        downTable = new Table();
-        infoTable = new Table();
+        mainTable = new Table(skin);
+        downTable = new Table(skin);
+        infoTable = new Table(skin);
 
         infoTable.padTop(50);
-        infoTable.setDebug(true);
         infoTable.top().left();
-        infoTable.add(titleLabel).expandX().colspan(2);
+        infoTable.add(titleLabel).expandX().colspan(2).fillX().height(50);
         infoTable.row();
         infoTable.add();
         infoTable.row();
 
         downTable.add(descriptionLabel).expand() ;
-        downTable.add(backLabel).width(135);
-        downTable.setDebug(true);
+        downTable.add(backLabel).width(105).height(50);
 
         mainTable.add(infoTable).grow();
         mainTable.row();
         mainTable.add(downTable).bottom().fillX().height(50);
-        mainTable.setDebug(true);
         mainTable.setFillParent(true);
 
         stage.addActor(mainTable);

@@ -1,6 +1,7 @@
 package com.phoenix.game.Entities;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -253,7 +254,7 @@ public class MainCharacter extends Sprite {
         if (!iframe) {
             iframe = true;
             this.life = this.life - quantity;
-            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/hurt.ogg", Music.class).play();
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/hurt.ogg", Sound.class).play(Game.volume);
             startTime = TimeUtils.nanoTime();
         }
         screen.getUI().updateLife(this);
@@ -280,7 +281,7 @@ public class MainCharacter extends Sprite {
 
     public void onCoinHit(int value){
         money = money + value;
-        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/coin.ogg", Music.class).play();
+        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/coin.ogg", Sound.class).play(Game.volume);
         screen.getUI().updateScore(this);
     }
 
@@ -340,13 +341,13 @@ public class MainCharacter extends Sprite {
                     usableInventory.removeIndex(i);
                     screen.getUI().updateHpPots(this);
                     screen.getUI().updateLife(this);
-                    SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Music.class).play();
+                    SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Sound.class).play(Game.volume);
                 }
                 i++;
             }
         }
         else{
-            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/error.wav", Music.class).play();
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/error.wav", Sound.class).play(Game.volume);
         }
     }
 
@@ -361,13 +362,13 @@ public class MainCharacter extends Sprite {
                     found = true;
                     screen.getUI().updateMpPots(this);
                     screen.getUI().updateMana(this);
-                    SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Music.class).play();
+                    SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Sound.class).play(Game.volume);
                 }
                 i++;
             }
         }
         else{
-            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/error.wav", Music.class).play();
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/error.wav", Sound.class).play(Game.volume);
         }
     }
 
@@ -427,7 +428,7 @@ public class MainCharacter extends Sprite {
         equipableInventory.removeValue(armor, true);
         equipableInventory.add(previousArmor);
         updateDp();
-        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Music.class).play();
+        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Sound.class).play(Game.volume);
 
     }
 
@@ -437,7 +438,7 @@ public class MainCharacter extends Sprite {
         equipableInventory.removeValue(weapon, true);
         equipableInventory.add(previousWeapon);
         updateAp();
-        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Music.class).play();
+        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Sound.class).play(Game.volume);
     }
 
     public Weapon getEqWeapon(){

@@ -3,6 +3,7 @@ package com.phoenix.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -37,6 +39,8 @@ public class StartScreen implements Screen {
     private Image loadGame;
     private Image settings;
     private Texture bg;
+
+    private StartScreen sc = this;
 
     public StartScreen(Game game){
 
@@ -72,6 +76,8 @@ public class StartScreen implements Screen {
                 super.touchUp(event, x, y, pointer, button);
                 dispose();
                 ScreenHandler.getScreenHandler().setGameScreen();
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/newgame.wav", Sound.class).play(Game.volume);
+
             }
         });
         loadGame = new Image((new Texture("UI/cargar_partida.png")));
@@ -84,12 +90,15 @@ public class StartScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
-                dispose();
-                ScreenHandler.getScreenHandler().setScreen(new SettingsScreen(game));
+                ScreenHandler.getScreenHandler().setScreen(new SettingsScreen(game, sc));
+                SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/pick.wav", Sound.class).play(Game.volume);
             }
         });
     }
 
+    public void resetIP(){
+        Gdx.input.setInputProcessor(stage);
+    }
 
     @Override
     public void show() {

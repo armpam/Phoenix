@@ -2,7 +2,9 @@ package com.phoenix.game.Tools;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Disposable;
+import com.phoenix.game.Game;
 
 /**
  * Created by alesd on 3/20/2018.
@@ -35,16 +37,20 @@ public class SoundHandler implements Disposable {
         assetManager.load("audio/themes/dungeon_theme.ogg", Music.class);
         assetManager.load("audio/themes/town_theme.ogg", Music.class);
         assetManager.load("audio/themes/platformer_theme.ogg", Music.class);
-        assetManager.load("audio/sounds/openChest.ogg", Music.class);
-        assetManager.load("audio/sounds/coin.ogg", Music.class);
-        assetManager.load("audio/sounds/hurt.ogg", Music.class);
-        assetManager.load("audio/sounds/hit.ogg", Music.class);
-        assetManager.load("audio/sounds/fireball.wav", Music.class);
-        assetManager.load("audio/sounds/iceball.wav", Music.class);
-        assetManager.load("audio/sounds/lightningball.wav", Music.class);
-        assetManager.load("audio/sounds/jump.wav", Music.class);
-        assetManager.load("audio/sounds/heal.wav", Music.class);
-        assetManager.load("audio/sounds/error.wav", Music.class);
+        assetManager.load("audio/sounds/openChest.ogg", Sound.class);
+        assetManager.load("audio/sounds/coin.ogg", Sound.class);
+        assetManager.load("audio/sounds/hurt.ogg", Sound.class);
+        assetManager.load("audio/sounds/hit.ogg", Sound.class);
+        assetManager.load("audio/sounds/fireball.wav", Sound.class);
+        assetManager.load("audio/sounds/iceball.wav", Sound.class);
+        assetManager.load("audio/sounds/lightningball.wav", Sound.class);
+        assetManager.load("audio/sounds/jump.wav", Sound.class);
+        assetManager.load("audio/sounds/heal.wav", Sound.class);
+        assetManager.load("audio/sounds/error.wav", Sound.class);
+        assetManager.load("audio/sounds/back.wav", Sound.class);
+        assetManager.load("audio/sounds/equip.wav", Sound.class);
+        assetManager.load("audio/sounds/pick.wav", Sound.class);
+        assetManager.load("audio/sounds/newgame.wav", Sound.class);
         assetManager.finishLoading();
 
 
@@ -55,11 +61,13 @@ public class SoundHandler implements Disposable {
             currentTheme.stop();
             currentTheme = assetManager.get("audio/themes/intro_theme.ogg", Music.class);
             currentTheme.setLooping(true);
+            currentTheme.setVolume(Game.volume);
             currentTheme.play();
         }
         else{
             currentTheme = assetManager.get("audio/themes/intro_theme.ogg", Music.class);
             currentTheme.setLooping(true);
+            currentTheme.setVolume(Game.volume);
             currentTheme.play();
         }
     }
@@ -69,6 +77,7 @@ public class SoundHandler implements Disposable {
             currentTheme.stop();
             currentTheme = assetManager.get("audio/themes/forest_theme.ogg", Music.class);
             currentTheme.setLooping(true);
+            currentTheme.setVolume(Game.volume);
             currentTheme.play();
         }
     }
@@ -78,6 +87,7 @@ public class SoundHandler implements Disposable {
             currentTheme.stop();
             currentTheme = assetManager.get("audio/themes/dungeon_theme.ogg", Music.class);
             currentTheme.setLooping(true);
+            currentTheme.setVolume(Game.volume);
             currentTheme.play();
         }
     }
@@ -87,6 +97,7 @@ public class SoundHandler implements Disposable {
             currentTheme.stop();
             currentTheme = assetManager.get("audio/themes/town_theme.ogg", Music.class);
             currentTheme.setLooping(true);
+            currentTheme.setVolume(Game.volume);
             currentTheme.play();
         }
     }
@@ -96,12 +107,17 @@ public class SoundHandler implements Disposable {
             currentTheme.stop();
             currentTheme = assetManager.get("audio/themes/platformer_theme.ogg", Music.class);
             currentTheme.setLooping(true);
+            currentTheme.setVolume(Game.volume);
             currentTheme.play();
         }
     }
 
     public AssetManager getAssetManager(){
         return assetManager;
+    }
+
+    public void setThemeVolume(float volume){
+        currentTheme.setVolume(volume);
     }
 
     @Override

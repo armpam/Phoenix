@@ -1,6 +1,7 @@
 package com.phoenix.game.Maps;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
@@ -57,7 +58,7 @@ public class Chest extends com.phoenix.game.Maps.RectTileObject {
 
         }
         if(!open) {
-            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/openChest.ogg", Music.class).play(); //Sonido del cofre al abrirse
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/openChest.ogg", Sound.class).play(Game.volume); //Sonido del cofre al abrirse
             open = true;
         }
     }

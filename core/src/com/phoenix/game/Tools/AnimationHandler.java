@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -101,6 +102,10 @@ public class AnimationHandler implements Disposable {
 
     private TextureRegion lightBall;
 
+    //Skin
+
+    private Skin skin;
+
     private AnimationHandler(){
 
         sidescroll = new Texture(Gdx.files.internal("generic_platformer_tiles.png"));
@@ -110,6 +115,7 @@ public class AnimationHandler implements Disposable {
         coin = new Texture(Gdx.files.internal("coin.png"));
         mainCharacter = new Texture(Gdx.files.internal("main.png"));
         dungeon = new Texture(Gdx.files.internal("dungeon_pack_2.png"));
+        skin = new Skin(Gdx.files.internal("UI/uiskin.json"));
 
         movingBlock = new TextureRegion(sidescroll, 32, 192, 64, 32);
         lightBall = new TextureRegion(dungeon,192, 224 , 32, 32);
@@ -416,6 +422,8 @@ public class AnimationHandler implements Disposable {
     public Animation getPlant_up(){return plant_up;}
 
     public Animation getPlant_down(){return plant_down;}
+
+    public Skin getSkin(){return skin;}
 
     @Override
     public void dispose() {

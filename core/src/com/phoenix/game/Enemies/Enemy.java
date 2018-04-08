@@ -1,6 +1,7 @@
 package com.phoenix.game.Enemies;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -223,7 +224,7 @@ public abstract class Enemy extends Sprite implements MovingRectTileObject {
             dead = true;
             screen.getMcharacter().addXP(xp);
         }
-        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/hit.ogg", Music.class).play();
+        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/hit.ogg", Sound.class).play(Game.volume);
     }
 
     public void onProjectileHit(MainProjectile projectile){
