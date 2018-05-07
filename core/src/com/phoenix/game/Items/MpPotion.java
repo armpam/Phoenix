@@ -11,5 +11,7 @@ public class MpPotion extends UsableItem {
         name = "Poción de maná";
         effect = 200;
         description = "Recupera 200 puntos de maná";
+        sellPrice = 20;
+        buyPrice = 40;
     }
 }

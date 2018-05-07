@@ -9,6 +9,8 @@ public abstract class UsableItem {
     protected String name;
     protected int effect;
     protected String description;
+    protected int sellPrice;
+    protected int buyPrice;
 
     public UsableItem(){
 
@@ -23,5 +25,11 @@ public abstract class UsableItem {
     }
 
     public String getName(){return name;}
+
+    public int getSellPrice(){return sellPrice;}
+
+    public int getBuyPrice(){
+        return  buyPrice;
+    }
 
 }

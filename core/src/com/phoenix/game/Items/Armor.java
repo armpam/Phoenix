@@ -17,6 +17,8 @@ public class Armor extends EquipableItem {
             name = type.get("name");
             description = type.get("description");
             effect = type.getInt("effect");
+            sellPrice = type.getInt("sellprice");
+            buyPrice = type.getInt("buyprice");
         }
         catch (Exception e){
             e.printStackTrace();

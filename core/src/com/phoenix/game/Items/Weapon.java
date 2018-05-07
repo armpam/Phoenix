@@ -15,6 +15,8 @@ public class Weapon extends EquipableItem {
            name = type.get("name");
            description = type.get("description");
            effect = type.getInt("effect");
+           sellPrice = type.getInt("sellprice");
+           buyPrice = type.getInt("buyprice");
     }
 
     private XmlReader.Element getNode(String group, String pType){

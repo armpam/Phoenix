@@ -1,0 +1,39 @@
+<npc_dialogs>
+	<type_0>
+		<name>Aletina</name>
+		<dialog>
+			¡Hola! Teóricamente soy el NPC de tipo 0 por si hay algún error,\n¡así que no debería existir!
+		</dialog>
+	</type_0>
+	<type_1>
+		<name>Eliana</name>
+		<dialog>
+			Bienvenido a nuestra ciudad.\n¿Has derrotado a la planta come-hombres?\nAunque parece invencible, ¡con buen nivel y equipo puede ser derrotada!
+		</dialog>
+	</type_1>>
+	<type_2>
+		<name>Alina</name>
+		<dialog>
+			¿Una tienda para comprar y vender objetos?\nAl sureste de la ciudad Alariel debería tener lo que buscas.
+		</dialog>
+	</type_2>>
+	<type_3>
+		<name>Gloria</name>
+		<dialog>
+			¡Felicidades! Sólo te queda una pantalla por descubrir...\n¡y seguramente te sorprenderá! Cruza esta puerta para seguir adelante.
+		</dialog>
+	</type_3>>
+	<type_4>
+		<name>Saki</name>
+		<dialog>
+			¿Que por qué somos todas iguales? Oye, ¡ese comentario es sexista!\nAunque seguramente sea porque nuestro desarrollador se quedó sin "assets" jiji.
+		</dialog>
+	</type_4>>
+	<type_5>
+		<name>Alariel</name>
+		<dialog>
+			Te ha costado encontrarme, ¿verdad?\n¡Por tu esfuerzo te haré un descuento especial!
+		</dialog>
+	</type_5>>
+	
+</npc_dialogs>

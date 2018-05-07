@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.phoenix.game.Entities.NPC;
 import com.phoenix.game.Maps.Chest;
 import com.phoenix.game.Maps.Coin;
 import com.phoenix.game.Enemies.Enemy;
@@ -106,6 +107,10 @@ public class WorldContactListener implements ContactListener {
 
             if(object.getUserData() instanceof Enemy){
                 ((MainCharacter)player.getUserData()).onEnemyHit((Enemy)object.getUserData());
+            }
+
+            if(object.getUserData() instanceof NPC){
+                ((NPC)object.getUserData()).onPlayerHit();
             }
         }
     }

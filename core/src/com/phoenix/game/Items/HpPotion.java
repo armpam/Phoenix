@@ -11,5 +11,7 @@ public class HpPotion extends UsableItem {
         name = "Poción de vida";
         effect = 200;
         description = "Recupera 200 puntos de vida";
+        sellPrice = 20;
+        buyPrice = 40;
     }
 }

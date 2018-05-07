@@ -35,6 +35,7 @@ public abstract class SubMenu implements Screen {
 
     private Game game;
     private MainMenu prevMenu;
+    private GameScreen gs;
     protected MainCharacter mc;
 
     private Texture bg;
@@ -47,6 +48,8 @@ public abstract class SubMenu implements Screen {
     protected Table mainTable;
     protected Table downTable;
     protected Table infoTable;
+
+    private boolean backToGame;
 
     public SubMenu(Game game, MainMenu prevMenu, MainCharacter mc){
         this.game = game;
@@ -61,6 +64,25 @@ public abstract class SubMenu implements Screen {
         stage = new Stage(viewport, (game).batch );
         Gdx.input.setInputProcessor(stage);
         bg = new Texture(Gdx.files.internal("backgrounds/start_background.jpg"));
+        backToGame = false;
+
+        init();
+    }
+
+    public SubMenu(Game game, GameScreen screen, MainCharacter mc){
+        this.game = game;
+        gs = screen;
+        this.mc = mc;
+        skin = AnimationHandler.getAnimationHandler().getSkin();
+        font = new Label.LabelStyle(new BitmapFont(), Color.WHITE );
+        titleLabel = new TextButton("Prueba", skin);
+        titleLabel.setColor(Color.DARK_GRAY);
+
+        viewport = new FitViewport(Game.WIDTH, Game.HEIGHT, new OrthographicCamera());
+        stage = new Stage(viewport, (game).batch );
+        Gdx.input.setInputProcessor(stage);
+        bg = new Texture(Gdx.files.internal("backgrounds/start_background.jpg"));
+        backToGame = true;
 
         init();
     }
@@ -115,8 +137,16 @@ public abstract class SubMenu implements Screen {
 
     private void goBack(){
         stage.dispose();
-        ScreenHandler.getScreenHandler().setScreen(prevMenu);
-        prevMenu.resetIP();
+        if(!backToGame){
+            this.dispose();
+            ScreenHandler.getScreenHandler().setScreen(prevMenu);
+            prevMenu.resetIP();
+        }
+        else{
+            this.dispose();
+            ScreenHandler.getScreenHandler().setScreen(gs);
+            gs.getController().resetIP();
+        }
     }
 
     @Override

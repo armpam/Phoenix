@@ -13,6 +13,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -42,6 +46,7 @@ public class GameScreen implements Screen {
     private Game game;
     private OrthographicCamera cam;
     private Viewport gamePort;
+    private Viewport dialogPort;
     private Main_UI UI;
 
     static final float STEP_TIME = 1f/60f;
@@ -80,11 +85,14 @@ public class GameScreen implements Screen {
     private boolean menuFlag = false;
     private boolean tpFlag = false;
     private boolean repositionFlag = false;
+    private boolean isPaused = false;
 
     private boolean sideScroll = false;
     public boolean ladder = false;
 
     public Controller controller;
+
+    private Stage stage;
 
     public GameScreen(Game game, String map, boolean gravity){
         this.game = game;
@@ -92,6 +100,8 @@ public class GameScreen implements Screen {
         this.cam = new OrthographicCamera();
         //FitViewPort se encarga de que el juego funciona en todas las resoluciones
         this.gamePort = new FitViewport(Game.WIDTH / Game.PPM, Game.HEIGHT / Game.PPM, cam);
+        this.dialogPort = new FitViewport(Game.WIDTH, Game.HEIGHT, new OrthographicCamera());
+        this.stage = new Stage(dialogPort, game.batch);
 
         //Carga el mapa hecho en Tiled
         mapLoader = new TmxMapLoader();
@@ -114,7 +124,7 @@ public class GameScreen implements Screen {
         this.UI = new Main_UI(game.batch, this.mcharacter);
 
         //Controles
-        this.controller = new Controller(game.batch);
+        this.controller = new Controller(game.batch, gravity);
 
         //Listener para todas nuestras colisiones
         world.setContactListener(new WorldContactListener());
@@ -130,6 +140,8 @@ public class GameScreen implements Screen {
         this.cam = new OrthographicCamera();
         //FitViewPort se encarga de que el juego funciona en todas las resoluciones
         this.gamePort = new FitViewport(Game.WIDTH / Game.PPM, Game.HEIGHT / Game.PPM, cam);
+        this.dialogPort = new FitViewport(Game.WIDTH, Game.HEIGHT, new OrthographicCamera());
+        this.stage = new Stage(dialogPort, game.batch);
 
         //Carga el mapa hecho en Tiled
         mapLoader = new TmxMapLoader();
@@ -157,7 +169,7 @@ public class GameScreen implements Screen {
         //Nueva Interfaz Gráfica general
         this.UI = new Main_UI(game.batch, this.mcharacter);
 
-        this.controller = new Controller(game.batch);
+        this.controller = new Controller(game.batch, gravity);
 
         //Listener para todas nuestras colisiones
         world.setContactListener(new WorldContactListener());
@@ -171,46 +183,47 @@ public class GameScreen implements Screen {
 
     }
 
-    public void update(float delta){
+    public void update(float delta) {
+        if (!isPaused) {
+            //Maneja lo que pulsa el usuario
+            if (sideScroll)
+                handleSCInput(delta);
+            else
+                handleInput(delta);
 
-        //Maneja lo que pulsa el usuario
-        if(sideScroll)
-            handleSCInput(delta);
-        else
-            handleInput(delta);
+            stepWorld();
 
-        stepWorld();
+            //La cámara sigue al jugador
+            cam.position.x = mcharacter.b2body.getPosition().x;
+            cam.position.y = mcharacter.b2body.getPosition().y;
 
-        //La cámara sigue al jugador
-        cam.position.x = mcharacter.b2body.getPosition().x;
-        cam.position.y = mcharacter.b2body.getPosition().y;
+            //Actualiza las coordenadas de la cámara
+            cam.update();
+            //Solo dibujamos en la pantalla la parte del mundo que podemos ver
+            mapRenderer.setView(cam);
 
-        //Actualiza las coordenadas de la cámara
-        cam.update();
-        //Solo dibujamos en la pantalla la parte del mundo que podemos ver
-        mapRenderer.setView(cam);
-
-        //Actualizamos objetos del juego
-        for(Coin coin : b2wc.getCoinArray() ){
-            coin.update(delta);
-            if (coin.isDestroyed()){
-                b2wc.getCoinArray().removeValue(coin, true);
-            }
-        }
-        for(MovingBlock mb : b2wc.getMbArray()){
-            mb.update(delta);
-        }
-
-        for(Enemy enemy : b2wc.getEnemyArray()){
-            enemy.update(delta);
-            if(!enemy.getBody().isActive()) {
-                if (enemy.getBody().getPosition().dst2(mcharacter.b2body.getPosition()) < ACTIVATE_DISTANCE) {
-                    enemy.getBody().setActive(true);
+            //Actualizamos objetos del juego
+            for (Coin coin : b2wc.getCoinArray()) {
+                coin.update(delta);
+                if (coin.isDestroyed()) {
+                    b2wc.getCoinArray().removeValue(coin, true);
                 }
             }
-            if(enemy.getSetToDestroy()){
-                world.destroyBody(enemy.getBody());
-                b2wc.getEnemyArray().removeValue(enemy, true);
+            for (MovingBlock mb : b2wc.getMbArray()) {
+                mb.update(delta);
+            }
+
+            for (Enemy enemy : b2wc.getEnemyArray()) {
+                enemy.update(delta);
+                if (!enemy.getBody().isActive()) {
+                    if (enemy.getBody().getPosition().dst2(mcharacter.b2body.getPosition()) < ACTIVATE_DISTANCE) {
+                        enemy.getBody().setActive(true);
+                    }
+                }
+                if (enemy.getSetToDestroy()) {
+                    world.destroyBody(enemy.getBody());
+                    b2wc.getEnemyArray().removeValue(enemy, true);
+                }
             }
         }
     }
@@ -234,31 +247,35 @@ public class GameScreen implements Screen {
             if (controller.isDownPressed() && mcharacter.b2body.getLinearVelocity().y > -TOP_SPEED) {
                 mcharacter.b2body.applyLinearImpulse(new Vector2(0, -MCSpeed), mcharacter.b2body.getWorldCenter(), true);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1) && !fbLock) {
+            if (controller.isFirePressed() && !fbLock) {
                 mcharacter.fire(1); //Dispara una bola de fuego
                 SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/fireball.wav", Sound.class).play(Game.volume);
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_2) && !fbLock) {
+            if (controller.isIcePressed() && !fbLock) {
                 mcharacter.fire(2); //Dispara una bola de hielo
                 SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/iceball.wav", Sound.class).play(Game.volume);
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_3) && !fbLock) {
+            if (controller.isLightningPressed() && !fbLock) {
                 mcharacter.fire(3); //Dispara una bola de rayo
                 SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/lightningball.wav", Sound.class).play(Game.volume);
                 startTime = TimeUtils.nanoTime();
                 fbLock = true;
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
-                mcharacter.useHpPot(); //Dispara una bola de rayo
+            if (controller.isHpPressed() && !fbLock) {
+                mcharacter.useHpPot();
+                startTime = TimeUtils.nanoTime();
+                fbLock = true;
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
-                mcharacter.useMpPot(); //Dispara una bola de rayo
+            if (controller.isMpPressed() && !fbLock) {
+                mcharacter.useMpPot();
+                startTime = TimeUtils.nanoTime();
+                fbLock = true;
             }
-            if(Gdx.input.isKeyJustPressed(Input.Keys.I)){
+            if(controller.isBagPressed()){
                 menuFlag = true;
             }
         }
@@ -280,7 +297,7 @@ public class GameScreen implements Screen {
         if (controller.isLeftPressed() && mcharacter.b2body.getLinearVelocity().x > -TOP_SPEED) {
             mcharacter.b2body.applyLinearImpulse(new Vector2(-MCSpeed, 0), mcharacter.b2body.getWorldCenter(), true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && jumpLock == false) {
+        if (controller.isJumpPressed() && jumpLock == false) {
             mcharacter.b2body.applyLinearImpulse(new Vector2(0, JUMP_STR), mcharacter.b2body.getWorldCenter(), true);
             SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/jump.wav", Sound.class).play(Game.volume);
             startTime = TimeUtils.nanoTime();
@@ -291,6 +308,22 @@ public class GameScreen implements Screen {
         }
         if(jumpLock){
             lockJump(startTime);
+        }
+        if (controller.isHpPressed() && !fbLock) {
+            mcharacter.useHpPot();
+            startTime = TimeUtils.nanoTime();
+            fbLock = true;
+        }
+        if (controller.isMpPressed() && !fbLock) {
+            mcharacter.useMpPot();
+            startTime = TimeUtils.nanoTime();
+            fbLock = true;
+        }
+        if(controller.isBagPressed()){
+            menuFlag = true;
+        }
+        if(fbLock){
+            lockFireBall(startTime);
         }
     }
     @Override
@@ -354,6 +387,8 @@ public class GameScreen implements Screen {
         game.batch.end();
 
         UI.stage.draw();
+        stage.act();
+        stage.draw();
 
         controller.draw();
 
@@ -481,7 +516,7 @@ public class GameScreen implements Screen {
 
     public TiledMap getMap(){return green_map;}
 
-    public com.badlogic.gdx.Game getGame(){
+    public Game getGame(){
         return game;
     }
 
@@ -499,20 +534,26 @@ public class GameScreen implements Screen {
         return controller;
     }
 
+    public Stage getStage(){
+        return stage;
+    }
+
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+        dialogPort.update(width, height);
         controller.resize(width, height);
     }
 
     @Override
     public void pause() {
-
+        isPaused = true;
     }
+
 
     @Override
     public void resume() {
-
+        isPaused = false;
     }
 
     @Override
@@ -528,5 +569,6 @@ public class GameScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         UI.dispose();
+        stage.dispose();
     }
 }

@@ -4,16 +4,22 @@
 			<name>Espada de bronce</name>
 			<description>Espada de bronce. No parece muy afilada</description>
 			<effect>1</effect>
+			<sellprice>50</sellprice>
+			<buyprice>100</buyprice>
 		</type_1>
 		<type_2>
-			<name>=Espada de plata</name>
+			<name>Espada de plata</name>
 			<description>Espada de plata. Parece en buen estado.</description>
 			<effect>2</effect>
+			<sellprice>300</sellprice>
+			<buyprice>600</buyprice>
 		</type_2>
 		<type_3>
 			<name>Espada de oro</name>
 			<description>Espada de oro. Está afilada y un estado excelente.</description>
 			<effect>3</effect>
+			<sellprice>2000</sellprice>
+			<buyprice>4000</buyprice>
 		</type_3>
 	</swords>
 
@@ -26,16 +32,22 @@
 			<name>Armadura de bronce</name>
 			<description>Armadura de bronce. No parece en buen estado.</description>
 			<effect>1</effect>
+			<sellprice>30</sellprice>
+			<buyprice>60</buyprice>
 		</type_1>
 		<type_2>
 			<name>Armadura de plata</name>
 			<description>Armadura de plata. Parece en buen estado.</description>
 			<effect>2</effect>
+			<sellprice>200</sellprice>
+			<buyprice>400</buyprice>
 		</type_2>
 		<type_3>
 			<name>Armadura de oro</name>
 			<description>Armadura de oro. Está cuidada y un estado excelente.</description>
 			<effect>3</effect>
+			<sellprice>1550</sellprice>
+			<buyprice>3100</buyprice>
 		</type_3>
 	</chests>
 

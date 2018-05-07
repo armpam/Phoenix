@@ -122,6 +122,7 @@ public class MainMenu implements Screen {
                 ScreenHandler.getScreenHandler().setScreen(previousScreen);
                 SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/back.wav", Sound.class).play(Game.volume);
                 previousScreen.getController().resetIP();
+                previousScreen.getController().resetBag();
             }
 
             @Override

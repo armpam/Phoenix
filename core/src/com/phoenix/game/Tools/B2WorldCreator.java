@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.phoenix.game.Enemies.Bat;
 import com.phoenix.game.Enemies.Enemy;
+import com.phoenix.game.Entities.NPC;
 import com.phoenix.game.Maps.Chest;
 import com.phoenix.game.Maps.Coin;
 import com.phoenix.game.Enemies.DarkElf;
@@ -66,6 +67,7 @@ public class B2WorldCreator {
                 createSensors(7);
             } else if (map.getProperties().get("name").equals("city_1")) {
                 createWalls(1);
+                createNPCs(2);
             }
         }
     }
@@ -167,6 +169,30 @@ public class B2WorldCreator {
 
             ManEatingPlant mep = new ManEatingPlant(this.screen, rect.x / Game.PPM, rect.y / Game.PPM, object, map);
             enemyArray.add(mep);
+        }
+    }
+
+    private void createNPCs(int layer){
+        String type = "type_0";
+        for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
+            if(object.getProperties().containsKey("type")){
+                if(object.getProperties().get("type").equals("type_1")){
+                    type = "type_1";
+                }
+                else if(object.getProperties().get("type").equals("type_2")){
+                    type = "type_2";
+                }
+                else if(object.getProperties().get("type").equals("type_3")){
+                    type = "type_3";
+                }
+                else if(object.getProperties().get("type").equals("type_4")){
+                    type = "type_4";
+                }
+                else if(object.getProperties().get("type").equals("type_5")){
+                    type = "type_5";
+                }
+            }
+            new NPC(world, map, object, screen, type);
         }
     }
 

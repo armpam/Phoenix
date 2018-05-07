@@ -1,6 +1,5 @@
 package com.phoenix.game.Entities;
 
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -28,6 +27,7 @@ import com.phoenix.game.Projectiles.MainFireball;
 import com.phoenix.game.Projectiles.MainProjectile;
 import com.phoenix.game.Screens.GameScreen;
 import com.phoenix.game.Tools.AnimationHandler;
+import com.phoenix.game.Tools.DialogHandler;
 import com.phoenix.game.Tools.SoundHandler;
 
 /**
@@ -298,6 +298,7 @@ public class MainCharacter extends Sprite {
         xpGoal = xpGoal * 2;
         currentXp = 0;
         screen.getUI().updateUI(this);
+        SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/newgame.wav", Sound.class).play(Game.volume);
     }
 
     public void onLightBallHit(LightBall lb){
@@ -316,16 +317,22 @@ public class MainCharacter extends Sprite {
                 if (chest.getObject().getProperties().get("item").equals("hpPotion")) {
                     usableInventory.add(new HpPotion());
                     screen.getUI().updateHpPots(this);
+                    DialogHandler.getDialogHandler().simpleDialog(screen.getStage(), "Información", "Poción de vida", screen);
                 } else if (chest.getObject().getProperties().get("item").equals("mpPotion")) {
                     usableInventory.add(new MpPotion());
                     screen.getUI().updateMpPots(this);
+                    DialogHandler.getDialogHandler().simpleDialog(screen.getStage(), "Información", "Poción de maná", screen);
                 }
             }
             else if (chest.getObject().getProperties().containsKey("sword")) {
-                equipableInventory.add(new Weapon("swords", (String)chest.getObject().getProperties().get("sword")));
+                Weapon weapon = new Weapon("swords", (String)chest.getObject().getProperties().get("sword"));
+                equipableInventory.add(weapon);
+                DialogHandler.getDialogHandler().simpleDialog(screen.getStage(), "Información", weapon.getName(), screen);
             }
             else if(chest.getObject().getProperties().containsKey("chest")){
-                equipableInventory.add(new Armor("chests", (String)chest.getObject().getProperties().get("chest")));
+                Armor armor = new Armor("chests", (String)chest.getObject().getProperties().get("chest"));
+                equipableInventory.add(armor);
+                DialogHandler.getDialogHandler().simpleDialog(screen.getStage(), "Información", armor.getName(), screen);
             }
         }
     }
@@ -439,6 +446,42 @@ public class MainCharacter extends Sprite {
         equipableInventory.add(previousWeapon);
         updateAp();
         SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/heal.wav", Sound.class).play(Game.volume);
+    }
+
+    public void sellUsableItem(UsableItem item){
+        money = money + item.getSellPrice();
+        usableInventory.removeValue(item, true);
+        screen.getUI().updateScore(this);
+    }
+
+    public void sellEquipableItem(EquipableItem item){
+        money = money + item.getsellPrice();
+        equipableInventory.removeValue(item, true);
+        screen.getUI().updateScore(this);
+    }
+
+    public void buyUsableItem(UsableItem item){
+        if(money - item.getBuyPrice() >= 0) {
+            money = money - item.getBuyPrice();
+            usableInventory.add(item);
+            screen.getUI().updateScore(this);
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/coin.ogg", Sound.class).play(Game.volume);
+        }
+        else{
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/error.wav", Sound.class).play(Game.volume);
+        }
+    }
+
+    public void buyEquipableItem(EquipableItem item){
+        if(money - item.getBuyPrice() >= 0) {
+            money = money - item.getBuyPrice();
+            equipableInventory.add(item);
+            screen.getUI().updateScore(this);
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/coin.ogg", Sound.class).play(Game.volume);
+        }
+        else{
+            SoundHandler.getSoundHandler().getAssetManager().get("audio/sounds/error.wav", Sound.class).play(Game.volume);
+        }
     }
 
     public Weapon getEqWeapon(){

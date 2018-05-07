@@ -11,6 +11,8 @@ public abstract class EquipableItem {
     protected String name;
     protected String description;
     protected int effect;
+    protected int sellPrice;
+    protected  int buyPrice;
 
     protected XmlReader xml = new XmlReader();
 
@@ -29,4 +31,8 @@ public abstract class EquipableItem {
     public String getDescription(){
         return  description;
     }
+
+    public int getsellPrice(){return sellPrice;}
+
+    public int getBuyPrice(){return  buyPrice;}
 }
